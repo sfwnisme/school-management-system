@@ -16,6 +16,7 @@
   }
 }
 
+/* 
 body {
   color: rgb(var(--foreground-rgb));
   background: linear-gradient(
@@ -30,4 +31,10 @@ body {
   .text-balance {
     text-wrap: balance;
   }
+} */
+
+*,
+html,
+body {
+  box-sizing: border-box;
 }
