@@ -1,18 +1,13 @@
 "use client";
 
 import {
-  Blocks,
   Book,
   BookPlus,
   GraduationCap,
   Grid2X2,
   Grid2x2Check,
   House,
-  Inbox,
-  List,
-  ListPlus,
   LucideIcon,
-  User,
   UserPlus,
   Users,
 } from "lucide-react";
@@ -86,4 +81,13 @@ export const navLinks: NavlinksType[] = [
     href: "/dashboard/subjects/add",
     icon: BookPlus,
   },
+];
+
+export const userAvatarNavlinks = [
+  { title: "profile", href: "profile", protected: true, divider: false },
+  { title: "dashboard", href: "dashboard", protected: true, divider: false },
+  { title: "options", href: "options", protected: true, divider: true },
+  { title: "logout", href: "logout", protected: true, divider: false },
+  { title: "login", href: "login", protected: false, divider: false },
+  { title: "register", href: "register", protected: false, divider: false },
 ];

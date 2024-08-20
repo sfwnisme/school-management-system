@@ -1,5 +1,5 @@
 import React from "react";
-import { navLinks } from "../dashboard-layout/nav-links";
+import { navLinks } from "../../lib/nav-links";
 import Link from "next/link";
 import LogoLayout from "./logo-layout";
 import { PanelLeft } from "lucide-react";
@@ -20,10 +20,10 @@ export default function DrowerNavLinksLayout(props: Props) {
     <Link
       href={link?.href}
       key={link?.href}
-      className="text-primary-300 hover:text-primary-500 hover:bg-secondary-50/30 font-medium first-letter:capitalize rounded-sm mx-px my-1 p-3 flex items-end gap-1 duration-150 text-sm md:text-base"
+      className="text-primary-300 hover:text-primary-500 hover:bg-secondary-50/30 font-medium rounded-sm mx-px my-1 p-3 flex items-end gap-1 duration-150 text-sm md:text-base"
     >
       {link?.icon ? <link.icon /> : <div className="h-[25px] w-[25px]" />}
-      {link?.title}
+      <p className="first-letter:capitalize">{link?.title}</p>
     </Link>
   ));
 

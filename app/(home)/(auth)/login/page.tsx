@@ -1,3 +1,5 @@
+import Button from "@/components/ui/button";
+import Input from "@/components/ui/input";
 import { HelpCircle, Info } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -16,24 +18,14 @@ export default function page({}: Props) {
               Signin
             </h1>
             <form className="grid grid-cols-4 gap-4 h-full">
-              <input
-                type="text"
-                name="username"
-                placeholder="User name"
-                className="border-2 border-primary-300 rounded p-2 focus:border-primary-500 min-h-[40px] text-black col-span-full"
-              />
-              <input
-                type="password"
-                name="password"
-                placeholder="Password"
-                className="border-2 border-primary-300 rounded p-2 focus:border-primary-500 min-h-[40px] text-black col-span-full"
-              />
-              <button
+              <Input type="text" name="username" placeholder="User name" />
+              <Input type="password" name="password" />
+              <Button
                 type="submit"
-                className="bg-primary-400 hover:bg-primary-500 text-white p-2 col-span-full col-start-1 rounded"
-              >
-                Login
-              </button>
+                // className="bg-primary-400 hover:bg-primary-500 text-white p-2 col-span-full col-start-1 rounded"
+                value={"login"}
+                event=""
+              />
             </form>
             <div className="grid grid-cols-2 mt-6 justify-between">
               <Link

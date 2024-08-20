@@ -1,6 +1,9 @@
 "use client";
 import Image from "next/image";
 import React from "react";
+import { isAuth } from "@/lib/utils";
+import { userAvatarNavlinks } from "../../lib/nav-links";
+import Link from "next/link";
 
 type AvatarType = {
   src: string;
@@ -25,8 +28,37 @@ export default function AvatarWithList(props: AvatarType) {
     setToggleAvatarList((prev) => !prev);
   }
 
+  const content = userAvatarNavlinks?.map((link) => {
+    const isProtected = isAuth && link?.protected === true;
+    const isntProtected = !isAuth && link?.protected === false;
+
+    return (
+      <>
+        {isProtected ? (
+          <Link
+            href={link?.href}
+            className="bg-white hover:bg-primary-50/20 text-primary-400 w-full text-base font-normal p-1 cursor-pointer rounded"
+            key={link?.title}
+            onClick={handleToggleAvatarList}
+          >
+            {link?.title}
+          </Link>
+        ) : isntProtected ? (
+          <Link
+            href={link?.href}
+            className="bg-white hover:bg-primary-50/20 text-primary-400 w-full text-base font-normal p-1 cursor-pointer rounded"
+            key={link?.title}
+            onClick={handleToggleAvatarList}
+          >
+            {link?.title}
+          </Link>
+        ) : null}
+      </>
+    );
+  });
+
   return (
-    <div className="">
+    <div className={``}>
       <div className="group">
         <div
           className={`border-2 p-1 rounded-lg overflow-hidden cursor-pointer`}
@@ -38,26 +70,14 @@ export default function AvatarWithList(props: AvatarType) {
             height={height}
             width={width}
             alt={alt}
-            className={`h-[${height}] w-[${width}]`}
+            className={`h-[${height}] md:h-[40px] w-[${width}] md:w-[40px]`}
           />
         </div>
       </div>
       {toggleAvatarList ? (
-        <ul className="absolute right-6 top-[calc(100%+10px)] bg-white border border-primary-50 rounded-md p-1 flex flex-col flex-wrap items-start justify-start gap-2 min-w-[200px]">
-          <li className="bg-white w-full text-base font-normal p-1 cursor-pointer">
-            Profile
-          </li>
-          <li className="bg-white w-full text-base font-normal p-1 cursor-pointer">
-            Dashboard
-          </li>
-          <li className="bg-white w-full text-base font-normal p-1 cursor-pointer">
-            Settings
-          </li>
-          <li className="bg-white border-b w-full text-base font-normal p-1"></li>
-          <li className="bg-white  w-full text-base font-normal p-1 cursor-pointer">
-            Logout
-          </li>
-        </ul>
+        <div className="absolute shaddow-sm right-6 top-[calc(100%+10px)] bg-white border border-primary-50 rounded-md p-1 flex flex-col flex-wrap items-start justify-start gap-2 min-w-[150px] md:min-w-[200px]">
+          {content}
+        </div>
       ) : null}
     </div>
   );
