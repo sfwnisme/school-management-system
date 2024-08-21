@@ -88,7 +88,7 @@
 - avatar dropdown list more customization and its navlinks.
 - a lot and alot of layout changes.
 
-### We 22/08/2024
+### Th 22/08/2024
 
 - style the inputs (sizes)
 - auto overflow the drawer nav links
