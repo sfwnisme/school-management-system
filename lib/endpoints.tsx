@@ -2,7 +2,7 @@ export const baseURL = "http://schoolmanagmentsystem.runasp.net/api/v1/";
 
 export const endpoints = {
   auth: {
-    signin: "authentication/signIn",
+    signin: "authentication/sign-in",
     refreshToken: "authentication/refresh-token",
     validateToken: "authentication/validate-token",
     confirmEmail: "authentication/confirm-email",

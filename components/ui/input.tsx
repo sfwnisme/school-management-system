@@ -26,13 +26,26 @@ type Props = {
   name: string;
   placeholder?: string;
   value?: InputValue;
+  styles?: string;
+  status?: "idle" | "success" | "error";
 };
 
 export default function Input(props: Props) {
+  let { status } = props;
+  status = status || "idle";
+  const statusObj = {
+    idle: "border-gray-500",
+    success: "outline outline-[3px] outline-green-200 border-green-700",
+    error: "outline outline-[3px] outline-red-200 border-red-700",
+  };
+  const focusVisible = "focus-visible:outline outline-[3px] outline-gray-200";
+
+  const statusStyle = statusObj[status];
+
   return (
     <input
       {...props}
-      className="border-2 border-primary-300 rounded p-2 focus:border-primary-500 min-h-[40px] text-black col-span-full"
+      className={`${focusVisible} ${props?.styles} bg-transparent text-xs border ${statusStyle} rounded p-2  min-h-[40px] text-black col-span-full w-full`}
     />
   );
 }

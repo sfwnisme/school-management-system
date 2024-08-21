@@ -3,7 +3,6 @@
 import axios from "axios";
 import Cookies from "js-cookie";
 import { cookies } from "next/headers";
-import { redirect } from "next/navigation";
 import { baseURL, endpoints } from "./endpoints";
 
 // import path from "path";
@@ -13,7 +12,6 @@ import { baseURL, endpoints } from "./endpoints";
 //   timeout: 1000,
 //   headers: { Authorization: `Bearer ${Cookies.get("token")}` },
 // });
-
 export async function handleSignIn(
   username: string,
   password: string,
@@ -27,7 +25,6 @@ export async function handleSignIn(
   const FD: FormData = new FormData();
   FD.append("UserName", username);
   FD.append("Password", password);
-
   try {
     const res = await axios.post(baseURL + endpoints.auth.signin, FD);
 
@@ -70,7 +67,7 @@ export async function getAllInstructors() {
 }
 
 // logout
-export async function handleLogout() {
-  cookies().delete("token");
-}
+// export async function handleLogout() {
+//   cookies().delete("token");
+// }
 console.log("get js-cookies token", cookies().get("token")?.value);

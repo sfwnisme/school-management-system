@@ -1,4 +1,5 @@
 import type { Config } from "tailwindcss";
+// const colors = require('tailwind/css/colors')
 
 const config: Config = {
   content: [
@@ -8,6 +9,17 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      container: {
+        center: true, // Center the container
+        padding: "1rem", // Add padding inside the container
+        screens: {
+          sm: "100%", // Customize container width for small screens
+          md: "100%", // Customize container width for medium screens
+          lg: "100%", // Customize container width for large screens
+          xl: "100%", // Customize container width for extra large screens
+          "2xl": "100%", // Customize container width for 2xl screens
+        },
+      },
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
         "gradient-conic":

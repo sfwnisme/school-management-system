@@ -85,14 +85,14 @@ export default function LoginForm() {
           </React.Suspense>
           <Grid container>
             <Grid item xs>
-              <Link href="#" className="text-sm text-blue-500 underline">
+              <Link href="#" className="text-sm text-gray-500 underline">
                 Forgot password?
               </Link>
             </Grid>
             <Grid item>
               <Link
                 href="/register"
-                className="text-sm text-blue-500 underline"
+                className="text-sm text-gray-500 underline"
               >
                 {"Don't have an account? Sign Up"}
               </Link>

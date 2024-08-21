@@ -38,3 +38,8 @@ html,
 body {
   box-sizing: border-box;
 }
+
+button,
+a {
+  cursor: pointer;
+}

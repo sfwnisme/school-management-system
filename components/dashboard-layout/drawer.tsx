@@ -30,7 +30,7 @@ export default function Drawer({ children }: childrenType) {
           setToggleDrawer={setToggleDrawer}
           isDashboard={true}
         />
-        <article className="px-4">{children}</article>
+        <article className="container">{children}</article>
       </div>
     </div>
   );
