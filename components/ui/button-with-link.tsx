@@ -6,17 +6,23 @@ type Props = {
   variant?: "initial" | "success" | "warning" | "danger" | "info";
   width?: "fit" | "full";
   href?: string;
+  loading?: boolean;
 };
 
-import Link from "next/link";
-import { ButtonHTMLAttributes, DetailedHTMLProps } from "react";
+import Link, { LinkProps } from "next/link";
+import {
+  AnchorHTMLAttributes,
+  ButtonHTMLAttributes,
+  DetailedHTMLProps,
+} from "react";
 
-export default function ButtonOld(
+export default function Button(
   props: DetailedHTMLProps<
     ButtonHTMLAttributes<HTMLButtonElement>,
     HTMLButtonElement
   > &
-    Props
+    Props &
+    Omit<AnchorHTMLAttributes<HTMLAnchorElement>, keyof LinkProps>
 ) {
   const sizes = {
     initial: "text-base md:text-base py-2 px-6",
@@ -58,54 +64,39 @@ export default function ButtonOld(
     currentWidth + " " + currentVariant + " " + currentSize
   }`;
 
-  const isLoading = props?.disabled ? (
+  // the loading depends on disabled
+  const loading = (
     <span className="relative flex h-3 w-3">
       <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white/50 opacity-75"></span>
       <span className="relative inline-flex rounded-full h-3 w-3 bg-white"></span>
     </span>
-  ) : null;
+  );
+
+  const Tag = props?.href ? Link : "button";
 
   return (
-    <>
-      {!props?.href ? (
-        <>
-          <button
-            {...props}
-            className={`col-span-full col-start-1 rounded first-letter:capitalize 
+    <Tag
+      {...props}
+      className={`col-span-full col-start-1 rounded first-letter:capitalize 
         ${currentCustomization}
         duration-150
         flex items-center justify-center
         relative
         `}
-            // disabled
-          >
-            <div className={`invisible`}>{props?.value}</div>
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-              {isLoading || props?.value}
-            </div>
-            {/* <Loader className="animate-spin duration-700" /> */}
-          </button>
-        </>
-      ) : (
-        <Link
-          href={props?.href}
-          {...props}
-          className={`col-span-full col-start-1 rounded first-letter:capitalize 
-        ${currentCustomization}
-        duration-150
-        flex items-center justify-center
-        relative
-        `}
-          // disabled
-        >
-          <div className={`invisible`}>{props?.value}</div>
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-            {isLoading || props?.value}
-          </div>
-          {/* <Loader className="animate-spin duration-700" /> */}
-        </Link>
-      )}
-    </>
+    >
+      <div
+        className={`CLONE-OF-ELEMENT-VALUE-TO-SAVE-THE-ASPECTS invisible flex items-center gap-x-2`}
+      >
+        {props?.children || props?.value}
+      </div>
+      <div
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2
+      flex items-center gap-x-2
+      "
+      >
+        {props?.loading ? loading : props?.children || props?.value}
+      </div>
+    </Tag>
   );
 }
 
@@ -116,4 +107,10 @@ export default function ButtonOld(
  * an absoluted div to center the content of the button
  *
  * No need for the status props all that handled by the props?.disabled
+ *
+ * What this component offers
+ * use it as a button or Link
+ * customized with variants, sizes, loading, and width
+ * you can add the value as a props?.children or props?.value
+ * The size will not interrupt if you change for loading😉
  */

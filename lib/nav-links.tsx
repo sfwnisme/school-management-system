@@ -82,6 +82,37 @@ export const navLinks: NavlinksType[] = [
     href: "/dashboard/subjects/add",
     icon: BookPlus,
   },
+  {
+    title: "test overflow only",
+    href: "/dashboard/subjects/add",
+    icon: BookPlus,
+  },
+  {
+    title: "test overflow only",
+    href: "/dashboard/subjects/add",
+    icon: BookPlus,
+  },
+
+  {
+    title: "test overflow only",
+    href: "/dashboard/subjects/add",
+    icon: BookPlus,
+  },
+  {
+    title: "test overflow only",
+    href: "/dashboard/subjects/add",
+    icon: BookPlus,
+  },
+  {
+    title: "test overflow only",
+    href: "/dashboard/subjects/add",
+    icon: BookPlus,
+  },
+  {
+    title: "test overflow only",
+    href: "/dashboard/subjects/add",
+    icon: BookPlus,
+  },
 ];
 
 export const userAvatarNavlinks = [

@@ -4,6 +4,10 @@ import React, { useEffect, useState } from "react";
 import LogoLayout from "./logo-layout";
 import AvatarWithList from "./avatar-with-list";
 
+/**
+ * @type isDashboard - boolean: you can change the boolean value to display main page or dashboard nav
+ */
+
 type Props = {
   toggleDrawer?: boolean;
   setToggleDrawer?: UpdateStateType;

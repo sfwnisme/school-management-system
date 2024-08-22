@@ -1,12 +1,12 @@
 # Notes
 
+![Visitor Count](https://profile-counter.glitch.me/sfwnisme/count.svg)
+
 - I will work on the UI and UI components from scratch using tailwindcss
 
 ## Add-ons tasks
 
 - change the way of handling the avatar-list navlinks array of object, and make it more efficient.
-
-## What I've done today
 
 ## styling rules
 
@@ -61,10 +61,12 @@
     - focus-visible color red-800
     - focus-visible outline color red-200
 
+## What I've done today
+
 ### Tu 20/08/2024
 
-- created `Button, Input, Dynamic navbar` UI components
-- I needed to share the dynamic navbar between the home `"/"` routes and the `'/dashboard/**` routes, So it was confusing to handle the navbar that was displayed in the `Drawer.tsx` UI component of the dashboard and the main `layout.tsx` of the nextjs root, because it will duplicate if I navigate to `/dashboard/**`, However I found out that I should use the following file structure to manage the layout as I want:
+- [x] created `Button, Input, Dynamic navbar` UI components
+- [x] I needed to share the dynamic navbar between the home `"/"` routes and the `'/dashboard/**` routes, So it was confusing to handle the navbar that was displayed in the `Drawer.tsx` UI component of the dashboard and the main `layout.tsx` of the nextjs root, because it will duplicate if I navigate to `/dashboard/**`, However I found out that I should use the following file structure to manage the layout as I want:
 
   ```text
   /app
@@ -79,19 +81,26 @@
 
 ### We 21/08/2024
 
-- input status
-- style the button status (status, variants, sizes)
-- customize the home page layout.
-- login form
-- changed the color palette and write the brand
-- login-form.tsx
-- avatar dropdown list more customization and its navlinks.
-- a lot and alot of layout changes.
+- [x] input status
+- [x] style the button status (status, variants, sizes)
+- [x] customize the home page layout.
+- [x] login form
+- [x] changed the color palette and write the brand
+- [x] login-form.tsx
+- [x] avatar dropdown list more customization and its navlinks.
+- [x] a lot and alot of layout changes.
+- [x] style the inputs (sizes)
 
 ### Th 22/08/2024
 
-- style the inputs (sizes)
-- auto overflow the drawer nav links
+- [x] auto overflow the drawer nav links.
+- [x] adding hero component for home page.
+- [x] reinforce the button component, you can using it as a link or button and added the width and loading props.
+
+### Sat 24/08/2024
+
+- [ ] users table
+- [ ] registration page and form
 
 ## UI components
 

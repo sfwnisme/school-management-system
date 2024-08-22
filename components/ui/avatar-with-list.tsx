@@ -46,6 +46,7 @@ export default function AvatarWithList(props: AvatarType) {
                 size="sm"
                 variant="danger"
                 onClick={link?.action}
+                width="full"
               />
             )}
             {link?.type !== "button" && (
@@ -63,7 +64,7 @@ export default function AvatarWithList(props: AvatarType) {
           <>
             {link?.divider && <hr className="w-full mt-4" />}
             {link?.type === "button" && (
-              <Button value="logout" size="sm" variant="danger" />
+              <Button value="logout" size="sm" variant="danger" width="full" />
             )}
             {link?.type !== "button" && (
               <Link
@@ -100,7 +101,7 @@ export default function AvatarWithList(props: AvatarType) {
       </div>
       {toggleAvatarList ? (
         <>
-          <div className="absolute shadow-xl shadow-black/[0.03] right-6 top-[calc(100%+10px)] bg-white border border-gray-200 rounded-md p-1 flex flex-col flex-wrap items-start justify-start gap-2 min-w-[150px] md:min-w-[200px]">
+          <div className="z-10 absolute shadow-xl shadow-black/[0.03] right-6 top-[calc(100%+10px)] bg-white border border-gray-200 rounded-md p-1 flex flex-col flex-wrap items-start justify-start gap-2 min-w-[150px] md:min-w-[200px]">
             {content}
           </div>
         </>

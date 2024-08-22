@@ -7,7 +7,7 @@ export default function Drawer({ children }: childrenType) {
   const [toggleDrawer, setToggleDrawer] = React.useState<boolean>(true);
 
   return (
-    <div className="grid grid-cols-20 min-h-screen relative">
+    <div className="grid grid-cols-20 h-screen scroll-">
       {toggleDrawer ? (
         <div
           className={`bg-white col-span-10 sm:col-span-7 md:col-span-5 lg:col-span-3 p-2 border-r overflow-x-hidden`}
