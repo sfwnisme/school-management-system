@@ -7,7 +7,6 @@ export default function UsersTable() {
 
   return (
     <div>
-      UsersTable
       <div className="table-container min-w-full overflow-x-auto p- border rounded-md">
         <table className="w-full divide-y divide-gray-200">
           <thead className="divide-x bg-gray-50">

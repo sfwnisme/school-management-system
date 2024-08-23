@@ -50,7 +50,7 @@ export async function handleSignIn(
 export function handleLogout() {
   Cookies.remove("token");
   // window.location.reload();
-  window.location.href = "/";
+  window.location.href = "/login";
 }
 
 // get all the instructors data

@@ -1,8 +1,8 @@
 // "use client";
-import Sidebar from "@/components/dashboard-layout/dashboard-layout";
 import Drawer from "@/components/dashboard-layout/drawer";
-import { getAllInstructors } from "@/lib/actions";
-import React from "react";
+import IsAuth from "@/lib/is-auth";
+import React, { Suspense } from "react";
+import Loading from "../../components/ui/spin-loading";
 
 export default function layout({ children }: childrenType) {
   // const instructors = await getAllInstructors();
@@ -11,7 +11,9 @@ export default function layout({ children }: childrenType) {
 
   return (
     <div>
-      <Drawer>{children}</Drawer>
+      <IsAuth>
+        <Drawer>{children}</Drawer>
+      </IsAuth>
       {/* <Sidebar>{children}</Sidebar> */}
     </div>
   );

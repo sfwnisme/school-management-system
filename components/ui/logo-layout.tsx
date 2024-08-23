@@ -1,3 +1,5 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
 
@@ -17,12 +19,9 @@ export default function LogoLayout(props: LogoType) {
   width = width || 40;
   hasText = hasText || true;
   textIsWrap = textIsWrap || false;
-  let redirect = props?.redirect || "";
+  console.log(hasText);
   return (
-    <Link
-      href={`${redirect}`}
-      className="flex items-center gap-2 h-full w-full"
-    >
+    <Link href={"/"} className="flex items-center gap-2 h-full w-full">
       <Image
         src={"/assets/logo.svg"}
         height={height}

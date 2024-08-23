@@ -1,7 +1,11 @@
-import React from 'react'
+import Title from "@/components/ui/title";
+import React from "react";
 
 export default function page() {
   return (
-    <div>page</div>
-  )
+    <div>
+      <Title>Add user</Title>
+      page
+    </div>
+  );
 }

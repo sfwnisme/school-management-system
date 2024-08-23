@@ -3,10 +3,11 @@
 ![Visitor Count](https://profile-counter.glitch.me/sfwnisme/count.svg)
 
 - I will work on the UI and UI components from scratch using tailwindcss
+- I will work on the SEO and SGC "static generated components" on the end of the project to save more time meanwhile.
 
 ## Add-ons tasks
 
-- change the way of handling the avatar-list navlinks array of object, and make it more efficient.
+- [ ] change the way of handling the avatar-list navlinks array of object, and make it more efficient.
 
 ## styling rules
 
@@ -97,13 +98,20 @@
 - [x] adding hero component for home page.
 - [x] reinforce the button component, you can using it as a link or button and added the width and loading props.
 
+### Fri 23/08/2024
+
+- [x] fixed the `action.tsx` redirect issue by removing the `"use server"` directive.
+- [x] set up axios and endpoints reusable snippets
+- [x] users table
+- [x] Loading status for dashboard content
+- [x] protected route using `is-auth.tsx` component
+- [x] enable deploying to vercel by disable typescript error😑
+- [x] title component
+
 ### Sat 24/08/2024
 
-- [ ] users table
 - [ ] registration page and form
-- [x] fixed the `action.tsx` redirect issue by removing the `"use server"` directive.
 - [ ] set up cookies reusable functions. <code style="color:red">Bug, it removes the token after rerendering when I use the functions that I made for tokens and cookies</code>
-- [x] set up axios and endpoints reusable snippets
 - [ ] change the way I display avatar-list data, I need to seperate the aciton buttons and the navlinks
 - [ ] add outline button variant
 
