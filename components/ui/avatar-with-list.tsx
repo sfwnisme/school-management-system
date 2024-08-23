@@ -1,12 +1,12 @@
 "use client";
 import Image from "next/image";
 import React from "react";
-import { isAuth } from "@/lib/utils";
 import { userAvatarNavlinks } from "../../lib/nav-links";
 import Link from "next/link";
-import { ArrowBigDown, ArrowDown } from "lucide-react";
-import Button from "./button";
-import { handleLogout } from "@/lib/utils";
+import Button from "./button-with-link";
+import { TOKEN } from "@/lib/cookes";
+import { isAuth } from "@/lib/utils";
+import { handleLogout } from "@/lib/actions";
 
 type AvatarType = {
   src: string;
@@ -36,7 +36,7 @@ export default function AvatarWithList(props: AvatarType) {
     const isntProtected = !isAuth && link?.protected === false;
 
     return (
-      <>
+      <React.Fragment key={link?.href}>
         {isProtected ? (
           <>
             {link?.divider && <hr className="w-full mt-4" />}
@@ -45,7 +45,7 @@ export default function AvatarWithList(props: AvatarType) {
                 value="logout"
                 size="sm"
                 variant="danger"
-                onClick={link?.action}
+                onClick={handleLogout}
                 width="full"
               />
             )}
@@ -78,7 +78,7 @@ export default function AvatarWithList(props: AvatarType) {
             )}
           </>
         ) : null}
-      </>
+      </React.Fragment>
     );
   });
 

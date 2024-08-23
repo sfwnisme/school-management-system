@@ -40,16 +40,16 @@ export default function DrowerNavLinksLayout(props: Props) {
   });
 
   return (
-    <aside className="">
-      <div className="px-3 py-4 flex items-center justify-between">
+    <aside className="bg-white">
+      <div className="px-3 py-7 flex items-center justify-between sticky top-0 bg-white border-b">
         <LogoLayout height={30} width={30} hasText={true} />
         <PanelLeft
-          size={30}
+          size={40}
           className="stroke-[1.5] bg-gray-50 p-[2px] rounded text-gray-500 hover:text-gray-600 cursor-pointer"
           onClick={handleToggleDrawer}
         />
       </div>
-      <div className="flex flex-col flex-wrap items-stretch justify-start">
+      <div className="flex flex-col items-stretch justify-start px-2 pb-10">
         {navLinksData}
       </div>
     </aside>

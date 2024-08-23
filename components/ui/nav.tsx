@@ -30,7 +30,7 @@ export default function Nav(props: Props) {
           {!toggleDrawer ? (
             <li className="py-1 flex items-center gap-4">
               <PanelLeft
-                size={30}
+                size={40}
                 className="stroke-[1.5] bg-gray-50 p-[2px] rounded text-gray-500 hover:text-gray-600 cursor-pointer"
                 onClick={handleToggleDrawer}
               />

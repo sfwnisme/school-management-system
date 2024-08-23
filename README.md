@@ -101,6 +101,11 @@
 
 - [ ] users table
 - [ ] registration page and form
+- [x] fixed the `action.tsx` redirect issue by removing the `"use server"` directive.
+- [ ] set up cookies reusable functions. <code style="color:red">Bug, it removes the token after rerendering when I use the functions that I made for tokens and cookies</code>
+- [x] set up axios and endpoints reusable snippets
+- [ ] change the way I display avatar-list data, I need to seperate the aciton buttons and the navlinks
+- [ ] add outline button variant
 
 ## UI components
 

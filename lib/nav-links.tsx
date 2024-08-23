@@ -11,7 +11,7 @@ import {
   UserPlus,
   Users,
 } from "lucide-react";
-import { handleLogout } from "./utils";
+import { handleLogout } from "./actions";
 
 // import SchoolIcon from "@mui/icons-material/School";
 // import HomeIcon from "@mui/icons-material/Home";
@@ -113,6 +113,38 @@ export const navLinks: NavlinksType[] = [
     href: "/dashboard/subjects/add",
     icon: BookPlus,
   },
+
+  {
+    title: "test overflow only",
+    href: "/dashboard/subjects/add",
+    icon: BookPlus,
+  },
+  {
+    title: "test overflow only",
+    href: "/dashboard/subjects/add",
+    icon: BookPlus,
+  },
+  {
+    title: "test overflow only",
+    href: "/dashboard/subjects/add",
+    icon: BookPlus,
+  },
+  {
+    title: "test overflow only",
+    href: "/dashboard/subjects/add",
+    icon: BookPlus,
+  },
+  {
+    title: "test overflow only",
+    href: "/dashboard/subjects/add",
+    icon: BookPlus,
+  },
+  {
+    title: "last overflow only",
+    href: "/dashboard/subjects/add",
+    icon: BookPlus,
+  },
+  
 ];
 
 export const userAvatarNavlinks = [
@@ -145,7 +177,7 @@ export const userAvatarNavlinks = [
     href: "/logout",
     protected: true,
     divider: true,
-    action: handleLogout,
+    // action: handleLogout,
     type: "button",
   },
   {

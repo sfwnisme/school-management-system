@@ -1,5 +1,4 @@
 import Cookies from "js-cookie";
-import { useRouter } from "next/navigation";
 
 export const isAuth = Cookies.get("token");
 
@@ -7,10 +6,3 @@ export const isAuth = Cookies.get("token");
 // const status = {
 //   idle
 // }
-
-// handle logout
-export function handleLogout() {
-  Cookies.remove("token");
-  window.location.reload();
-  window.location.href = "/";
-}

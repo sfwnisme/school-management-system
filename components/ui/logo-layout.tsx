@@ -1,10 +1,12 @@
 import Image from "next/image";
+import Link from "next/link";
 
 type LogoType = {
   height?: number;
   width?: number;
   hasText?: boolean;
   textIsWrap?: boolean;
+  redirect?: string;
 };
 
 export default function LogoLayout(props: LogoType) {
@@ -15,8 +17,12 @@ export default function LogoLayout(props: LogoType) {
   width = width || 40;
   hasText = hasText || true;
   textIsWrap = textIsWrap || false;
+  let redirect = props?.redirect || "";
   return (
-    <div className="flex items-center gap-2">
+    <Link
+      href={`${redirect}`}
+      className="flex items-center gap-2 h-full w-full"
+    >
       <Image
         src={"/assets/logo.svg"}
         height={height}
@@ -28,6 +34,6 @@ export default function LogoLayout(props: LogoType) {
           School {textIsWrap && <br />} Ment
         </p>
       )}
-    </div>
+    </Link>
   );
 }

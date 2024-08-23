@@ -1,4 +1,14 @@
+import axios from "axios";
+import Cookies from "js-cookie";
+
 export const baseURL = "http://schoolmanagmentsystem.runasp.net/api/v1/";
+
+export const http = axios.create({
+  baseURL,
+  headers: {
+    Authorization: `Bearer ${Cookies.get("token")}`,
+  },
+});
 
 export const endpoints = {
   auth: {
@@ -10,10 +20,10 @@ export const endpoints = {
     confirmResetPassword: "authentication/confirm-reset-password",
     resetPassword: "authentication/reset-password",
   },
-  user: {
+  users: {
+    users: "users/list",
     create: "user/create",
     userById: "user/{id}",
-    users: "user/list",
     edit: "user/edit",
     delete: "user/delete",
     changePassword: "user/change-password",

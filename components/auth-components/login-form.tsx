@@ -1,15 +1,14 @@
 "use client";
 import React, { FormEvent, useEffect } from "react";
 import Input from "../ui/input";
-import Button from "../ui/button";
+import Button from "../ui/button-with-link";
 import { User } from "lucide-react";
 import Link from "next/link";
-import { handleSignIn } from "@/lib/actions";
 import { useRouter } from "next/navigation";
+import { handleSignIn } from "@/lib/actions";
 
 export default function LoginForm() {
   const [loading, setLoading] = React.useState(false);
-  const router = useRouter();
 
   useEffect(() => {
     console.log("loading from use effect", loading);
@@ -30,7 +29,6 @@ export default function LoginForm() {
         loginCredentials?.password as string,
         loginCredentials?.rememberme
       );
-      window.location.href = "/dashboard";
       // router.push("/dashboard");
       console.log("user name and password data", loginCredentials);
     } catch (error) {
@@ -72,7 +70,12 @@ export default function LoginForm() {
             help reset my password
           </Link>
           {/* <React.Suspense fallback="loading"> */}
-          <Button type="submit" value={"login"} disabled={loading} />
+          <Button
+            type="submit"
+            value={"login"}
+            disabled={loading}
+            loading={loading}
+          />
           {/* </React.Suspense> */}
         </form>
         <Link
@@ -81,11 +84,6 @@ export default function LoginForm() {
         >
           Create your own account
         </Link>
-        {loading && (
-          <small className="text-green-600 text-sm bg-green-100 rounded px-1 text-center block w-fit mx-auto mt-6">
-            successfully loged in
-          </small>
-        )}
       </article>
       <article className="h-[400px] w-full bg-gray-900 flex flex-col flex-wrap items-center justify-center p-8 basis-1/2">
         <h2 className="text-white text-4xl text-center font-bold mb-4">
