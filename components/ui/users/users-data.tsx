@@ -1,12 +1,12 @@
-import { getAllUsers } from "@/lib/actions";
 import Button from "../button-with-link";
 import { Edit, Trash } from "lucide-react";
-import Cookies from 'js-cookie'
+import Cookies from "js-cookie";
+import { getAllUsers } from "@/lib/actions";
 
 export default async function UsersData() {
   const users = await getAllUsers();
 
-  console.log(Cookies.get('token'))
+  console.log(Cookies.get("token"));
 
   const data = users?.data.data.map((user: IUser) => (
     <tr key={user?.id} className="divide-x">

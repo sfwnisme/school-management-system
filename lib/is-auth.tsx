@@ -1,6 +1,5 @@
 // "use client";
 import React, { useEffect } from "react";
-import { isAuth } from "./utils";
 import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
 import { revalidatePath } from "next/cache";

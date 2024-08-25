@@ -1,14 +1,12 @@
 "use client";
 import Image from "next/image";
 import React from "react";
-import { userAvatarNavlinks } from "../../lib/nav-links";
+// import { userAvatarNavlinks } from "../../lib/nav-links";
 import Link from "next/link";
 import Button from "./button-with-link";
 import { handleLogout } from "@/lib/utils";
 import Cookies from "js-cookie";
-import { TOKEN } from "@/lib/client-cookies";
-// import { gCookie, TOKEN } from "@/lib/client-cookies";
-// import { handleLogout } from "@/lib/actions";
+import { userAvatarNavlinks } from "@/lib/nav-links";
 
 type AvatarType = {
   src: string;
@@ -20,7 +18,6 @@ type AvatarType = {
 const List = (props: {
   event: React.MouseEventHandler<HTMLAnchorElement> | undefined;
 }) => {
-  // const token = TOKEN;
   const token = Cookies.get("token");
   const listData =
     token !== undefined

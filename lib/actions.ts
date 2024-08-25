@@ -71,15 +71,10 @@ export async function handleSignIn(
 export async function getAllUsers() {
   try {
     const token = cookies().get("token")?.value;
-    console.log(token);
-    // if (cookies().get("token") !== "") {
-    // if (!token) console.log("token not found");
-    // else console.log("token found");
     if (token) {
       const res = await axios.get(baseURL + endpoints.users.users, {
         headers: {
           Authorization: `Bearer ${cookies().get("token")?.value}`,
-          // Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsImp0aSI6IjM0ZmExNzFhLWMzNDItNDYxZC1hMWFiLTFkNTA4MTM4MDhjMSIsImVtYWlsIjoiYWRtaW5AcHJvamVjdC5jb20iLCJ1c2VySWQiOiIxIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjpbIkFkbWluIiwiVXNlciIsIkhSIl0sImV4cCI6MTcyNDY2MjMyMSwiaXNzIjoiU2Nob29sUHJvamVjdCIsImF1ZCI6IlNvbWVDbGllbnRzIn0.jziD6Qetae_MF9AF74aoOzdvylQiYriWB3_Xxtdknyg`,
         },
       });
       console.log("users", res);

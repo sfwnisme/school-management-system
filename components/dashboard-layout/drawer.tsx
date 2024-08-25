@@ -1,5 +1,5 @@
 "use client";
-import React, { Suspense } from "react";
+import React from "react";
 import DrowerNavLinksLayout from "../ui/drawer-navlinks-layout";
 import Nav from "../ui/nav";
 

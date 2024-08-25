@@ -4,24 +4,55 @@ import Input from "../ui/input";
 import Button from "../ui/button-with-link";
 import { User } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { handleSignIn } from "@/lib/actions";
+import { useForm, SubmitHandler } from "react-hook-form";
+import Input2 from "../ui/input2";
+import { object, string } from "yup";
+import { yupResolver } from "@hookform/resolvers/yup";
+
+const loginSchema = object({
+  username: string()
+    .required("username is required")
+    .min(4, "you must add at least 4 characters"),
+  password: string()
+    .required("password is required")
+    .min(6, "you must add at least 6 characters"),
+});
+
+type Inputs = {
+  username: string;
+  password: string;
+};
 
 export default function LoginForm() {
   const [loading, setLoading] = React.useState(0);
 
-  useEffect(() => {
-    console.log("loading from use effect", loading);
-  }, [loading]);
-
-  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
-    e.preventDefault();
+  //-------------
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: {
+      errors,
+      isValid,
+      isDirty,
+      dirtyFields,
+      touchedFields,
+      isValidating,
+    },
+  } = useForm<Inputs>({
+    resolver: yupResolver(loginSchema),
+    mode: "onBlur",
+    // reValidateMode: "onChange",
+  });
+  const onSubmit: SubmitHandler<Inputs> = async (data) => {
+    console.log("final data", data);
+    console.log("errrrrrror", errors);
     setLoading(1);
     try {
-      const FD = new FormData(e.currentTarget);
       const loginCredentials = {
-        username: FD.get("username"),
-        password: FD.get("password"),
+        username: data?.username,
+        password: data?.password,
         rememberme: true,
       };
       await handleSignIn(
@@ -29,6 +60,7 @@ export default function LoginForm() {
         loginCredentials?.password as string,
         loginCredentials?.rememberme
       );
+      console.warn("data sent");
       // router.push("/dashboard");
       console.log("user name and password data", loginCredentials);
     } catch (error) {
@@ -36,7 +68,13 @@ export default function LoginForm() {
     } finally {
       setLoading(0);
     }
-  }
+  };
+  console.log("isvalid", isValid);
+  console.log("is dirty", isDirty);
+  console.log("dirty fields", isValidating);
+
+  //-------------
+
   return (
     <div className="mx-auto flex flex-col-reverse  md:flex-row gap-3 justify-center items-center max-w-[1200px] shadow-lg shadow-gray-50 rounded overflow-hidden">
       <article className="md:basis-1/2 p-4 w-full">
@@ -48,35 +86,57 @@ export default function LoginForm() {
           Signin
         </h1>
         <form
-          onSubmit={handleSubmit}
+          onSubmit={handleSubmit(onSubmit)}
           className="grid grid-cols-4 gap-4 h-full w-full"
         >
-          <Input
+          {/* <input
             type="text"
-            name="username"
+            // name="username"
+            placeholder="Your username"
+            {...register("username")}
+          /> */}
+          <Input
+            type="username"
+            // name="username"
             placeholder="Your username"
             styles="col-span-full"
+            variant={
+              errors.password?.message
+                ? "danger"
+                : isValid
+                ? "success"
+                : "initial"
+            }
+            {...register("username")}
           />
+          <small className="text-red-500">{errors.username?.message}</small>
           <Input
             type="password"
-            name="password"
+            // name="password"
             placeholder="Your password"
             styles="col-span-full"
+            variant={
+              errors.password?.message
+                ? "danger"
+                : isValid
+                ? "success"
+                : "initial"
+            }
+            {...register("password")}
           />
+          <small className="text-red-500">{errors.password?.message}</small>
           <Link
             href={""}
             className="text-gray-400 hover:text-gray-500 text-xs lg:text-sm flex items-center justify-end gap-1 col-start-2 col-span-3 mb-4"
           >
             help reset my password
           </Link>
-          {/* <React.Suspense fallback="loading"> */}
           <Button
             type="submit"
             value={"login"}
             disabled={loading === 0 ? false : true}
             loading={loading}
           />
-          {/* </React.Suspense> */}
         </form>
         <Link
           href={""}

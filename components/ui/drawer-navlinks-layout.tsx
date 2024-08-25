@@ -1,10 +1,11 @@
 // "use client";
 import React from "react";
-import { navLinks } from "../../lib/nav-links";
+// import { navLinks } from "../../lib/nav-links";
 import Link from "next/link";
 import LogoLayout from "./logo-layout";
 import { PanelLeft } from "lucide-react";
 import { usePathname } from "next/navigation";
+import { navLinks } from "@/lib/nav-links";
 
 type Props = {
   toggleDrawer: boolean;
