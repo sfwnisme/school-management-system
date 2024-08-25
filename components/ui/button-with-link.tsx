@@ -6,7 +6,7 @@ type Props = {
   variant?: "initial" | "success" | "warning" | "danger" | "info";
   width?: "fit" | "full";
   href?: string;
-  loading?: boolean;
+  loading?: number;
 };
 
 import Link, { LinkProps } from "next/link";
@@ -94,7 +94,7 @@ export default function Button(
       flex items-center gap-x-2
       "
       >
-        {props?.loading ? loading : props?.children || props?.value}
+        {props.loading === 1 ? loading : props?.children || props?.value}
       </div>
     </Tag>
   );

@@ -1,16 +1,18 @@
-import Cookies from "js-cookie";
 // ------------------------
-// Cookies set up
+// Server Cookies set up
 // ------------------------
+
+import { cookies } from "next/headers";
 
 // set cookie
-export const sCookie = (key: string, value: string) => Cookies.set(key, value);
+export const sCookie = (key: string, value: string) =>
+  cookies().set(key, value);
 
 // get cookie
-export const gCookie = (key: string) => Cookies.get(key);
+export const gCookie = (key: string) => cookies().get(key);
 
 // delete cookie
-export const rCookie = (key: string) => Cookies.remove(key);
+export const rCookie = (key: string) => cookies().delete(key);
 
 // set termprory cookie
 // export const tCookie = (key: string, value: string, expiration: number) =>
@@ -21,9 +23,4 @@ export const rCookie = (key: string) => Cookies.remove(key);
 // ------------------------
 export const TOKEN = gCookie("token");
 export const REMOVETOKEN = rCookie("token");
-
-/**NOTES
- * this file should help you organize the cookies procedures
- * note that these fucntions using js-cookie for the clien
- * components not server components
- */
+console.log(TOKEN);

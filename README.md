@@ -108,12 +108,20 @@
 - [x] enable deploying to vercel by disable typescript error😑
 - [x] title component
 
-### Sat 24/08/2024
+### Sat 24/08/2024 & Sun 25/08/2024
+
+ facing issues while redirect the user after login, because of my wrong nextjs component usage
+
+- [x] I need to know where to use nextjs cookies and clien cookies. done
+- [x] understanding how the cookies and the composition pattern works in nextjs
+- [x] change the way I display avatar-list data, I need to seperate the aciton buttons and the navlinks
+
+### Mon 26/08/2024
 
 - [ ] registration page and form
 - [ ] set up cookies reusable functions. <code style="color:red">Bug, it removes the token after rerendering when I use the functions that I made for tokens and cookies</code>
-- [ ] change the way I display avatar-list data, I need to seperate the aciton buttons and the navlinks
 - [ ] add outline button variant
+- [ ] set up react hook forms
 
 ## UI components
 

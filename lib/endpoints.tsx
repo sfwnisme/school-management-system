@@ -1,14 +1,12 @@
+// 'use client'
 import axios from "axios";
 import Cookies from "js-cookie";
 
+
+console.log(Cookies.get('token'))
+
 export const baseURL = "http://schoolmanagmentsystem.runasp.net/api/v1/";
 
-export const http = axios.create({
-  baseURL,
-  headers: {
-    Authorization: `Bearer ${Cookies.get("token")}`,
-  },
-});
 
 export const endpoints = {
   auth: {

@@ -1,4 +1,4 @@
-"use client";
+// "use client";
 import React from "react";
 import { navLinks } from "../../lib/nav-links";
 import Link from "next/link";

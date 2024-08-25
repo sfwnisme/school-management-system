@@ -1,4 +1,4 @@
-"use client";
+// "use client";
 
 import {
   Book,
@@ -11,7 +11,6 @@ import {
   UserPlus,
   Users,
 } from "lucide-react";
-import { handleLogout } from "./actions";
 
 // import SchoolIcon from "@mui/icons-material/School";
 // import HomeIcon from "@mui/icons-material/Home";
@@ -84,116 +83,91 @@ export const navLinks: NavlinksType[] = [
   },
   {
     title: "test overflow only",
-    href: "/dashboard/subjects/add",
+    href: "/wer/swerubjects/add",
     icon: BookPlus,
   },
   {
     title: "test overflow only",
-    href: "/dashboard/subjects/add",
-    icon: BookPlus,
-  },
-
-  {
-    title: "test overflow only",
-    href: "/dashboard/subjects/add",
-    icon: BookPlus,
-  },
-  {
-    title: "test overflow only",
-    href: "/dashboard/subjects/add",
-    icon: BookPlus,
-  },
-  {
-    title: "test overflow only",
-    href: "/dashboard/subjects/add",
-    icon: BookPlus,
-  },
-  {
-    title: "test overflow only",
-    href: "/dashboard/subjects/add",
+    href: "/dashbroawerewrd/subjects/add",
     icon: BookPlus,
   },
 
   {
     title: "test overflow only",
-    href: "/dashboard/subjects/add",
+    href: "/dashboarde/rsubjects/add",
     icon: BookPlus,
   },
   {
     title: "test overflow only",
-    href: "/dashboard/subjects/add",
+    href: "/drashboard/subjectseeeeer/add",
     icon: BookPlus,
   },
   {
     title: "test overflow only",
-    href: "/dashboard/subjects/add",
+    href: "/dashboarered/subjewects/add",
     icon: BookPlus,
   },
   {
     title: "test overflow only",
-    href: "/dashboard/subjects/add",
+    href: "/dashboardr/subjects/eradd",
+    icon: BookPlus,
+  },
+
+  {
+    title: "test overflow only",
+    href: "/dashwrboard/subjects/add",
     icon: BookPlus,
   },
   {
     title: "test overflow only",
-    href: "/dashboard/subjects/add",
+    href: "/dashboard/subjrewects/add",
+    icon: BookPlus,
+  },
+  {
+    title: "test overflow only",
+    href: "/dashboreard/subjects/add",
+    icon: BookPlus,
+  },
+  {
+    title: "test overflow only",
+    href: "/dashboard/srubjects/add",
+    icon: BookPlus,
+  },
+  {
+    title: "test overflow only",
+    href: "/dashboasdfard/subjects/add",
     icon: BookPlus,
   },
   {
     title: "last overflow only",
-    href: "/dashboard/subjects/add",
+    href: "/dashboard/sfubjects/add",
     icon: BookPlus,
   },
-  
 ];
 
-export const userAvatarNavlinks = [
-  {
-    title: "profile",
-    href: "/profile",
-    protected: true,
-    divider: false,
-    action: "",
-    type: "link",
-  },
-  {
-    title: "dashboard",
-    href: "/dashboard",
-    protected: true,
-    divider: false,
-    action: "",
-    type: "link",
-  },
-  {
-    title: "options",
-    href: "/options",
-    protected: true,
-    divider: false,
-    action: "",
-    type: "link",
-  },
-  {
-    title: "logout",
-    href: "/logout",
-    protected: true,
-    divider: true,
-    // action: handleLogout,
-    type: "button",
-  },
-  {
-    title: "login",
-    href: "/login",
-    protected: false,
-    divider: false,
-    action: "",
-    type: "link",
-  },
-  {
-    title: "register",
-    href: "/register",
-    protected: false,
-    divider: false,
-    action: "",
-    type: "link",
-  },
-];
+export const userAvatarNavlinks = {
+  protected: [
+    {
+      title: "profile",
+      href: "/profile",
+      protected: true,
+    },
+    {
+      title: "dashboard",
+      href: "/dashboard",
+      protected: true,
+    },
+  ],
+  global: [
+    {
+      title: "login",
+      href: "/login",
+      protected: false,
+    },
+    {
+      title: "register",
+      href: "/register",
+      protected: false,
+    },
+  ],
+};

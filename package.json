@@ -17,7 +17,8 @@
     "lucide-react": "^0.428.0",
     "next": "14.2.5",
     "react": "^18",
-    "react-dom": "^18"
+    "react-dom": "^18",
+    "universal-cookie": "^7.2.0"
   },
   "devDependencies": {
     "@types/node": "^20",

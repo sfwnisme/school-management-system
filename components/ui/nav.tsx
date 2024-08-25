@@ -1,4 +1,4 @@
-"use client";
+// "use client";
 import { PanelLeft } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import LogoLayout from "./logo-layout";

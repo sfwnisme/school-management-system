@@ -8,7 +8,7 @@ import { useRouter } from "next/navigation";
 import { handleSignIn } from "@/lib/actions";
 
 export default function LoginForm() {
-  const [loading, setLoading] = React.useState(false);
+  const [loading, setLoading] = React.useState(0);
 
   useEffect(() => {
     console.log("loading from use effect", loading);
@@ -16,7 +16,7 @@ export default function LoginForm() {
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    setLoading(true);
+    setLoading(1);
     try {
       const FD = new FormData(e.currentTarget);
       const loginCredentials = {
@@ -34,7 +34,7 @@ export default function LoginForm() {
     } catch (error) {
       console.error("error from login-form.tsx", error);
     } finally {
-      setLoading(false);
+      setLoading(0);
     }
   }
   return (
@@ -73,7 +73,7 @@ export default function LoginForm() {
           <Button
             type="submit"
             value={"login"}
-            disabled={loading}
+            disabled={loading === 0 ? false : true}
             loading={loading}
           />
           {/* </React.Suspense> */}

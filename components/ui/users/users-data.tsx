@@ -1,14 +1,14 @@
-// "use client";
-import React from "react";
+import { getAllUsers } from "@/lib/actions";
 import Button from "../button-with-link";
 import { Edit, Trash } from "lucide-react";
-import { getAllUsers } from "@/lib/actions";
+import Cookies from 'js-cookie'
 
 export default async function UsersData() {
   const users = await getAllUsers();
 
-  // const usersData = await props?.usersData;
-  const data = users?.data?.data?.map((user: IUser) => (
+  console.log(Cookies.get('token'))
+
+  const data = users?.data.data.map((user: IUser) => (
     <tr key={user?.id} className="divide-x">
       <td className="py-2 px-4 whitespace-nowrap text-sm font-medium text-gray-500 ">
         {user?.id}

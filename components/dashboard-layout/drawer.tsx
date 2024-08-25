@@ -2,8 +2,6 @@
 import React, { Suspense } from "react";
 import DrowerNavLinksLayout from "../ui/drawer-navlinks-layout";
 import Nav from "../ui/nav";
-import Loading from "@/components/ui/spin-loading";
-import Title from "../ui/title";
 
 export default function Drawer({ children }: childrenType) {
   const [toggleDrawer, setToggleDrawer] = React.useState<boolean>(true);
@@ -33,7 +31,7 @@ export default function Drawer({ children }: childrenType) {
           isDashboard={true}
         />
         <article className="container py-10 h-[calc(100vh-91px)] overflow-y-scroll relative">
-          <Suspense fallback={<Loading />}>{children}</Suspense>
+          {children}
         </article>
       </div>
     </div>
