@@ -2,13 +2,14 @@
 import { Suspense } from "react";
 import UsersData from "./users-data";
 import Loading from "../spin-loading";
+import UsersTableSkeleton from "../skeletons/users-table-skeleton";
 
 export default function UsersTable() {
   return (
     <div>
       <div>
         <div className="table-container min-w-full overflow-x-auto p- border rounded-md">
-          <Suspense fallback={<Loading />}>
+          <Suspense fallback={<UsersTableSkeleton />}>
             <table className="w-full divide-y divide-gray-200">
               <thead className="bg-gray-100">
                 <tr className="divide-x divide-gray-200">

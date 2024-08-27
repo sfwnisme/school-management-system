@@ -134,6 +134,8 @@ it is hard to share the response of the catch and the try, so I should use ether
 - [x] return the error message from the API request for the login form.
 - [x] update the api schema by the database changes
 - [x] changed the `is-auth.tsx` component to an async component and add `"use server"` directive.
+- [x] `is-auth.tsx` checks if the user is signed in or not using an endpoint that responds if the token is valid or not, this procedure helped me to manage the authentication process efficiantly with no depending on the cookies
+- [x] create custom skeleton UI Component. it needs more enhancements
 
 ### Wed 28/08/2024
 

@@ -5,13 +5,9 @@ import { baseURL, endpoints } from "./endpoints";
 import { cookies } from "next/headers";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import {
-  isRedirectError,
-  permanentRedirect,
-} from "next/dist/client/components/redirect";
-// import { isRedirectError } from "next/dist/client/components/redirect";
+import { isRedirectError } from "next/dist/client/components/redirect";
 
-export const http = axios.create({
+export const apiClient = axios.create({
   baseURL,
   headers: {
     Authorization: `Bearer ${cookies().get("token")?.value}`,
@@ -32,7 +28,7 @@ export async function handleSignIn(
   FD.append("UserName", username);
   FD.append("Password", password);
   try {
-    const res = await http.post(endpoints.auth.signin, FD);
+    const res = await apiClient.post(endpoints.auth.signin, FD);
 
     const token = await res.data.data.accessToken;
     const refreshToken = await res.data.data.refreshToken;
@@ -48,12 +44,11 @@ export async function handleSignIn(
       console.log("success");
       throw error;
     }
-    console.log("login error", error);
-    console.log("login error", error?.response.data);
     if (error.response.data.message) {
       console.log("error");
-      return { message: error.response.data.message };
+      return { message: error?.response.data.message };
     }
+    // if there is an error with respond and you can display the data into the login form like username not exixt or wrong password
   }
 }
 
@@ -65,10 +60,27 @@ export async function renewTokenIfNeeded() {
     FD.append("RefreshToken", refreshToken);
     FD.append("AccessToken", token);
     if (token && refreshToken) {
-      const res = await http.post(endpoints.auth.refreshToken, FD);
+      const res = await apiClient.post(endpoints.auth.refreshToken, FD);
       console.log(res);
       return res;
     }
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export async function isTokenValid() {
+  try {
+    const token = cookies().get("token")?.value;
+    console.log("success", token);
+    const params = {
+      AccessToken: token,
+    };
+    const res = await apiClient.get(
+      endpoints.auth.validateToken + "?AccessToken=" + token
+    );
+    console.log(res);
+    return res;
   } catch (error) {
     console.log(error);
   }
@@ -79,7 +91,7 @@ export async function getAllUsers() {
   try {
     const token = cookies().get("token")?.value;
     if (token) {
-      const res = await http.get(endpoints.users.users, {
+      const res = await apiClient.get(endpoints.users.users, {
         headers: {
           Authorization: `Bearer ${cookies().get("token")?.value}`,
         },

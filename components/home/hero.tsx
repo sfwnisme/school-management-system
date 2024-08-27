@@ -1,5 +1,4 @@
 import React from "react";
-import ButtonOrLink from "../ui/button-with-link";
 import { ArrowRight } from "lucide-react";
 import Button from "../ui/button-with-link";
 
@@ -45,16 +44,14 @@ export default function Hero({}: Props) {
       <div className="relative z-20 mx-auto max-w-7xl px-6 lg:px-8">
         <div className="mx-auto max-w-2xl text-center">
           <h1 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl">
-            Refreshingly Sustainable:
-            <span className="text-gray-600">Boxed Water</span>
+            Make it easy:
+            <span className="text-gray-600">Managing it online</span>
           </h1>
           <h2 className="mt-6 text-lg leading-8 text-gray-600">
-            Choose a more eco-friendly way to hydrate with our 100% recyclable
-            cartons.
+            evolved sustainable system with the aim of destroying the time and effort consumption.
           </h2>
           <div className="mt-10 flex items-center justify-center gap-x-6">
             {/* <Link href={"dashboard"} className="w-full"> */}
-            <Button value="value" width="fit" />
             <Button value="Explore" width="fit" href="/dashboard">
               Explore <ArrowRight />
             </Button>
