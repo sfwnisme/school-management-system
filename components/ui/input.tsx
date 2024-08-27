@@ -45,10 +45,22 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>((props, ref) => {
   );
 });
 export default Input;
+
+Input.displayName = "Input";
+// ?why this snippet:
+// Description. The displayName property, if present, may be preferred by
+// consoles and profilers over the name property to be displayed
+// as the name of a function. Among browsers, only the Firefox
+// console utilizes this property. React devtools also
+// use the displayName property when displaying the component tree
+// reference: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/displayName
+
 /**NOTES
  * I named it sze instead of size becuase typescript said it's booked term
- * !SOS: this AI prompt helped me in ChatGPT 4o mini to make my Input component compatable with react-hook-form library
+ * ?SOS: this AI prompt helped me in ChatGPT 4o mini to make my Input component compatable with react-hook-form library
  *    I'm using react hook form to handle the froms and I have and input component named <Input/>
       I passed {...register("username")} to the input but it did not work.
       how can I solve this issue?
+ * why I added display name
+
  */

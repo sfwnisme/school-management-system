@@ -10,5 +10,6 @@ import Cookies from "js-cookie";
 
 export const handleLogout = () => {
   Cookies.remove("token");
+  Cookies.remove("refresh-token");
   window.location.href = "/login";
 };

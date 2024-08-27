@@ -5,6 +5,11 @@ import { baseURL, endpoints } from "./endpoints";
 import { cookies } from "next/headers";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import {
+  isRedirectError,
+  permanentRedirect,
+} from "next/dist/client/components/redirect";
+// import { isRedirectError } from "next/dist/client/components/redirect";
 
 export const http = axios.create({
   baseURL,
@@ -32,52 +37,54 @@ export async function handleSignIn(
     const token = await res.data.data.accessToken;
     const refreshToken = await res.data.data.refreshToken;
     if (token) {
-      cookies().set("token", token, { path: "/", domain: "localhost" });
-      cookies().set("refresh-token", JSON.stringify(refreshToken));
+      cookies().set("token", token);
+      cookies().set("refresh-token", refreshToken.token);
       console.log("token saved");
+      revalidatePath("/dashboard");
+      redirect("/dashboard");
     }
-    // if (remeberMe) {
-    //   // if the user checked on remember me the tokens saved
-    //   // for the initial timestamp form the backend
-    // } else {
-    //   // if the user checked 'don't remeber me' this function works
-    //   const timestamp = 30 * 60;
-    //   cookies().set("token", res?.data?.data?.token, {
-    //     expires: 1,
-    //     path: "",
-    //   });
-    // }
-    console.log("successfully logined");
-    // revalidatePath('/')
-    // window.location.href = "/dashboard";
-    // permanentRedirect("/dashbaord");
+  } catch (error) {
+    if (isRedirectError(error)) {
+      console.log("success");
+      throw error;
+    }
+    console.log("login error", error);
+    console.log("login error", error?.response.data);
+    if (error.response.data.message) {
+      console.log("error");
+      return { message: error.response.data.message };
+    }
+  }
+}
+
+export async function renewTokenIfNeeded() {
+  try {
+    const FD = new FormData();
+    const token = cookies().get("token")?.value;
+    const refreshToken = cookies().get("refresh-token")?.value;
+    FD.append("RefreshToken", refreshToken);
+    FD.append("AccessToken", token);
+    if (token && refreshToken) {
+      const res = await http.post(endpoints.auth.refreshToken, FD);
+      console.log(res);
+      return res;
+    }
   } catch (error) {
     console.log(error);
   }
-  // revalidatePath("/dashboard");
-  redirect("/dashboard");
 }
-
-// // handle logout
-// export async function handleLogout() {
-//   cookies().delete("token");
-//   revalidatePath("/login");
-//   redirect("/login");
-//   // window.location.reload();
-//   // window.location.href = "/login";
-// }
 
 // get all the instructors data
 export async function getAllUsers() {
   try {
     const token = cookies().get("token")?.value;
     if (token) {
-      const res = await axios.get(baseURL + endpoints.users.users, {
+      const res = await http.get(endpoints.users.users, {
         headers: {
           Authorization: `Bearer ${cookies().get("token")?.value}`,
         },
       });
-      console.log("users", res);
+      console.log("users", res?.data.data);
       return res;
     } else {
       console.log(
@@ -87,6 +94,7 @@ export async function getAllUsers() {
     // } else {
     // return console.log("getAllUsers", "there is no token");
     // }
+    revalidatePath("/dashboard");
   } catch (error) {
     console.log(error);
   }
@@ -96,4 +104,3 @@ export async function getAllUsers() {
 // export async function handleLogout() {
 //   cookies().delete("token");
 // }
-console.log("get js-cookies token", cookies().get("token")?.value);

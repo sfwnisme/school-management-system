@@ -7,7 +7,7 @@
 
 ## Add-ons tasks
 
-- [ ] change the way of handling the avatar-list navlinks array of object, and make it more efficient.
+- [ ] find another way to style the scrolling of the `drawer.tsx` dashboard component
 
 ## styling rules
 
@@ -118,10 +118,28 @@
 - [x] set up react hook forms and yup
 - [x] change none `.tsx` files to `.ts`
 
-### Mon 26/08/2024
+### Mon 26/08/2024 & Tu 27/08/2024
 
+**notes:**
+  you will encounter the following error message, it because when you pass a `null` value in the react child like mapping an array of objects, let's say we have an array of objects for users we get it from an API. In this scenario you should implement a functionality to handle this error, and if you have an key of an object let's say `address: null` you can return it this way `{address === null && "no address"}`. There is another way to break this bug, but I did not try, you can check [here](https://react.dev/reference/react/Children#children-toarray) and [here with use cases](https://github.com/facebook/react/issues/4867)
+
+```txt
+Unhandled Runtime Error
+
+Error: Objects are not valid as a React child (found: object with keys {street, city, state, zipCode, country}). If you meant to render a collection of children, use an array instead.
+```
+
+it is hard to share the response of the catch and the try, so I should use ether RTK or React Query
+
+- [x] return the error message from the API request for the login form.
+- [x] update the api schema by the database changes
+- [x] changed the `is-auth.tsx` component to an async component and add `"use server"` directive.
+
+### Wed 28/08/2024
+
+- [ ] implement the refresh token function. bug from the backend
+- [ ] set up the base settings for the forms validation
 - [ ] registration page and form
-- [ ] set up cookies reusable functions. <code style="color:red">Bug, it removes the token after rerendering when I use the functions that I made for tokens and cookies</code>
 - [ ] add outline button variant
 
 ## UI components

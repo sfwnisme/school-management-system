@@ -8,35 +8,38 @@ export default function UsersTable() {
     <div>
       <div>
         <div className="table-container min-w-full overflow-x-auto p- border rounded-md">
-          <table className="w-full divide-y divide-gray-200">
-            <thead className="divide-x bg-gray-50">
-              <tr>
-                <th className="p-4 text-start text-xs font-bold text-gray-900 uppercase ">
-                  id
-                </th>
-                <th className="p-4 text-start text-xs font-bold text-gray-900 uppercase ">
-                  Name
-                </th>
-                <th className="p-4 text-start text-xs font-bold text-gray-900 uppercase ">
-                  email
-                </th>
-                <th className="p-4 text-start text-xs font-bold text-gray-900 uppercase ">
-                  country
-                </th>
-                <th className="p-4 text-start text-xs font-bold text-gray-900 uppercase ">
-                  address
-                </th>
-                <th className="p-4 text-start text-xs font-bold text-gray-900 uppercase ">
-                  actions
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-200">
-              <Suspense fallback={<Loading />}>
+          <Suspense fallback={<Loading />}>
+            <table className="w-full divide-y divide-gray-200">
+              <thead className="bg-gray-100">
+                <tr className="divide-x divide-gray-200">
+                  <th className="p-4 text-start text-xs font-bold text-gray-900 uppercase ">
+                    id
+                  </th>
+                  <th className="p-4 text-start text-xs font-bold text-gray-900 uppercase ">
+                    Name
+                  </th>
+                  <th className="p-4 text-start text-xs font-bold text-gray-900 uppercase ">
+                    Roles
+                  </th>
+                  <th className="p-4 text-start text-xs font-bold text-gray-900 uppercase ">
+                    email
+                  </th>
+                  <th className="p-4 text-start text-xs font-bold text-gray-900 uppercase ">
+                    Address
+                  </th>
+                  <th className="p-4 text-start text-xs font-bold text-gray-900 uppercase ">
+                    Phone
+                  </th>
+                  <th className="p-4 text-start text-xs font-bold text-gray-900 uppercase ">
+                    actions
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-200">
                 <UsersData />
-              </Suspense>
-            </tbody>
-          </table>
+              </tbody>
+            </table>
+          </Suspense>
         </div>
       </div>
     </div>

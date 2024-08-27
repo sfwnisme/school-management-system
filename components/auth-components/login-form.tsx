@@ -6,18 +6,8 @@ import { User } from "lucide-react";
 import Link from "next/link";
 import { handleSignIn } from "@/lib/actions";
 import { useForm, SubmitHandler } from "react-hook-form";
-import Input2 from "../ui/input2";
-import { object, string } from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-
-const loginSchema = object({
-  username: string()
-    .required("username is required")
-    .min(4, "you must add at least 4 characters"),
-  password: string()
-    .required("password is required")
-    .min(6, "you must add at least 6 characters"),
-});
+import { loginSchema } from "@/lib/validation-schema-yup";
 
 type Inputs = {
   username: string;
@@ -26,6 +16,7 @@ type Inputs = {
 
 export default function LoginForm() {
   const [loading, setLoading] = React.useState(0);
+  const [serverMessage, setServerMessage] = React.useState("");
 
   //-------------
   const {
@@ -40,7 +31,7 @@ export default function LoginForm() {
       touchedFields,
       isValidating,
     },
-  } = useForm<Inputs>({
+  } = useForm<LoginInputTypes>({
     resolver: yupResolver(loginSchema),
     mode: "onBlur",
     // reValidateMode: "onChange",
@@ -55,11 +46,13 @@ export default function LoginForm() {
         password: data?.password,
         rememberme: true,
       };
-      await handleSignIn(
+      let response = await handleSignIn(
         loginCredentials?.username as string,
         loginCredentials?.password as string,
         loginCredentials?.rememberme
       );
+      if (response?.message) setServerMessage(response?.message);
+      console.warn(response);
       console.warn("data sent");
       // router.push("/dashboard");
       console.log("user name and password data", loginCredentials);
@@ -137,6 +130,11 @@ export default function LoginForm() {
             disabled={loading === 0 ? false : true}
             loading={loading}
           />
+          {serverMessage && (
+            <small className="text-red-500 col-span-full">
+              server message: {serverMessage}
+            </small>
+          )}
         </form>
         <Link
           href={""}

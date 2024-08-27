@@ -64,7 +64,6 @@ export async function getAllUsers() {
     const res = await axios.get(baseURL + endpoints.users.users, {
       headers: {
         // Authorization: `Bearer ${Cookies.get("token")}`,
-        Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsImp0aSI6IjM0ZmExNzFhLWMzNDItNDYxZC1hMWFiLTFkNTA4MTM4MDhjMSIsImVtYWlsIjoiYWRtaW5AcHJvamVjdC5jb20iLCJ1c2VySWQiOiIxIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjpbIkFkbWluIiwiVXNlciIsIkhSIl0sImV4cCI6MTcyNDY2MjMyMSwiaXNzIjoiU2Nob29sUHJvamVjdCIsImF1ZCI6IlNvbWVDbGllbnRzIn0.jziD6Qetae_MF9AF74aoOzdvylQiYriWB3_Xxtdknyg`,
       },
     });
     console.log("users", res);
