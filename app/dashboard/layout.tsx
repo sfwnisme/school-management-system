@@ -1,13 +1,16 @@
 import Drawer from "@/components/dashboard-layout/drawer";
 import IsAuth from "@/lib/is-auth";
 import Loading from "../../components/ui/spin-loading";
+import { Suspense } from "react";
 
 export default function layout({ children }: childrenType) {
   return (
     <div>
-      <IsAuth>
-        <Drawer>{children}</Drawer>
-      </IsAuth>
+      <Suspense fallback={<Loading />}>
+        <IsAuth>
+          <Drawer>{children}</Drawer>
+        </IsAuth>
+      </Suspense>
     </div>
   );
 }

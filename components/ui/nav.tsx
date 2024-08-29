@@ -3,6 +3,7 @@ import { PanelLeft } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import LogoLayout from "./logo-layout";
 import AvatarWithList from "./avatar-with-list";
+import UserList from "./user-list";
 
 /**
  * @type isDashboard - boolean: you can change the boolean value to display main page or dashboard nav
@@ -45,6 +46,7 @@ export default function Nav(props: Props) {
               height={30}
               width={30}
             />
+            {/* <UserList /> */}
           </li>
         </ul>
       </nav>
@@ -63,6 +65,7 @@ export default function Nav(props: Props) {
               height={30}
               width={30}
             />
+            {/* <UserList /> */}
           </li>
         </ul>
       </nav>

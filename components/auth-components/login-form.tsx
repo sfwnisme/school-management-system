@@ -44,18 +44,12 @@ export default function LoginForm() {
       const loginCredentials = {
         username: data?.username,
         password: data?.password,
-        rememberme: true,
       };
       let response = await handleSignIn(
         loginCredentials?.username as string,
-        loginCredentials?.password as string,
-        loginCredentials?.rememberme
+        loginCredentials?.password as string
       );
       if (response?.message) setServerMessage(response?.message);
-      console.warn(response);
-      console.warn("data sent");
-      // router.push("/dashboard");
-      console.log("user name and password data", loginCredentials);
     } catch (error) {
       console.error("error from login-form.tsx", error);
     } finally {

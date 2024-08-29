@@ -15,8 +15,8 @@ type UpdateStateAdvancedType<S> = (updateFn: (prev: S) => S) => void;
 type RoleTypes = "Admin" | "HR" | "User";
 type StringOrNull = string | null;
 interface IUser {
-  id: number;
-  email: string;
+  id?: number;
+  email?: string;
   fullName: string;
   address?: StringOrNull;
   createdAt?: StringOrNull;

@@ -1,20 +1,19 @@
 // "use client";
 "use server";
 import { redirect } from "next/navigation";
-import { cookies } from "next/headers";
 import { revalidatePath } from "next/cache";
-import { isTokenValid } from "./actions";
-// import Loading from "@/components/ui/spin-loading";
+import { getCurrentUser, isTokenValid } from "./actions";
 
 export default async function IsAuth({ children }: childrenType) {
   const checkTokenIfValid = await isTokenValid();
-  const status = checkTokenIfValid?.status
+  const status = checkTokenIfValid?.status;
+  const currentUser = await getCurrentUser();
+  console.log(currentUser);
   console.log(status);
-  // const token = cookies().get("token")?.value;
-  // console.log("is-auth.tsx", token);
-  if (!status) {
+  if (status === undefined) {
     revalidatePath("/login");
     redirect("/login");
   }
+  revalidatePath("/dashboard");
   return <>{children}</>;
 }

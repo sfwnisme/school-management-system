@@ -19,6 +19,7 @@ export const endpoints = {
     resetPassword: "authentication/reset-password",
   },
   users: {
+    currentUser: "users/current-user",
     users: "users/list",
     create: "user/create",
     userById: "user/{id}",

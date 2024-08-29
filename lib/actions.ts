@@ -14,16 +14,10 @@ export const apiClient = axios.create({
   },
 });
 
-export async function handleSignIn(
-  username: string,
-  password: string,
-  remeberMe: boolean
-) {
-  // username: admin
-  // pass: Aa@123.123
-  // await new Promise((resolve) => setTimeout(resolve, 3000));
-
-  // the backend request uses form method
+//----------------------------
+// Authentication endpoints
+//----------------------------
+export async function handleSignIn(username: string, password: string) {
   const FD: FormData = new FormData();
   FD.append("UserName", username);
   FD.append("Password", password);
@@ -44,7 +38,7 @@ export async function handleSignIn(
       console.log("success");
       throw error;
     }
-    if (error.response.data.message) {
+    if (error.response.data.message !== undefined) {
       console.log("error");
       return { message: error?.response.data.message };
     }
@@ -72,20 +66,20 @@ export async function renewTokenIfNeeded() {
 export async function isTokenValid() {
   try {
     const token = cookies().get("token")?.value;
-    console.log("success", token);
-    const params = {
-      AccessToken: token,
-    };
-    const res = await apiClient.get(
-      endpoints.auth.validateToken + "?AccessToken=" + token
-    );
-    console.log(res);
-    return res;
+    if (token) {
+      const res = await apiClient.get(
+        endpoints.auth.validateToken + "?AccessToken=" + token
+      );
+      return res;
+    }
   } catch (error) {
     console.log(error);
   }
 }
 
+//----------------------------
+// Data endpoints
+//----------------------------
 // get all the instructors data
 export async function getAllUsers() {
   try {
@@ -96,23 +90,27 @@ export async function getAllUsers() {
           Authorization: `Bearer ${cookies().get("token")?.value}`,
         },
       });
-      console.log("users", res?.data.data);
       return res;
     } else {
       console.log(
         "the token not found in the getAllUsers function from actions.tsx"
       );
     }
-    // } else {
-    // return console.log("getAllUsers", "there is no token");
-    // }
     revalidatePath("/dashboard");
   } catch (error) {
     console.log(error);
   }
 }
 
-// logout
-// export async function handleLogout() {
-//   cookies().delete("token");
-// }
+export async function getCurrentUser() {
+  const token = cookies().get("token")?.value;
+  try {
+    if (token) {
+      const res = await apiClient.get(endpoints.users.currentUser);
+      console.log(res.data.data);
+      return res;
+    }
+  } catch (error) {
+    console.error("current user endpoint function errro", error);
+  }
+}

@@ -1,12 +1,13 @@
 "use client";
 import Image from "next/image";
 import React from "react";
-// import { userAvatarNavlinks } from "../../lib/nav-links";
 import Link from "next/link";
 import Button from "./button-with-link";
 import { handleLogout } from "@/lib/utils";
 import Cookies from "js-cookie";
 import { userAvatarNavlinks } from "@/lib/nav-links";
+import { usePathname } from "next/navigation";
+import Badge from "./badge";
 
 type AvatarType = {
   src: string;
@@ -18,23 +19,35 @@ type AvatarType = {
 const List = (props: {
   event: React.MouseEventHandler<HTMLAnchorElement> | undefined;
 }) => {
+  const pathname = usePathname();
+
   const token = Cookies.get("token");
+  const handleEvent = () => props.event;
   const listData =
     token !== undefined
       ? userAvatarNavlinks.protected
-      : userAvatarNavlinks.global;
-  const userList = listData?.map((link) => (
-    <Link
-      href={link?.href}
-      className={` bg-white hover:bg-gray-100 duration-150 text-gray-700 w-full text-sm sm:text-base font-normal p-1 cursor-pointer rounded`}
-      key={link?.title}
-      onClick={props.event}
-    >
-      {link?.title}
-    </Link>
-  ));
+      : userAvatarNavlinks.public;
+  const userList = listData?.map((link) =>
+    pathname !== link?.href ? (
+      <Link
+        href={link?.href}
+        className={` bg-white hover:bg-gray-100 duration-150 text-gray-700 w-full text-sm sm:text-base font-normal p-1 cursor-pointer rounded`}
+        key={link?.title}
+        onClick={handleEvent}
+      >
+        {link?.title}
+      </Link>
+    ) : null
+  );
+  const userDetails = (
+    <div className="border-b pb-4 flex flex-wrap items-center gap-1 w-full">
+      <p>user name</p>
+      <Badge>admin</Badge>
+    </div>
+  );
   return (
     <>
+      {userDetails}
       {userList}
       {token !== undefined && (
         <Button
@@ -82,6 +95,7 @@ export default function AvatarWithList(props: AvatarType) {
           />
         </div>
       </div>
+
       {toggleAvatarList ? (
         <>
           <div className="z-10 absolute shadow-xl shadow-black/[0.03] right-6 top-[calc(100%+10px)] bg-white border border-gray-200 rounded-md p-1 flex flex-col flex-wrap items-start justify-start gap-2 min-w-[150px] md:min-w-[200px]">

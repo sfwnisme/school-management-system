@@ -7,7 +7,14 @@
 
 ## Add-ons tasks
 
-- [ ] find another way to style the scrolling of the `drawer.tsx` dashboard component
+- [x] Admins theme *currentlly working on it*
+  - [ ] full access epic
+- [ ] HR epic
+  - [ ] Humen Resource epic: access the insturctors and lower position
+- [ ] Instructor theme
+  - [ ] Dashboard Epic
+- [ ] Public theme.
+  - [ ] overview epic
 
 ## styling rules
 
@@ -137,12 +144,18 @@ it is hard to share the response of the catch and the try, so I should use ether
 - [x] `is-auth.tsx` checks if the user is signed in or not using an endpoint that responds if the token is valid or not, this procedure helped me to manage the authentication process efficiantly with no depending on the cookies
 - [x] create custom skeleton UI Component. it needs more enhancements
 
-### Wed 28/08/2024
+### Wed 28/08/2024 & Thu 29/08/2024
 
 - [ ] implement the refresh token function. bug from the backend
 - [ ] set up the base settings for the forms validation
 - [ ] registration page and form
 - [ ] add outline button variant
+- [ ] user and the current user's profile
+- [x] subtask: remove the navlink from the avatar list if the pathname === the navlink pathname
+- [ ] I need to change the authentication of the user avatar and list to the api instead of the cookies
+- [ ] change the avatar and dropdown UI Components
+- [ ] display the nav with the loading UI of the isAuth component
+- [x] badge UI Component
 
 ## UI components
 

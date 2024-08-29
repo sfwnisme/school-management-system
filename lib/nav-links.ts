@@ -150,24 +150,24 @@ export const userAvatarNavlinks = {
     {
       title: "profile",
       href: "/profile",
-      protected: true,
+      // protected: true,
     },
     {
       title: "dashboard",
       href: "/dashboard",
-      protected: true,
+      // protected: true,
     },
   ],
-  global: [
+  public: [
     {
       title: "login",
       href: "/login",
-      protected: false,
+      // protected: false,
     },
     {
       title: "register",
       href: "/register",
-      protected: false,
+      // protected: false,
     },
   ],
 };
