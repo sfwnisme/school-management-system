@@ -1,10 +1,10 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Avatar from "./avatar";
 import Dropdown from "./dropdown";
 import { userAvatarNavlinks } from "@/lib/nav-links";
 import Cookies from "js-cookie";
-import Button from "./button-with-link";
+import Button from "./button";
 import { handleLogout } from "@/lib/utils";
 
 type Props = {};

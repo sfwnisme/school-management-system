@@ -3,7 +3,7 @@
 import axios from "axios";
 import { baseURL, endpoints } from "./endpoints";
 import { cookies } from "next/headers";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { redirect } from "next/navigation";
 import { isRedirectError } from "next/dist/client/components/redirect";
 
@@ -70,7 +70,8 @@ export async function isTokenValid() {
       const res = await apiClient.get(
         endpoints.auth.validateToken + "?AccessToken=" + token
       );
-      return res;
+      console.log(res);
+      return res?.status;
     }
   } catch (error) {
     console.log(error);
@@ -90,6 +91,8 @@ export async function getAllUsers() {
           Authorization: `Bearer ${cookies().get("token")?.value}`,
         },
       });
+      revalidatePath("/dashboard/users");
+      revalidateTag("/dashboard/users");
       return res;
     } else {
       console.log(
@@ -102,6 +105,7 @@ export async function getAllUsers() {
   }
 }
 
+//get the loged in user
 export async function getCurrentUser() {
   const token = cookies().get("token")?.value;
   try {

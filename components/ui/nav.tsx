@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import LogoLayout from "./logo-layout";
 import AvatarWithList from "./avatar-with-list";
 import UserList from "./user-list";
+import { UpdateStateType } from "@/definitions";
 
 /**
  * @type isDashboard - boolean: you can change the boolean value to display main page or dashboard nav

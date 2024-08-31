@@ -2,15 +2,16 @@
 import React from "react";
 import DrowerNavLinksLayout from "../ui/drawer-navlinks-layout";
 import Nav from "../ui/nav";
+import { childrenType } from "@/definitions";
 
 export default function Drawer({ children }: childrenType) {
-  const [toggleDrawer, setToggleDrawer] = React.useState<boolean>(true);
+  const [toggleDrawer, setToggleDrawer] = React.useState<boolean>(false);
 
   return (
     <div className="grid grid-cols-20 h-screen">
       {toggleDrawer ? (
         <div
-          className={`bg-white col-span-10 sm:col-span-7 md:col-span-6 lg:col-span-5 xl:col-span-4 2xl:col-span-3 border-r overflow-x-hidden`}
+          className={`bg-white overflow-y-scroll h-screen z-10 fixed left-0 top-0 lg:static col-span-0 sm:col-span-0 md:col-span-0 lg:col-span-5 xl:col-span-4 2xl:col-span-3 border-r overflow-x-hidden`}
         >
           <DrowerNavLinksLayout
             toggleDrawer={toggleDrawer}
@@ -21,7 +22,7 @@ export default function Drawer({ children }: childrenType) {
       <div
         className={`${
           toggleDrawer
-            ? "col-span-10 sm:col-span-13 md:col-span-14 lg:col-span-15 xl:col-span-16 2xl:col-span-17"
+            ? "col-span-20 sm:col-span-20 md:col-span-20 lg:col-span-15 xl:col-span-16 2xl:col-span-17"
             : "col-span-full"
         } h-full w-full`}
       >

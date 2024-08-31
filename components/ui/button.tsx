@@ -1,32 +1,33 @@
 type Props = {
-  // type: "button" | "reset" | "submit" | undefined;
-  // value: string;
-  // event: any;
   size?: "initial" | "xs" | "sm" | "md" | "lg";
-  variant?: "initial" | "success" | "warning" | "danger" | "info";
+  variant?:
+    | "initial"
+    | "outline"
+    | "success"
+    | "outline-success"
+    | "warning"
+    | "outline-warning"
+    | "danger"
+    | "outline-danger"
+    | "info"
+    | "outline-info";
   width?: "fit" | "full";
-  href?: string;
+  rounded?: "none" | "initial" | "sm" | "md" | "lg" | "xl" | "full";
   loading?: number;
 };
 
-import Link, { LinkProps } from "next/link";
-import {
-  AnchorHTMLAttributes,
-  ButtonHTMLAttributes,
-  DetailedHTMLProps,
-} from "react";
+import { ButtonHTMLAttributes, DetailedHTMLProps } from "react";
 
 export default function Button(
   props: DetailedHTMLProps<
     ButtonHTMLAttributes<HTMLButtonElement>,
     HTMLButtonElement
   > &
-    Props &
-    Omit<AnchorHTMLAttributes<HTMLAnchorElement>, keyof LinkProps>
+    Props
 ) {
   const sizes = {
     initial: "text-base md:text-base py-2 px-6",
-    xs: "text-xs py-2 px-3",
+    xs: "text-xs py-1 px-2",
     sm: "text-sm py-2 px-4",
     md: "text-base py-2 px-6",
     lg: "text-lg py-3 px-7",
@@ -35,19 +36,39 @@ export default function Button(
   const variants = {
     initial:
       "hover:bg-gray-900 bg-gray-800 text-white disabled:bg-gray-500 disabled:cursor-not-allowed",
+    outline:
+      "hover:bg-gray-900 bg-transparent border border-gray-900 text-gray-900 hover:text-white disabled:bg-gray-500 disabled:cursor-not-allowed",
     success:
       "hover:bg-green-600 bg-green-500 text-white disabled:bg-green-300 disabled:cursor-not-allowed",
+    "outline-success":
+      "hover:bg-green-600 bg-transparent border border-green-500 text-green-600 hover:text-white disabled:bg-green-300 disabled:cursor-not-allowed",
     warning:
       "hover:bg-yellow-600 bg-yellow-500 text-white disabled:bg-yellow-300 disabled:cursor-not-allowed",
+    "outline-warning":
+      "hover:bg-yellow-600 bg-transparent border border-yellow-500 text-yellow-600 hover:text-white disabled:bg-yellow-300 disabled:cursor-not-allowed",
     danger:
       "hover:bg-red-600 bg-red-500 text-white disabled:bg-red-300 disabled:cursor-not-allowed",
+    "outline-danger":
+      "hover:bg-red-600 bg-transparent border border-red-500 text-red-600 hover:text-white disabled:bg-red-300 disabled:cursor-not-allowed",
     info: "hover:bg-blue-600 bg-blue-500 text-white disabled:bg-blue-300 disabled:cursor-not-allowed",
+    "outline-info":
+      "hover:bg-blue-600 bg-transparent border border-blue-500 text-blue-600 hover:text-white disabled:bg-blue-300 disabled:cursor-not-allowed",
   };
 
   const width = {
     initial: "table",
     fit: "table",
     full: "w-full",
+  };
+
+  const rounds = {
+    none: "rounded-none",
+    initial: "rounded",
+    sm: "rounded-sm",
+    md: "rounded-md",
+    lg: "rounded-lg",
+    xl: "rounded-xl",
+    full: "rounded-full",
   };
 
   const currentWidth = width[props?.width || "initial"];
@@ -60,8 +81,10 @@ export default function Button(
   // if the size prop is undefined it will set "initial" size
   const currentSize = sizes[props?.size || "initial"];
 
-  const currentCustomization = `${
-    currentWidth + " " + currentVariant + " " + currentSize
+  const rounded = rounds[props?.rounded || "initial"];
+
+  const settings = `${
+    currentWidth + " " + currentVariant + " " + currentSize + " " + rounded
   }`;
 
   // the loading depends on disabled
@@ -72,13 +95,13 @@ export default function Button(
     </span>
   );
 
-  const Tag = props?.href ? Link : "button";
+  // const Tag = props?.href ? Link : "button";
 
   return (
-    <Tag
+    <button
       {...props}
-      className={`col-span-full col-start-1 rounded first-letter:capitalize 
-        ${currentCustomization}
+      className={`col-span-full col-start-1 first-letter:capitalize 
+        ${settings}
         duration-150
         flex items-center justify-center
         relative
@@ -90,13 +113,14 @@ export default function Button(
         {props?.children || props?.value}
       </div>
       <div
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2
+        className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2
       flex items-center gap-x-2
-      "
+      ${props?.className}
+     `}
       >
         {props.loading === 1 ? loading : props?.children || props?.value}
       </div>
-    </Tag>
+    </button>
   );
 }
 

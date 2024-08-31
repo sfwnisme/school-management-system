@@ -1,13 +1,16 @@
 "use client";
 import React, { FormEvent, useEffect } from "react";
 import Input from "../ui/input";
-import Button from "../ui/button-with-link";
+import Button from "../ui/button";
 import { User } from "lucide-react";
 import Link from "next/link";
 import { handleSignIn } from "@/lib/actions";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { loginSchema } from "@/lib/validation-schema-yup";
+import { useGetCookie } from "@/hooks/use-cookies";
+import { getCookie } from "cookies-next";
+import { LoginInputTypes } from "@/definitions";
 
 type Inputs = {
   username: string;
@@ -17,7 +20,7 @@ type Inputs = {
 export default function LoginForm() {
   const [loading, setLoading] = React.useState(0);
   const [serverMessage, setServerMessage] = React.useState("");
-
+console.log(getCookie('token'))
   //-------------
   const {
     register,

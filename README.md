@@ -146,16 +146,26 @@ it is hard to share the response of the catch and the try, so I should use ether
 
 ### Wed 28/08/2024 & Thu 29/08/2024
 
-- [ ] implement the refresh token function. bug from the backend
+- [x] subtask: remove the navlink from the avatar list if the pathname === the navlink pathname
+- [x] badge UI Component
+
+### Sat 31/08/2024
+
+- [x] create table, thead,tbody, tr,th,and td UI Components
+- [x] add outline button variant
+- [x] remove the `<Link>` feature of the `Button-with-link.tsx` UI Component and only use it as a button, and change the component name to `Button.tsx`. If you need to use the same format of the button for the nextjs's `Link` you can wrap the `Button` UI Component with the nextjs's `Link` navigation tag.
+
+### Sun 01/08/2024
+
+- [ ] set up cookies functions for the `cookies` of the nextjs `next/headers`
+- [ ] display the nav with the loading UI of the isAuth component
 - [ ] set up the base settings for the forms validation
 - [ ] registration page and form
-- [ ] add outline button variant
 - [ ] user and the current user's profile
-- [x] subtask: remove the navlink from the avatar list if the pathname === the navlink pathname
-- [ ] I need to change the authentication of the user avatar and list to the api instead of the cookies
 - [ ] change the avatar and dropdown UI Components
-- [ ] display the nav with the loading UI of the isAuth component
-- [x] badge UI Component
+- [ ] I need to change the authentication of the user avatar and list to the api instead of the cookies
+- [ ] implement the refresh token function. bug from the backend, it returns 500 "internal server error" status instead of 204 "no content"
+- [ ] in UI Components we need some times to add-on a customization while it is currentlly a customized component, thus you need to add the following snippet into the `className` of the UI Component `${props?.className}`. I need to check all the UI Components to add this feature
 
 ## UI components
 

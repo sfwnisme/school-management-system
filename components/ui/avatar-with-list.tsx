@@ -2,7 +2,7 @@
 import Image from "next/image";
 import React from "react";
 import Link from "next/link";
-import Button from "./button-with-link";
+import Button from "./button";
 import { handleLogout } from "@/lib/utils";
 import Cookies from "js-cookie";
 import { userAvatarNavlinks } from "@/lib/nav-links";

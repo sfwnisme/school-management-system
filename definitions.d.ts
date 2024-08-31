@@ -1,5 +1,7 @@
+import { ReactNode } from "react";
+
 type childrenType = {
-  children: React.ReactNode;
+  children: ReactNode;
 };
 
 // this type handle the setState function when using prev
