@@ -2,7 +2,7 @@
 import React, { FormEvent, useEffect } from "react";
 import Input from "../ui/input";
 import Button from "../ui/button";
-import { User } from "lucide-react";
+import { HelpCircle, User } from "lucide-react";
 import Link from "next/link";
 import { handleSignIn } from "@/lib/actions";
 import { useForm, SubmitHandler } from "react-hook-form";
@@ -11,6 +11,7 @@ import { loginSchema } from "@/lib/validation-schema-yup";
 import { useGetCookie } from "@/hooks/use-cookies";
 import { getCookie } from "cookies-next";
 import { LoginInputTypes } from "@/definitions";
+import ErrorMessage from "../ui/error-message";
 
 type Inputs = {
   username: string;
@@ -20,24 +21,16 @@ type Inputs = {
 export default function LoginForm() {
   const [loading, setLoading] = React.useState(0);
   const [serverMessage, setServerMessage] = React.useState("");
-console.log(getCookie('token'))
+  console.log(getCookie("token"));
   //-------------
   const {
     register,
     handleSubmit,
     watch,
-    formState: {
-      errors,
-      isValid,
-      isDirty,
-      dirtyFields,
-      touchedFields,
-      isValidating,
-    },
+    formState: { errors, isValid },
   } = useForm<LoginInputTypes>({
     resolver: yupResolver(loginSchema),
-    mode: "onBlur",
-    // reValidateMode: "onChange",
+    mode: "onChange",
   });
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
     console.log("final data", data);
@@ -60,8 +53,6 @@ console.log(getCookie('token'))
     }
   };
   console.log("isvalid", isValid);
-  console.log("is dirty", isDirty);
-  console.log("dirty fields", isValidating);
 
   //-------------
 
@@ -79,42 +70,36 @@ console.log(getCookie('token'))
           onSubmit={handleSubmit(onSubmit)}
           className="grid grid-cols-4 gap-4 h-full w-full"
         >
-          {/* <input
-            type="text"
-            // name="username"
-            placeholder="Your username"
-            {...register("username")}
-          /> */}
-          <Input
-            type="username"
-            // name="username"
-            placeholder="Your username"
-            styles="col-span-full"
-            variant={
-              errors.password?.message
-                ? "danger"
-                : isValid
-                ? "success"
-                : "initial"
-            }
-            {...register("username")}
-          />
-          <small className="text-red-500">{errors.username?.message}</small>
-          <Input
-            type="password"
-            // name="password"
-            placeholder="Your password"
-            styles="col-span-full"
-            variant={
-              errors.password?.message
-                ? "danger"
-                : isValid
-                ? "success"
-                : "initial"
-            }
-            {...register("password")}
-          />
-          <small className="text-red-500">{errors.password?.message}</small>
+          <div className="col-span-full">
+            <Input
+              type="username"
+              placeholder="Your username"
+              variant={
+                errors.username?.message
+                  ? "danger"
+                  : isValid
+                  ? "success"
+                  : "initial"
+              }
+              {...register("username")}
+            />
+            <ErrorMessage>{errors.username?.message}</ErrorMessage>
+          </div>
+          <div className="col-span-full">
+            <Input
+              type="password"
+              placeholder="Your password"
+              variant={
+                errors.password?.message
+                  ? "danger"
+                  : isValid
+                  ? "success"
+                  : "initial"
+              }
+              {...register("password")}
+            />
+            <ErrorMessage>{errors.password?.message}</ErrorMessage>
+          </div>
           <Link
             href={""}
             className="text-gray-400 hover:text-gray-500 text-xs lg:text-sm flex items-center justify-end gap-1 col-start-2 col-span-3 mb-4"
@@ -124,14 +109,13 @@ console.log(getCookie('token'))
           <Button
             type="submit"
             value={"login"}
-            disabled={loading === 0 ? false : true}
+            disabled={!isValid || loading !== 0 ? true : false}
+            // disabled={loading === 0 ? false : true}
             loading={loading}
           />
-          {serverMessage && (
-            <small className="text-red-500 col-span-full">
-              server message: {serverMessage}
-            </small>
-          )}
+          {/* {serverMessage && ( */}
+          <ErrorMessage>{serverMessage.toLowerCase()}</ErrorMessage>
+          {/* )} */}
         </form>
         <Link
           href={""}

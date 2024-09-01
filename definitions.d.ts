@@ -25,19 +25,46 @@ interface IUser {
   lastUpdate?: StringOrNull;
   dateOfBirth?: StringOrNull;
   gender?: string;
-  phoneNumber?: ReactNode;
+  phoneNumber?: string;
   roles?: RoleTypes[];
 }
-// id: 7,
-//     email: 'ae@gmail.com',
-//     fullName: 'Ahmed mohamed',
-//     address: null,
-//     createdAt: '0001-01-01T00:00:00',
-//     lastUpdate: null,
-//     dateOfBirth: null,
-//     gender: '',
-//     phoneNumber: '01150054195',
-//     roles: [ 'User' ]
+
+interface IInstructor {
+  instId: number;
+  nameAr: string;
+  nameEn: string;
+  address: string;
+  position: string;
+  imagePath: null;
+  supervisorId: number;
+  salary: number;
+  deptId: number;
+}
+
+interface IDepartment {
+  deptId: number;
+  managerId: number;
+  name: string;
+}
+
+interface IStudent {
+  studId: number;
+  name: string;
+  address: string;
+  departmentName: null;
+}
+
+interface ISubject {
+  subjectId: number;
+  subjectName: string;
+  departments: string[] | null[];
+}
+
+// subjectId: 2,
+//     subjectName: 'Physics',
+//     departments: [
+//       { departmentId: 2, departmentName: 'Physics Department' }
+// ]
 
 //---------------------------------
 // react hook form types

@@ -157,6 +157,17 @@ it is hard to share the response of the catch and the try, so I should use ether
 
 ### Sun 01/08/2024
 
+- [x] set up the initial procedures of react hook form "onChange"
+- [x] instructors data
+- [x] students data
+- [x] departments data
+- [x] subjects data
+- [x] reinforce the table and data component
+- [x] created reusable skeleton table
+- [ ] user protected-routes depends on the role
+
+### Backlog
+
 - [ ] set up cookies functions for the `cookies` of the nextjs `next/headers`
 - [ ] display the nav with the loading UI of the isAuth component
 - [ ] set up the base settings for the forms validation

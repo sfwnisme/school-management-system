@@ -11,6 +11,7 @@ export const apiClient = axios.create({
   baseURL,
   headers: {
     Authorization: `Bearer ${cookies().get("token")?.value}`,
+    "Accept-language": "ar-EG",
   },
 });
 
@@ -86,7 +87,7 @@ export async function getAllUsers() {
   try {
     const token = cookies().get("token")?.value;
     if (token) {
-      const res = await apiClient.get(endpoints.users.users, {
+      const res = await apiClient.get(endpoints.users.all, {
         headers: {
           Authorization: `Bearer ${cookies().get("token")?.value}`,
         },
@@ -110,11 +111,67 @@ export async function getCurrentUser() {
   const token = cookies().get("token")?.value;
   try {
     if (token) {
-      const res = await apiClient.get(endpoints.users.currentUser);
-      console.log(res.data.data);
+      const res = await apiClient.get(endpoints.users.current);
       return res;
     }
   } catch (error) {
     console.error("current user endpoint function errro", error);
+  }
+}
+
+export async function getAllInstructors() {
+  const token = cookies().get("token")?.value;
+  try {
+    if (token) {
+      const res = await apiClient.get(endpoints.instructors.all);
+      return res;
+    }
+    return null;
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+export async function getAllDepartments() {
+  const token = cookies().get("token")?.value;
+  try {
+    if (token) {
+      const res = await apiClient.get(endpoints.departments.all);
+      console.log(res.data.data);
+      return res;
+    }
+    return null;
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+export async function getAllStudents() {
+  const token = cookies().get("token")?.value;
+  try {
+    if (token) {
+      const res = await apiClient.get(endpoints.students.all);
+      console.log(res.data.data);
+      return res;
+    }
+    return null;
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+export async function getAllSubjects() {
+  const token = cookies().get("token")?.value;
+  try {
+    if (token) {
+      const res = await apiClient.get(
+        endpoints.subjects.getSubjectsWithItsDepartments
+      );
+      console.log(res.data.data);
+      return res;
+    }
+    return null;
+  } catch (error) {
+    console.error(error);
   }
 }

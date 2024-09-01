@@ -6,8 +6,8 @@ export default function page() {
   return (
     <div>
       <Title>Users</Title>
-      <UsersTable/>
-        {/* <UsersData /> */}
+      <UsersTable />
+      {/* <UsersData /> */}
       {/* </UsersTable> */}
     </div>
   );

@@ -2,6 +2,7 @@ import React from "react";
 
 type Props = {
   children: React.ReactNode;
+  className?: string;
   rounded?: "none" | "initial" | "sm" | "md" | "lg" | "xl";
 };
 
@@ -23,7 +24,9 @@ export default function Table(props: Props) {
       <div
         className={`table-container min-w-full overflow-x-auto border ${settings}`}
       >
-        <table className="w-full divide-y divide-gray-200">
+        <table
+          className={`w-full divide-y divide-gray-200 ${props?.className}`}
+        >
           {props.children}
         </table>
       </div>

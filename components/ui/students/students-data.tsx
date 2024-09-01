@@ -1,15 +1,12 @@
 import Button from "../button";
 import { Edit, Trash } from "lucide-react";
-import { getAllUsers } from "@/lib/actions";
-import { Suspense } from "react";
-import Loading from "../spin-loading";
+import { getAllStudents } from "@/lib/actions";
 import Tr from "../table/tr";
 import Td from "../table/td";
-import { IUser } from "@/definitions";
+import { IStudent } from "@/definitions";
 
-export default async function UsersData() {
-  const users = await getAllUsers();
-
+export default async function StudentsData() {
+  const students = await getAllStudents();
   let content;
 
   const noData = (
@@ -24,16 +21,14 @@ export default async function UsersData() {
     </Tr>
   );
 
-  if (users?.data.data === undefined) content = noData;
+  if (students?.data.data === undefined) content = noData;
 
-  const data = users?.data.data.map((user: IUser) => (
-    <Tr key={user?.id}>
-      <Td>{user?.id}</Td>
-      <Td>{user?.fullName}</Td>
-      <Td>{...[user.roles?.join(" / ") || "no"]}</Td>
-      <Td>{user?.email}</Td>
-      <Td>{!user?.address && "no address"}</Td>
-      <Td>{user?.phoneNumber}</Td>
+  const data = students?.data.data.map((student: IStudent) => (
+    <Tr key={student?.studId}>
+      <Td>{student?.studId}</Td>
+      <Td>{student?.name}</Td>
+      <Td>{student?.departmentName}</Td>
+      <Td>{student?.address}</Td>
       <Td className=" flex gap-1 md:gap-2 py-2 px-4 whitespace-nowrap text-sm font-medium text-gray-500 ">
         <Button size="xs" variant="outline-info" width="full">
           <Edit size={15} />
@@ -45,7 +40,7 @@ export default async function UsersData() {
     </Tr>
   ));
 
-  if (users?.data.data !== undefined) content = data;
+  if (students?.data.data !== undefined) content = data;
 
   return <>{content}</>;
 }

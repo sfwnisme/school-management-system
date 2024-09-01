@@ -11,7 +11,7 @@ type Props = {
     | "outline-danger"
     | "info"
     | "outline-info";
-  width?: "fit" | "full";
+  width?: "initial" | "full";
   rounded?: "none" | "initial" | "sm" | "md" | "lg" | "xl" | "full";
   loading?: number;
 };
@@ -27,7 +27,7 @@ export default function Button(
 ) {
   const sizes = {
     initial: "text-base md:text-base py-2 px-6",
-    xs: "text-xs py-1 px-2",
+    xs: "text-xs p-2",
     sm: "text-sm py-2 px-4",
     md: "text-base py-2 px-6",
     lg: "text-lg py-3 px-7",
@@ -57,7 +57,6 @@ export default function Button(
 
   const width = {
     initial: "table",
-    fit: "table",
     full: "w-full",
   };
 
