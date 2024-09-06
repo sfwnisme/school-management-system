@@ -155,16 +155,21 @@ it is hard to share the response of the catch and the try, so I should use ether
 - [x] add outline button variant
 - [x] remove the `<Link>` feature of the `Button-with-link.tsx` UI Component and only use it as a button, and change the component name to `Button.tsx`. If you need to use the same format of the button for the nextjs's `Link` you can wrap the `Button` UI Component with the nextjs's `Link` navigation tag.
 
-### Sun 01/08/2024
+### Sun 01/09/2024
 
 - [x] set up the initial procedures of react hook form "onChange"
 - [x] instructors data
 - [x] students data
 - [x] departments data
-- [x] subjects data
+- [x] subjects **data**
 - [x] reinforce the table and data component
 - [x] created reusable skeleton table
 - [ ] user protected-routes depends on the role
+
+### Fri 06/09/2024
+
+- [x] Refactor: `button.tsx` component now has `props.outline` prop contains `boolean` type.
+- [x] Refactor: `badge.tsx` component you can add variant prop
 
 ### Backlog
 

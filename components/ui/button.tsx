@@ -1,16 +1,7 @@
 type Props = {
   size?: "initial" | "xs" | "sm" | "md" | "lg";
-  variant?:
-    | "initial"
-    | "outline"
-    | "success"
-    | "outline-success"
-    | "warning"
-    | "outline-warning"
-    | "danger"
-    | "outline-danger"
-    | "info"
-    | "outline-info";
+  variant?: "initial" | "success" | "warning" | "danger" | "info";
+  outline?: boolean;
   width?: "initial" | "full";
   rounded?: "none" | "initial" | "sm" | "md" | "lg" | "xl" | "full";
   loading?: number;
@@ -36,23 +27,24 @@ export default function Button(
   const variants = {
     initial:
       "hover:bg-gray-900 bg-gray-800 text-white disabled:bg-gray-500 disabled:cursor-not-allowed",
-    outline:
-      "hover:bg-gray-900 bg-transparent border border-gray-900 text-gray-900 hover:text-white disabled:bg-gray-500 disabled:cursor-not-allowed",
     success:
       "hover:bg-green-600 bg-green-500 text-white disabled:bg-green-300 disabled:cursor-not-allowed",
-    "outline-success":
-      "hover:bg-green-600 bg-transparent border border-green-500 text-green-600 hover:text-white disabled:bg-green-300 disabled:cursor-not-allowed",
     warning:
       "hover:bg-yellow-600 bg-yellow-500 text-white disabled:bg-yellow-300 disabled:cursor-not-allowed",
-    "outline-warning":
-      "hover:bg-yellow-600 bg-transparent border border-yellow-500 text-yellow-600 hover:text-white disabled:bg-yellow-300 disabled:cursor-not-allowed",
     danger:
       "hover:bg-red-600 bg-red-500 text-white disabled:bg-red-300 disabled:cursor-not-allowed",
-    "outline-danger":
-      "hover:bg-red-600 bg-transparent border border-red-500 text-red-600 hover:text-white disabled:bg-red-300 disabled:cursor-not-allowed",
     info: "hover:bg-blue-600 bg-blue-500 text-white disabled:bg-blue-300 disabled:cursor-not-allowed",
-    "outline-info":
-      "hover:bg-blue-600 bg-transparent border border-blue-500 text-blue-600 hover:text-white disabled:bg-blue-300 disabled:cursor-not-allowed",
+  };
+  const outlines = {
+    initial:
+      "hover:bg-gray-300 bg-gray-50 outline outline-gray-300 text-gray-500 hover:text-gray-600 disabled:bg-gray-500 disabled:cursor-not-allowed",
+    success:
+      "hover:bg-green-300 bg-green-50 outline outline-green-300 text-green-500 hover:text-green-600 disabled:bg-green-300 disabled:cursor-not-allowed",
+    warning:
+      "hover:bg-yellow-300 bg-yellow-50 outline outline-yellow-300 text-yellow-500 hover:text-yellow-600 disabled:bg-yellow-300 disabled:cursor-not-allowed",
+    danger:
+      "hover:bg-red-300 bg-red-50 outline outline-red-300 text-red-500 hover:text-red-600  disabled:bg-red-300 disabled:cursor-not-allowed",
+    info: "hover:bg-blue-300 bg-blue-50 outline outline-blue-300 text-blue-500 hover:text-blue-600 disabled:bg-blue-300 disabled:cursor-not-allowed",
   };
 
   const width = {
@@ -74,7 +66,11 @@ export default function Button(
 
   // it will dynamically set the current variant of the button
   // if the variant prop is undefined it will set "initial" variant
-  const currentVariant = variants[props?.variant || "initial"];
+  const variantsContainer = props?.outline
+    ? outlines[props?.variant || "initial"]
+    : variants[props?.variant || "initial"];
+  console.log(variantsContainer);
+  const currentVariant = variantsContainer;
 
   // it will dynamically set the current size of the button
   // if the size prop is undefined it will set "initial" size
@@ -104,6 +100,7 @@ export default function Button(
         duration-150
         flex items-center justify-center
         relative
+        outline-1
         `}
     >
       <div

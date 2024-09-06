@@ -28,7 +28,6 @@ export default async function SubjectsData() {
   //     departments: [
   //       { departmentId: 2, departmentName: 'Physics Department' }
   // ]
-
   if (subjects?.data.data === undefined) content = noData;
 
   const data = subjects?.data.data.map((subject: ISubject) => (

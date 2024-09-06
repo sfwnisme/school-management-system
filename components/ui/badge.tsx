@@ -1,30 +1,42 @@
-import React from "react";
+"use client";
+import React, { PropsWithChildren, PropsWithRef } from "react";
 
 type Props = {
-  children?: React.ReactNode;
+  children?: string;
   title?: string;
   size?: "xs" | "sm" | "md" | "lg" | "xl";
-  bg?: string;
-  color?: string;
+  variant?: "initial" | "success" | "warning" | "danger" | "info";
 };
 
 export default function Badge(props: Props) {
-  // let { title, size } = props;
   const sizes = {
-    xs: "text-xs rounded px-1 py-px",
-    sm: "text-sm rounded px-1 py-px",
-    md: "text-md rounded px-1 py-px",
-    lg: "text-lg rounded px-1 py-px",
-    xl: "text-xl rounded px-1 py-px",
+    xs: "text-xs px-1",
+    sm: "text-sm px-1",
+    md: "text-md px-1",
+    lg: "text-lg px-1",
+    xl: "text-xl px-1",
+  };
+  const variants = {
+    initial: "bg-gray-300 text-gray-700 outline-gray-300/80",
+    success: "bg-green-300 text-green-700 outline-green-300/80",
+    warning: "bg-yellow-300 text-yellow-700 outline-yellow-300/80",
+    danger: "bg-red-300 text-red-700 outline-red-300/80",
+    info: "bg-blue-300 text-blue-700 outline-blue-300/80",
   };
 
-  const title =
-    props?.title || props.children || "Hey DEV😑, where is my title?";
+  const sfwndotme = (
+    <a href="https://sfwn.me" className="">
+      sfwn.me
+    </a>
+  );
+  const title = props?.title || props.children || sfwndotme;
   const size = sizes[props?.size || "sm"];
-  const bg = props?.bg || "bg-blue-200";
-  const color = props?.color || "text-blue-600";
+  const variant = variants[props?.variant || "initial"];
+  const settings = `${size} ${variant}`;
 
-  const settings = `${size} ${bg} ${color}`;
-
-  return <span className={`${settings}`}>{title}</span>;
+  return (
+    <span className={`${settings} rounded-[2.5px] cursor-default`}>
+      {title}
+    </span>
+  );
 }

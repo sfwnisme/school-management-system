@@ -13,3 +13,4 @@ export const handleLogout = () => {
   Cookies.remove("refresh-token");
   window.location.href = "/login";
 };
+

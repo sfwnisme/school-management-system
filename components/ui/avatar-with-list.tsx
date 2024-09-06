@@ -8,7 +8,6 @@ import Cookies from "js-cookie";
 import { userAvatarNavlinks } from "@/lib/nav-links";
 import { usePathname } from "next/navigation";
 import Badge from "./badge";
-import { lang } from "@/lib/actions";
 
 type AvatarType = {
   src: string;
@@ -41,27 +40,26 @@ const List = (props: {
     ) : null
   );
   const userDetails = (
-    <div className="border-b pb-4 flex flex-wrap items-center gap-1 w-full">
-      <p>user name</p>
-      <Badge>admin</Badge>
+    <div className="mb- flex flex-col items-start gap-1 w-full bg-gray-50 rounded p-1">
+      <p className="capitalize text-sm text-gray-500">safwan mohamed</p>
+      <Badge variant="success">admin</Badge>
     </div>
   );
   return (
     <>
       {userDetails}
       {userList}
+      {/* <hr className="w-full"/> */}
       {token !== undefined && (
         <>
           <Button
             value="logout"
-            size="sm"
+            size="xs"
             variant="danger"
+            outline
             onClick={handleLogout}
             width="full"
           />
-          <Button size="sm" variant="info" onClick={handleLogout} width="full">
-            lang
-          </Button>
         </>
       )}
     </>
