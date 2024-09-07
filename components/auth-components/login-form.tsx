@@ -12,6 +12,7 @@ import { useGetCookie } from "@/hooks/use-cookies";
 import { getCookie } from "cookies-next";
 import { LoginInputTypes } from "@/definitions";
 import ErrorMessage from "../ui/error-message";
+import Message from "../ui/message";
 
 type Inputs = {
   username: string;
@@ -83,7 +84,7 @@ export default function LoginForm() {
               }
               {...register("username")}
             />
-            <ErrorMessage>{errors.username?.message}</ErrorMessage>
+            <Message variant="danger">{errors.username?.message}</Message>
           </div>
           <div className="col-span-full">
             <Input
@@ -98,7 +99,8 @@ export default function LoginForm() {
               }
               {...register("password")}
             />
-            <ErrorMessage>{errors.password?.message}</ErrorMessage>
+            <Message variant="danger">{errors.password?.message}</Message>
+            {/* <ErrorMessage>{errors.password?.message}</ErrorMessage> */}
           </div>
           <Link
             href={""}
@@ -114,7 +116,7 @@ export default function LoginForm() {
             loading={loading}
           />
           {/* {serverMessage && ( */}
-          <ErrorMessage>{serverMessage.toLowerCase()}</ErrorMessage>
+          {/* <ErrorMessage>{serverMessage.toLowerCase()}</ErrorMessage> */}
           {/* )} */}
         </form>
         <Link

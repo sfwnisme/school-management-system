@@ -2,7 +2,6 @@
 import axios from "axios";
 import Cookies from "js-cookie";
 
-console.log(Cookies.get("token"));
 
 export const baseURL = "http://schoolmanagmentsystem.runasp.net/api/v1/";
 
@@ -26,12 +25,13 @@ export const endpoints = {
     changePassword: "users/change-password",
   },
   instructors: {
-    all: "instructors/all-instructors",
-    id: "instructors/instructor-by-id",
+    all: "instructors/list",
+    id: "instructors/",
     create: "instructors/create",
+    edit: "instructors/delete/",
   },
   departments: {
-    all: "departments/departments-list",
+    all: "departments/list",
     id: "departments/",
     create: "departments/create",
     update: "departments/update",

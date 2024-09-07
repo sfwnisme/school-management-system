@@ -36,10 +36,10 @@ export default async function SubjectsData() {
       <Td>{subject?.subjectName}</Td>
       <Td>{subject?.departments.map((dep) => dep?.departmentName + ",")}</Td>
       <Td className=" flex gap-1 md:gap-2 py-2 px-4 whitespace-nowrap text-sm font-medium text-gray-500 ">
-        <Button size="xs" variant="outline-info" width="full">
+        <Button size="xs" outline variant="info" width="full">
           <Edit size={15} />
         </Button>
-        <Button size="xs" variant="outline-danger" width="full">
+        <Button size="xs" outline variant="danger" width="full">
           <Trash size={15} />
         </Button>
       </Td>

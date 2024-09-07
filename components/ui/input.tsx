@@ -37,11 +37,13 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>((props, ref) => {
   // const currentSize = sizes[sze || "initial"];
 
   return (
-    <input
-      {...props}
-      ref={ref}
-      className={` bg-transparent border rounded text-black col-span-full w-full ${currentSize} ${currentStatus} ${focusVisible} ${props?.styles}`}
-    />
+    <div>
+      <input
+        {...props}
+        ref={ref}
+        className={` bg-transparent border rounded text-black col-span-full w-full ${currentSize} ${currentStatus} ${focusVisible} ${props?.styles}`}
+      />
+    </div>
   );
 });
 export default Input;

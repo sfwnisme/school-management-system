@@ -31,8 +31,7 @@ interface IUser {
 
 interface IInstructor {
   instId: number;
-  nameAr: string;
-  nameEn: string;
+  name: string;
   address: string;
   position: string;
   imagePath: null;

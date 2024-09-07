@@ -54,7 +54,7 @@ export default function Hero({}: Props) {
           </h2>
           <div className="mt-10 flex items-center justify-center gap-x-6">
             <Link href={"/dashboard"}>
-              <Button value="Explore" width="fit" variant="outline">
+              <Button value="Explore" variant="info">
                 Explore <ArrowRight strokeWidth={1} />
               </Button>
             </Link>

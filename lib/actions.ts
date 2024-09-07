@@ -11,7 +11,7 @@ export const apiClient = axios.create({
   baseURL,
   headers: {
     Authorization: `Bearer ${cookies().get("token")?.value}`,
-    "Accept-language": "ar-EG",
+    // "Accept-language": "ar-EG",
   },
 });
 
@@ -52,12 +52,18 @@ export async function renewTokenIfNeeded() {
     const FD = new FormData();
     const token = cookies().get("token")?.value;
     const refreshToken = cookies().get("refresh-token")?.value;
-    FD.append("RefreshToken", refreshToken);
-    FD.append("AccessToken", token);
     if (token && refreshToken) {
+      FD.append("RefreshToken", refreshToken);
+      FD.append("AccessToken", token);
+
       const res = await apiClient.post(endpoints.auth.refreshToken, FD);
-      console.log(res);
-      return res;
+      const { status } = res;
+      console.log(status);
+      if (status === 204) return res;
+      if (status !== 204) {
+        cookies().set("token", res.data.AccessToken);
+        cookies().set("refresh-token", res.data.refreshToken);
+      }
     }
   } catch (error) {
     console.log(error);
@@ -124,6 +130,7 @@ export async function getAllInstructors() {
   try {
     if (token) {
       const res = await apiClient.get(endpoints.instructors.all);
+      console.log("instructors", res?.data.data);
       return res;
     }
     return null;
@@ -135,12 +142,12 @@ export async function getAllInstructors() {
 export async function getAllDepartments() {
   const token = cookies().get("token")?.value;
   try {
-    if (token) {
-      const res = await apiClient.get(endpoints.departments.all);
-      console.log(res.data.data);
-      return res;
-    }
-    return null;
+    // if (token) {
+    const res = await apiClient.get(endpoints.departments.all);
+    console.log(res.data.data);
+    return res;
+    // }
+    // return null;
   } catch (error) {
     console.error(error);
   }

@@ -168,8 +168,13 @@ it is hard to share the response of the catch and the try, so I should use ether
 
 ### Fri 06/09/2024
 
-- [x] Refactor: `button.tsx` component now has `props.outline` prop contains `boolean` type.
-- [x] Refactor: `badge.tsx` component you can add variant prop
+- [x] refactor: `button.tsx` component now has `props.outline` prop contains `boolean` type.
+- [x] refactor: `badge.tsx` component you can add variant prop
+
+### Sat 07/09/2024
+
+- [x] feat: message UI component for the error and success messages
+- [x] reafactor: endpoints
 
 ### Backlog
 
