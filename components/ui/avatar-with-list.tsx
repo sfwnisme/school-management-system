@@ -4,10 +4,11 @@ import React from "react";
 import Link from "next/link";
 import Button from "./button";
 import { handleLogout } from "@/lib/utils";
-import Cookies from "js-cookie";
 import { userAvatarNavlinks } from "@/lib/nav-links";
 import { usePathname } from "next/navigation";
 import Badge from "./badge";
+import { getCookie } from "cookies-next";
+import { LogOut } from "lucide-react";
 
 type AvatarType = {
   src: string;
@@ -21,7 +22,7 @@ const List = (props: {
 }) => {
   const pathname = usePathname();
 
-  const token = Cookies.get("token");
+  const token = getCookie("token");
   const handleEvent = () => props.event;
   const listData =
     token !== undefined
@@ -40,9 +41,23 @@ const List = (props: {
     ) : null
   );
   const userDetails = (
-    <div className="mb- flex flex-col items-start gap-1 w-full bg-gray-50 rounded p-1">
-      <p className="capitalize text-sm text-gray-500">safwan mohamed</p>
-      <Badge variant="success">admin</Badge>
+    <div className="mb- flex items-start gap-1 w-full bg-gray-500 rounded p-1">
+      <div className="flex-1">
+        <p className="capitalize text-sm text-gray-100">safwan mohamed</p>
+        <Badge variant="success">admin</Badge>
+      </div>
+      {token !== undefined && (
+        <>
+          <Button
+            size="xs"
+            variant="danger"
+            onClick={handleLogout}
+            // width="full"
+          >
+            <LogOut size={18} />
+          </Button>
+        </>
+      )}
     </div>
   );
   return (
@@ -50,18 +65,6 @@ const List = (props: {
       {userDetails}
       {userList}
       {/* <hr className="w-full"/> */}
-      {token !== undefined && (
-        <>
-          <Button
-            value="logout"
-            size="xs"
-            variant="danger"
-            outline
-            onClick={handleLogout}
-            width="full"
-          />
-        </>
-      )}
     </>
   );
 };
@@ -95,7 +98,7 @@ export default function AvatarWithList(props: AvatarType) {
             height={height}
             width={width}
             alt={alt}
-            className={`h-[${height}] md:h-[40px] w-[${width}] md:w-[40px] rounded`}
+            className={`h-[40px] w-[40px] rounded`}
           />
         </div>
       </div>

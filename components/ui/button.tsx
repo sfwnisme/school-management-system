@@ -7,6 +7,7 @@ type Props = {
   loading?: number;
 };
 
+import { Loader, Loader2 } from "lucide-react";
 import { ButtonHTMLAttributes, DetailedHTMLProps } from "react";
 
 export default function Button(
@@ -18,7 +19,7 @@ export default function Button(
 ) {
   const sizes = {
     initial: "text-base md:text-base py-2 px-6",
-    xs: "text-xs p-2",
+    xs: "text-xs p-1",
     sm: "text-sm py-2 px-4",
     md: "text-base py-2 px-6",
     lg: "text-lg py-3 px-7",
@@ -26,25 +27,25 @@ export default function Button(
 
   const variants = {
     initial:
-      "hover:bg-gray-900 bg-gray-800 text-white disabled:bg-gray-500 disabled:cursor-not-allowed",
+      "hover:bg-gray-900 bg-gray-800 text-white disabled:opacity-[0.5] disabled:cursor-not-allowed",
     success:
-      "hover:bg-green-600 bg-green-500 text-white disabled:bg-green-300 disabled:cursor-not-allowed",
+      "hover:bg-green-600 bg-green-500 text-white disabled:opacity-[0.5] disabled:cursor-not-allowed",
     warning:
-      "hover:bg-yellow-600 bg-yellow-500 text-white disabled:bg-yellow-300 disabled:cursor-not-allowed",
+      "hover:bg-yellow-600 bg-yellow-500 text-white disabled:opacity-[0.5] disabled:cursor-not-allowed",
     danger:
-      "hover:bg-red-600 bg-red-500 text-white disabled:bg-red-300 disabled:cursor-not-allowed",
-    info: "hover:bg-blue-600 bg-blue-500 text-white disabled:bg-blue-300 disabled:cursor-not-allowed",
+      "hover:bg-red-600 bg-red-500 text-white disabled:opacity-[0.5] disabled:cursor-not-allowed",
+    info: "hover:bg-blue-600 bg-blue-500 text-white disabled:opacity-[0.5] disabled:cursor-not-allowed",
   };
   const outlines = {
     initial:
-      "hover:bg-gray-300 bg-gray-50 outline outline-gray-300 text-gray-500 hover:text-gray-600 disabled:bg-gray-500 disabled:cursor-not-allowed",
+      "hover:bg-gray-200 bg-gray-50 outline outline-gray-300 text-gray-500 hover:text-gray-600 disabled:opacity-[0.5] disabled:cursor-not-allowed",
     success:
-      "hover:bg-green-300 bg-green-50 outline outline-green-300 text-green-500 hover:text-green-600 disabled:bg-green-300 disabled:cursor-not-allowed",
+      "hover:bg-green-200 bg-green-50 outline outline-green-300 text-green-500 hover:text-green-600 disabled:opacity-[0.5] disabled:cursor-not-allowed",
     warning:
-      "hover:bg-yellow-300 bg-yellow-50 outline outline-yellow-300 text-yellow-500 hover:text-yellow-600 disabled:bg-yellow-300 disabled:cursor-not-allowed",
+      "hover:bg-yellow-200 bg-yellow-50 outline outline-yellow-300 text-yellow-500 hover:text-yellow-600 disabled:opacity-[0.5] disabled:cursor-not-allowed",
     danger:
-      "hover:bg-red-300 bg-red-50 outline outline-red-300 text-red-500 hover:text-red-600  disabled:bg-red-300 disabled:cursor-not-allowed",
-    info: "hover:bg-blue-300 bg-blue-50 outline outline-blue-300 text-blue-500 hover:text-blue-600 disabled:bg-blue-300 disabled:cursor-not-allowed",
+      "hover:bg-red-200 bg-red-50 outline outline-red-300 text-red-500 hover:text-red-600  disabled:opacity-[0.5] disabled:cursor-not-allowed",
+    info: "hover:bg-blue-200 bg-blue-50 outline outline-blue-300 text-blue-500 hover:text-blue-600 disabled:opacity-[0.5] disabled:cursor-not-allowed",
   };
 
   const width = {
@@ -69,7 +70,6 @@ export default function Button(
   const variantsContainer = props?.outline
     ? outlines[props?.variant || "initial"]
     : variants[props?.variant || "initial"];
-  console.log(variantsContainer);
   const currentVariant = variantsContainer;
 
   // it will dynamically set the current size of the button
@@ -83,14 +83,17 @@ export default function Button(
   }`;
 
   // the loading depends on disabled
+  // const loading = (
+  //   <span className="relative flex h-3 w-3">
+  //     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white/50 opacity-75"></span>
+  //     <span className="relative inline-flex rounded-full h-3 w-3 bg-white"></span>
+  //   </span>
+  // );
   const loading = (
-    <span className="relative flex h-3 w-3">
-      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white/50 opacity-75"></span>
-      <span className="relative inline-flex rounded-full h-3 w-3 bg-white"></span>
+    <span className="relative flex h-5 w-5">
+      <Loader className="animate-spin absolute inline-flex h-full w-full rounded-full opacity-75" />
     </span>
   );
-
-  // const Tag = props?.href ? Link : "button";
 
   return (
     <button
@@ -110,11 +113,14 @@ export default function Button(
       </div>
       <div
         className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2
-      flex items-center gap-x-2
+      flex items-center gap-x-1
       ${props?.className}
      `}
       >
-        {props.loading === 1 ? loading : props?.children || props?.value}
+        {/* {loading} */}
+        {props.loading === 1 && loading}
+
+        {props?.children || props?.value}
       </div>
     </button>
   );

@@ -176,9 +176,18 @@ it is hard to share the response of the catch and the try, so I should use ether
 - [x] feat: message UI component for the error and success messages
 - [x] reafactor: endpoints
 
+### Sun 08/09/2024
+
+- just strugling with server and client components pattern concept
+
+### Mon 09/09/2024
+
+- [x] user avatar and dropdown uses the API data to display the user details and check if the user is loggedin instead of using the token
+- [x] create `drawer-container.tsx` component to use it as a parent async/await component, so I can use it to pass the data to the navbar for the user details and avatar image.
+- [x] created `avatar` and `dropdown` components instead of `avatar-with-list`.
+
 ### Backlog
 
-- [ ] set up cookies functions for the `cookies` of the nextjs `next/headers`
 - [ ] display the nav with the loading UI of the isAuth component
 - [ ] set up the base settings for the forms validation
 - [ ] registration page and form

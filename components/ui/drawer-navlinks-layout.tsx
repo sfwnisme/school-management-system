@@ -6,6 +6,7 @@ import LogoLayout from "./logo-layout";
 import { PanelLeft } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { navLinks } from "@/lib/nav-links";
+import { UpdateStateType } from "@/definitions";
 
 type Props = {
   toggleDrawer: boolean;

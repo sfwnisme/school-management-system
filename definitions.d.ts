@@ -1,9 +1,5 @@
 import { ReactNode } from "react";
 
-type childrenType = {
-  children: ReactNode;
-};
-
 // this type handle the setState function when using prev
 // Ex: setState((prev)=> !prev) as UpdateStateType
 type UpdateStateType = (
@@ -27,6 +23,15 @@ interface IUser {
   gender?: string;
   phoneNumber?: string;
   roles?: RoleTypes[];
+}
+interface IUser2 {
+  userId: number;
+  userName: string;
+  email: string;
+  imagePath: {} | null;
+  fullName: string;
+  address: {} | null;
+  country: {} | null;
 }
 
 interface IInstructor {
@@ -56,7 +61,10 @@ interface IStudent {
 interface ISubject {
   subjectId: number;
   subjectName: string;
-  departments: string[] | null[];
+  departments: {
+    departmentId: number;
+    departmentName: string;
+  }[];
 }
 
 // subjectId: 2,

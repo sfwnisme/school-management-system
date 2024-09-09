@@ -2,9 +2,15 @@
 import React from "react";
 import DrowerNavLinksLayout from "../ui/drawer-navlinks-layout";
 import Nav from "../ui/nav";
-import { childrenType } from "@/definitions";
-
-export default function Drawer({ children }: childrenType) {
+type Props = {
+  children: React.ReactNode;
+  userDetails?: {
+    username: string;
+    name: string;
+    image: string | null;
+  };
+};
+export default function Drawer(props: Props) {
   const [toggleDrawer, setToggleDrawer] = React.useState<boolean>(false);
 
   return (
@@ -30,9 +36,10 @@ export default function Drawer({ children }: childrenType) {
           toggleDrawer={toggleDrawer}
           setToggleDrawer={setToggleDrawer}
           isDashboard={true}
+          userDetails={props?.userDetails}
         />
         <article className="container py-10 h-[calc(100vh-91px)] overflow-y-scroll relative">
-          {children}
+          {props?.children}
         </article>
       </div>
     </div>

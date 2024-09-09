@@ -1,4 +1,3 @@
-import { childrenType } from "@/definitions";
 import React from "react";
 
 type Props = {

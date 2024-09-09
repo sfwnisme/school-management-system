@@ -1,8 +1,4 @@
 // 'use client'
-import axios from "axios";
-import Cookies from "js-cookie";
-
-
 export const baseURL = "http://schoolmanagmentsystem.runasp.net/api/v1/";
 
 export const endpoints = {

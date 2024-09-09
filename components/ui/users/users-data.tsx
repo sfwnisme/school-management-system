@@ -6,6 +6,7 @@ import Loading from "../spin-loading";
 import Tr from "../table/tr";
 import Td from "../table/td";
 import { IUser } from "@/definitions";
+import UserBox from "../userbox/user-box";
 
 export default async function UsersData() {
   const users = await getAllUsers();

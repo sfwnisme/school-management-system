@@ -1,11 +1,11 @@
 "use client";
 import React, { useState } from "react";
-import Avatar from "./avatar";
-import Dropdown from "./dropdown";
+import Avatar from "./userbox/avatar";
+import Dropdown from "./userbox/dropdown";
 import { userAvatarNavlinks } from "@/lib/nav-links";
-import Cookies from "js-cookie";
 import Button from "./button";
 import { handleLogout } from "@/lib/utils";
+import { getCookie } from "cookies-next";
 
 type Props = {};
 
@@ -16,7 +16,7 @@ export default function UserList({}: Props) {
 
   console.log(userData);
 
-  const token = Cookies.get("token");
+  const token = getCookie("token");
   const listData = token
     ? userAvatarNavlinks?.protected
     : userAvatarNavlinks?.public;

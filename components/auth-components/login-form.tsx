@@ -8,10 +8,7 @@ import { handleSignIn } from "@/lib/actions";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { loginSchema } from "@/lib/validation-schema-yup";
-import { useGetCookie } from "@/hooks/use-cookies";
-import { getCookie } from "cookies-next";
 import { LoginInputTypes } from "@/definitions";
-import ErrorMessage from "../ui/error-message";
 import Message from "../ui/message";
 
 type Inputs = {
@@ -22,7 +19,7 @@ type Inputs = {
 export default function LoginForm() {
   const [loading, setLoading] = React.useState(0);
   const [serverMessage, setServerMessage] = React.useState("");
-  console.log(getCookie("token"));
+  console.log(serverMessage);
   //-------------
   const {
     register,
@@ -34,8 +31,6 @@ export default function LoginForm() {
     mode: "onChange",
   });
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
-    console.log("final data", data);
-    console.log("errrrrrror", errors);
     setLoading(1);
     try {
       const loginCredentials = {
@@ -53,9 +48,6 @@ export default function LoginForm() {
       setLoading(0);
     }
   };
-  console.log("isvalid", isValid);
-
-  //-------------
 
   return (
     <div className="mx-auto flex flex-col-reverse  md:flex-row gap-3 justify-center items-center max-w-[1200px] shadow-lg shadow-gray-50 rounded overflow-hidden">
@@ -100,7 +92,6 @@ export default function LoginForm() {
               {...register("password")}
             />
             <Message variant="danger">{errors.password?.message}</Message>
-            {/* <ErrorMessage>{errors.password?.message}</ErrorMessage> */}
           </div>
           <Link
             href={""}
@@ -112,13 +103,11 @@ export default function LoginForm() {
             type="submit"
             value={"login"}
             disabled={!isValid || loading !== 0 ? true : false}
-            // disabled={loading === 0 ? false : true}
             loading={loading}
+            size="sm"
           />
-          {/* {serverMessage && ( */}
-          {/* <ErrorMessage>{serverMessage.toLowerCase()}</ErrorMessage> */}
-          {/* )} */}
         </form>
+        <Message variant="danger">{serverMessage || ""}</Message>
         <Link
           href={""}
           className="text-gray-400 hover:text-gray-500 text-xs lg:text-sm flex items-center justify-center gap-1 col-span-full mt-4"
