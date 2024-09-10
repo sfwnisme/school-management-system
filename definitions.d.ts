@@ -13,25 +13,14 @@ type UpdateStateAdvancedType<S> = (updateFn: (prev: S) => S) => void;
 type RoleTypes = "Admin" | "HR" | "User";
 type StringOrNull = string | null;
 interface IUser {
-  id?: number;
-  email?: string;
-  fullName: string;
-  address?: StringOrNull;
-  createdAt?: StringOrNull;
-  lastUpdate?: StringOrNull;
-  dateOfBirth?: StringOrNull;
-  gender?: string;
-  phoneNumber?: string;
-  roles?: RoleTypes[];
-}
-interface IUser2 {
-  userId: number;
+  id: 1;
   userName: string;
   email: string;
-  imagePath: {} | null;
+  imagePath: null;
   fullName: string;
-  address: {} | null;
-  country: {} | null;
+  roles: string[];
+  createdAt: string;
+  lastUpdate: string;
 }
 
 interface IInstructor {

@@ -6,7 +6,6 @@ import Loading from "../spin-loading";
 import Tr from "../table/tr";
 import Td from "../table/td";
 import { IUser } from "@/definitions";
-import UserBox from "../userbox/user-box";
 
 export default async function UsersData() {
   const users = await getAllUsers();
@@ -33,8 +32,6 @@ export default async function UsersData() {
       <Td>{user?.fullName}</Td>
       <Td>{...[user.roles?.join(" / ") || "no"]}</Td>
       <Td>{user?.email}</Td>
-      <Td>{!user?.address && "no address"}</Td>
-      <Td>{user?.phoneNumber}</Td>
       <Td className=" flex gap-1 md:gap-2 py-2 px-4 whitespace-nowrap text-sm font-medium text-gray-500 ">
         <Button size="xs" outline variant="info" width="full">
           <Edit size={15} />

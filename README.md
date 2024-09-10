@@ -186,6 +186,12 @@ it is hard to share the response of the catch and the try, so I should use ether
 - [x] create `drawer-container.tsx` component to use it as a parent async/await component, so I can use it to pass the data to the navbar for the user details and avatar image.
 - [x] created `avatar` and `dropdown` components instead of `avatar-with-list`.
 
+### Tu 09/09/2024
+
+-[x] block login and register pages if the user logged in
+-[x] clean up some components and unneeded files
+-[x] using validToken endpoint to check if the user is logged in for the logout function instead of using tokens to have more security.
+
 ### Backlog
 
 - [ ] display the nav with the loading UI of the isAuth component

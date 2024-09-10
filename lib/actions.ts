@@ -5,7 +5,7 @@ import { cookies } from "next/headers";
 import { revalidatePath, revalidateTag } from "next/cache";
 import { redirect } from "next/navigation";
 import { isRedirectError } from "next/dist/client/components/redirect";
-import { getCookie, setCookie } from "cookies-next";
+import { deleteCookie, getCookie, setCookie } from "cookies-next";
 
 export const apiClient = axios.create({
   baseURL,
@@ -98,6 +98,7 @@ export async function getAllUsers() {
       const res = await apiClient.get(endpoints.users.all);
       revalidatePath("/dashboard/users");
       revalidateTag("/dashboard/users");
+      console.log(res.data.data);
       return res;
     } else {
       console.log(

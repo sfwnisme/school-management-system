@@ -11,7 +11,7 @@ import TableSkeleton from "../skeletons/table-skeleton";
 export default function UsersTable() {
   return (
     <div>
-      <Suspense fallback={<TableSkeleton cols={7} />}>
+      <Suspense fallback={<TableSkeleton cols={5} />}>
         <Table rounded="md">
           <Thead>
             <Tr>
@@ -19,8 +19,6 @@ export default function UsersTable() {
               <Th>Name</Th>
               <Th>Roles</Th>
               <Th>email</Th>
-              <Th>Address</Th>
-              <Th>Phone</Th>
               <Th>actions</Th>
             </Tr>
           </Thead>

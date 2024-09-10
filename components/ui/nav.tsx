@@ -3,7 +3,6 @@ import { PanelLeft, User } from "lucide-react";
 import React from "react";
 import LogoLayout from "./logo-layout";
 import { UpdateStateType } from "@/definitions";
-import AvatarWithList from "./avatar-with-list";
 import Options from "./userbox/options";
 
 /**

@@ -10,7 +10,7 @@ export default function layout({ children }: Props) {
   return (
     <div>
       <Suspense fallback={<Loading />}>
-        <IsAuth>
+        <IsAuth route="protected">
           <DrawerContainer>{children}</DrawerContainer>
         </IsAuth>
       </Suspense>

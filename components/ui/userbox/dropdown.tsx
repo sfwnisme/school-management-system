@@ -6,8 +6,9 @@ import Badge from "../badge";
 import { userAvatarNavlinks } from "@/lib/nav-links";
 import { usePathname } from "next/navigation";
 import Button from "../button";
-import { handleLogout } from "@/lib/utils";
 import { LogOut } from "lucide-react";
+import { deleteCookie, hasCookie } from "cookies-next";
+import { isTokenValid } from "@/lib/actions";
 
 type Props = {
   children?: React.ReactNode;
@@ -17,9 +18,20 @@ type Props = {
 export default function Dropdown(props: Props) {
   const pathname = usePathname();
 
+  const handleLogout = async () => {
+    // if (hasCookie("token") && hasCookie("refresh-token")) {
+    const tokenValid = await isTokenValid();
+    console.log(tokenValid);
+    if (tokenValid === 200) {
+      deleteCookie("token");
+      deleteCookie("refresh-token");
+      window.location.href = "/login";
+    }
+    return null;
+  };
+
   const userProtectedLinks = userAvatarNavlinks.protected;
   const userPublicLinks = userAvatarNavlinks.public;
-
   const user = props.userDetails?.name;
   const isUserLinksProtectedOrPublic = user
     ? userProtectedLinks
