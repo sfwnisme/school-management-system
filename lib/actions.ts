@@ -1,19 +1,11 @@
 "use server";
 import axios from "axios";
-import { baseURL, endpoints } from "./endpoints";
+import { apiClient, baseURL, endpoints } from "./endpoints";
 import { cookies } from "next/headers";
 import { revalidatePath, revalidateTag } from "next/cache";
 import { redirect } from "next/navigation";
 import { isRedirectError } from "next/dist/client/components/redirect";
-import { deleteCookie, getCookie, setCookie } from "cookies-next";
-
-export const apiClient = axios.create({
-  baseURL,
-  headers: {
-    Authorization: `Bearer ${getCookie("token", { cookies })}`,
-    // "Accept-language": "ar-EG",
-  },
-});
+import { getCookie, setCookie } from "cookies-next";
 
 //----------------------------
 // Authentication endpoints
@@ -22,8 +14,9 @@ export async function handleSignIn(username: string, password: string) {
   const FD: FormData = new FormData();
   FD.append("UserName", username);
   FD.append("Password", password);
+
   try {
-    const res = await apiClient.post(endpoints.auth.signin, FD);
+    const res = await apiClient.post(endpoints.authentication.signin, FD);
 
     const token = await res.data.data.accessToken;
     const refreshToken = await res.data.data.refreshToken;
@@ -50,6 +43,9 @@ export async function handleSignIn(username: string, password: string) {
 }
 
 export async function renewTokenIfNeeded() {
+  apiClient.defaults.headers.common["Authorization"] = `Bearer ${
+    cookies().get("token")?.value
+  }`;
   try {
     const FD = new FormData();
     const token = getCookie("token", { cookies });
@@ -58,7 +54,10 @@ export async function renewTokenIfNeeded() {
       FD.append("RefreshToken", refreshToken);
       FD.append("AccessToken", token);
 
-      const res = await apiClient.post(endpoints.auth.refreshToken, FD);
+      const res = await apiClient.post(
+        endpoints.authentication.refreshToken,
+        FD
+      );
       const { status } = res;
       console.log(status);
       if (status === 204) return res;
@@ -73,11 +72,14 @@ export async function renewTokenIfNeeded() {
 }
 
 export async function isTokenValid() {
+  apiClient.defaults.headers.common["Authorization"] = `Bearer ${
+    cookies().get("token")?.value
+  }`;
   try {
     const token = getCookie("token", { cookies });
     if (token) {
       const res = await apiClient.get(
-        endpoints.auth.validateToken + "?AccessToken=" + token
+        endpoints.authentication.validateToken + "?AccessToken=" + token
       );
       console.log(res);
       return res?.status;
@@ -92,6 +94,9 @@ export async function isTokenValid() {
 //----------------------------
 // get all the instructors data
 export async function getAllUsers() {
+  apiClient.defaults.headers.common["Authorization"] = `Bearer ${
+    cookies().get("token")?.value
+  }`;
   try {
     const token = getCookie("token", { cookies });
     if (token) {
@@ -113,6 +118,9 @@ export async function getAllUsers() {
 
 //get the loged in user
 export async function getCurrentUser() {
+  apiClient.defaults.headers.common["Authorization"] = `Bearer ${
+    cookies().get("token")?.value
+  }`;
   const token = getCookie("token", { cookies });
   try {
     if (token) {
@@ -127,7 +135,52 @@ export async function getCurrentUser() {
   }
 }
 
+export async function getUserById(id: number) {
+  apiClient.defaults.headers.common["Authorization"] = `Bearer ${
+    cookies().get("token")?.value
+  }`;
+  const token = getCookie("token", { cookies });
+  try {
+    const res = await apiClient.get(endpoints.users.id + id);
+    console.log(res.data.data);
+    return res;
+  } catch (error) {
+    console.log("get user by id error", error);
+  }
+}
+
+export async function getAllRoles() {
+  apiClient.defaults.headers.common["Authorization"] = `Bearer ${
+    cookies().get("token")?.value
+  }`;
+  try {
+    const res = await apiClient.get(endpoints.authorization.roles.all);
+    console.log(res.data.data);
+    return res;
+  } catch (error) {
+    console.log("get roles error", error);
+  }
+}
+
+export async function getRolesByUserId(id: number) {
+  apiClient.defaults.headers.common["Authorization"] = `Bearer ${
+    cookies().get("token")?.value
+  }`;
+  try {
+    const res = await apiClient.get(
+      endpoints.authorization.roles.getRolesByUserId + id
+    );
+    console.log(res)
+    return res
+  } catch (error) {
+    console.log("get roles by user id error", error);
+  }
+}
+
 export async function getAllInstructors() {
+  apiClient.defaults.headers.common["Authorization"] = `Bearer ${
+    cookies().get("token")?.value
+  }`;
   const token = getCookie("token", { cookies });
   try {
     if (token) {
@@ -142,6 +195,9 @@ export async function getAllInstructors() {
 }
 
 export async function getAllDepartments() {
+  apiClient.defaults.headers.common["Authorization"] = `Bearer ${
+    cookies().get("token")?.value
+  }`;
   const token = getCookie("token", { cookies });
   try {
     if (token) {
@@ -156,6 +212,9 @@ export async function getAllDepartments() {
 }
 
 export async function getAllStudents() {
+  apiClient.defaults.headers.common["Authorization"] = `Bearer ${
+    cookies().get("token")?.value
+  }`;
   const token = getCookie("token", { cookies });
   try {
     if (token) {
@@ -170,6 +229,9 @@ export async function getAllStudents() {
 }
 
 export async function getAllSubjects() {
+  apiClient.defaults.headers.common["Authorization"] = `Bearer ${
+    cookies().get("token")?.value
+  }`;
   const token = getCookie("token", { cookies });
   try {
     if (token) {

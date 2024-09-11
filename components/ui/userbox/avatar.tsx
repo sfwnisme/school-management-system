@@ -25,7 +25,7 @@ export default function Avatar(props: Props) {
 
   const displayImageOrNameLettersAvatar = (
     <div
-      className={`size-12 border border-gray-300 bg-gray-200 rounded-md shadow-md shadow-gray-200 cursor-pointer select-none flex items-center justify-center`}
+      className={`size-12 border border-gray-300 bg-gray-50 rounded-md shadow-md shadow-gray-200 cursor-pointer select-none flex items-center justify-center`}
     >
       {isLoggedin ? (
         isImage ? (

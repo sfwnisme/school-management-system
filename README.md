@@ -186,20 +186,24 @@ it is hard to share the response of the catch and the try, so I should use ether
 - [x] create `drawer-container.tsx` component to use it as a parent async/await component, so I can use it to pass the data to the navbar for the user details and avatar image.
 - [x] created `avatar` and `dropdown` components instead of `avatar-with-list`.
 
-### Tu 09/09/2024
+### Tu 10/09/2024
 
 -[x] block login and register pages if the user logged in
 -[x] clean up some components and unneeded files
 -[x] using validToken endpoint to check if the user is logged in for the logout function instead of using tokens to have more security.
 
+### Wed 11/09/2024
+
+-[/] update user page. // I completed the half of this work
+-[x] display the user image
+-[x] `file-input.tsx` UI Component
+-[x] changed the get user by id schema with the backend developer
+-[x] removed the cookies from any global scope or client side components.
+
 ### Backlog
 
-- [ ] display the nav with the loading UI of the isAuth component
-- [ ] set up the base settings for the forms validation
 - [ ] registration page and form
 - [ ] user and the current user's profile
-- [ ] change the avatar and dropdown UI Components
-- [ ] I need to change the authentication of the user avatar and list to the api instead of the cookies
 - [ ] implement the refresh token function. bug from the backend, it returns 500 "internal server error" status instead of 204 "no content"
 - [ ] in UI Components we need some times to add-on a customization while it is currentlly a customized component, thus you need to add the following snippet into the `className` of the UI Component `${props?.className}`. I need to check all the UI Components to add this feature
 

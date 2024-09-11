@@ -1,8 +1,9 @@
 // "use client";
-"use server";
+// "use server";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { isTokenValid, renewTokenIfNeeded } from "./actions";
+
 type Props = {
   children: React.ReactNode;
   route: "public" | "protected";

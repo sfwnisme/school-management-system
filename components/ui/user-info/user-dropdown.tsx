@@ -1,5 +1,5 @@
 import { getCurrentUser } from "@/lib/actions";
-import { userAvatarNavlinks } from "@/lib/nav-links";
+import { userAvatarNavlinks } from "@/lib/data";
 import Link from "next/link";
 import Badge from "../badge";
 

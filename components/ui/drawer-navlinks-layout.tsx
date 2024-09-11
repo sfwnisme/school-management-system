@@ -5,7 +5,7 @@ import Link from "next/link";
 import LogoLayout from "./logo-layout";
 import { PanelLeft } from "lucide-react";
 import { usePathname } from "next/navigation";
-import { navLinks } from "@/lib/nav-links";
+import { navLinks } from "@/lib/data";
 import { UpdateStateType } from "@/definitions";
 
 type Props = {

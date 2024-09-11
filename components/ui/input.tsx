@@ -42,6 +42,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>((props, ref) => {
         {...props}
         ref={ref}
         className={` bg-transparent border rounded text-black col-span-full w-full ${currentSize} ${currentStatus} ${focusVisible} ${props?.styles}`}
+        // className={` bg-transparent border border-blue-500 border-dashed rounded text-black col-span-full h-[200px] w-full`}
       />
     </div>
   );

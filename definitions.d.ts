@@ -56,12 +56,16 @@ interface ISubject {
   }[];
 }
 
-// subjectId: 2,
-//     subjectName: 'Physics',
-//     departments: [
-//       { departmentId: 2, departmentName: 'Physics Department' }
-// ]
+interface IRole {
+  id: number;
+  name: string;
+  hasRole: boolean;
+}
 
+interface IRoleByUserId {
+  userId: number;
+  roles: IRole[];
+}
 //---------------------------------
 // react hook form types
 //---------------------------------

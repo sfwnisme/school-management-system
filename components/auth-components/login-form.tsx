@@ -30,6 +30,14 @@ export default function LoginForm() {
     resolver: yupResolver(loginSchema),
     mode: "onChange",
   });
+
+  const errorMessage = (value: keyof LoginInputTypes) => {
+    let message = errors[`${value}`]?.message;
+    if (message !== undefined) return message;
+    return null;
+  };
+  console.log(errorMessage("password"));
+
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
     setLoading(1);
     try {
@@ -65,7 +73,7 @@ export default function LoginForm() {
         >
           <div className="col-span-full">
             <Input
-              type="username"
+              type="name"
               placeholder="Your username"
               variant={
                 errors.username?.message

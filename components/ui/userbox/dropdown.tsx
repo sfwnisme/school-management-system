@@ -3,7 +3,7 @@
 import React from "react";
 import Link from "next/link";
 import Badge from "../badge";
-import { userAvatarNavlinks } from "@/lib/nav-links";
+import { userAvatarNavlinks } from "@/lib/data";
 import { usePathname } from "next/navigation";
 import Button from "../button";
 import { LogOut } from "lucide-react";
