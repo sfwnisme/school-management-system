@@ -15,11 +15,11 @@ type InputProps = DetailedHTMLProps<
 const Input = React.forwardRef<HTMLInputElement, InputProps>((props, ref) => {
   const variants = {
     initial:
-      "border-gray-500 text-gray-500 placeholder:text-gray-400 outline-gray-200",
+      "border-gray-500 text-gray-800 placeholder:text-gray-400 outline-gray-200",
     success:
-      "border-green-700 text-green-500 placeholder:text-green-400 outline-green-200 ",
+      "border-green-700 text-green-800 placeholder:text-green-400 outline-green-200 ",
     danger:
-      "border-red-700 text-red-500 placeholder:text-red-400 outline-red-200 ",
+      "border-red-700 text-red-800 placeholder:text-red-400 outline-red-200 ",
   };
 
   const sizes = {

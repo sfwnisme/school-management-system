@@ -1,11 +1,12 @@
 "use server";
 import axios from "axios";
-import { apiClient, baseURL, endpoints } from "./endpoints";
+import { apiClient, endpoints } from "./endpoints";
 import { cookies } from "next/headers";
 import { revalidatePath, revalidateTag } from "next/cache";
 import { redirect } from "next/navigation";
 import { isRedirectError } from "next/dist/client/components/redirect";
 import { getCookie, setCookie } from "cookies-next";
+import { IUser } from "@/definitions";
 
 //----------------------------
 // Authentication endpoints
@@ -110,9 +111,12 @@ export async function getAllUsers() {
         "the token not found in the getAllUsers function from actions.tsx"
       );
     }
-    revalidatePath("/dashboard");
+    revalidatePath("/dashboard/users");
   } catch (error) {
-    console.log(error);
+    if (error) {
+      console.log(error.response.status);
+      return error;
+    }
   }
 }
 
@@ -139,13 +143,26 @@ export async function getUserById(id: number) {
   apiClient.defaults.headers.common["Authorization"] = `Bearer ${
     cookies().get("token")?.value
   }`;
-  const token = getCookie("token", { cookies });
   try {
     const res = await apiClient.get(endpoints.users.id + id);
-    console.log(res.data.data);
     return res;
   } catch (error) {
     console.log("get user by id error", error);
+  }
+}
+
+export async function updateUser(data: IUser) {
+  const token = cookies().get("token")?.value;
+  apiClient.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+
+  try {
+    if (token) {
+      const res = await apiClient.put(endpoints.users.update, data);
+      console.log(res.data);
+      return res.data.statusCode;
+    }
+  } catch (error) {
+    console.log("update user server action", error);
   }
 }
 
@@ -170,8 +187,8 @@ export async function getRolesByUserId(id: number) {
     const res = await apiClient.get(
       endpoints.authorization.roles.getRolesByUserId + id
     );
-    console.log(res)
-    return res
+    console.log(res);
+    return res;
   } catch (error) {
     console.log("get roles by user id error", error);
   }

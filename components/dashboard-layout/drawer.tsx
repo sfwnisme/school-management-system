@@ -38,7 +38,7 @@ export default function Drawer(props: Props) {
           isDashboard={true}
           userDetails={props?.userDetails}
         />
-        <article className="container py-10 h-[calc(100vh-91px)] overflow-y-scroll relative">
+        <article className="container py-10 h-[calc(100vh-91px)] overflow-y-auto relative">
           {props?.children}
         </article>
       </div>

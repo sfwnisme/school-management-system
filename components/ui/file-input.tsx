@@ -1,4 +1,4 @@
-import { Cloud, Upload, UploadCloud } from "lucide-react";
+import { UploadCloud } from "lucide-react";
 import React, { DetailedHTMLProps, InputHTMLAttributes } from "react";
 
 type Props = {};
@@ -22,3 +22,4 @@ export default function FileInput(props: InputProps) {
     </div>
   );
 }
+FileInput.displayName = "FileInput";

@@ -11,9 +11,9 @@ type Props = {
   };
 };
 
-export default function Avatar(props: Props) {
-  const image = props.userDetails?.image || "";
-  const name = props.userDetails?.name || "full name";
+export default function Avatar({ userDetails, ...rest }: Props) {
+  const image = userDetails?.image || "";
+  const name = userDetails?.name || "full name";
   console.log(name);
 
   const userFirstLetters = `${name[0] + name[1]}`;
@@ -21,7 +21,7 @@ export default function Avatar(props: Props) {
   // check if there is an image
   const isImage = Boolean(image.trim());
 
-  const isLoggedin = Boolean(props.userDetails?.name);
+  const isLoggedin = Boolean(userDetails?.name);
 
   const displayImageOrNameLettersAvatar = (
     <div
@@ -47,5 +47,5 @@ export default function Avatar(props: Props) {
     </div>
   );
 
-  return <div {...props}>{displayImageOrNameLettersAvatar}</div>;
+  return <div {...rest}>{displayImageOrNameLettersAvatar}</div>;
 }

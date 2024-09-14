@@ -4,19 +4,46 @@ type Props = {
   outline?: boolean;
   width?: "initial" | "full";
   rounded?: "none" | "initial" | "sm" | "md" | "lg" | "xl" | "full";
-  loading?: number;
+  loading?: boolean;
+  href?: string;
+  tag?: "button" | "link";
+  value?: string;
 };
 
 import { Loader, Loader2 } from "lucide-react";
-import { ButtonHTMLAttributes, DetailedHTMLProps } from "react";
+import {
+  ButtonHTMLAttributes,
+  DetailedHTMLProps,
+  LinkHTMLAttributes,
+} from "react";
+import Link from "next/link";
 
-export default function Button(
-  props: DetailedHTMLProps<
-    ButtonHTMLAttributes<HTMLButtonElement>,
-    HTMLButtonElement
-  > &
-    Props
-) {
+type ButtonTypes = DetailedHTMLProps<
+  ButtonHTMLAttributes<HTMLButtonElement>,
+  HTMLButtonElement
+>;
+
+type LinkType = DetailedHTMLProps<
+  LinkHTMLAttributes<HTMLLinkElement>,
+  HTMLLinkElement
+>;
+
+type ButtonOrLink = ButtonTypes | LinkType;
+
+export default function Button({
+  size = "initial",
+  variant = "initial",
+  outline = false,
+  width = "initial",
+  rounded = "initial",
+  loading = false,
+  value,
+  className,
+  children,
+  href = "/",
+  tag = "button",
+  ...rest
+}: ButtonOrLink & Props) {
   const sizes = {
     initial: "text-base md:text-base py-2 px-6",
     xs: "text-xs p-1",
@@ -48,7 +75,7 @@ export default function Button(
     info: "hover:bg-blue-200 bg-blue-50 outline outline-blue-300 text-blue-500 hover:text-blue-600 disabled:opacity-[0.5] disabled:cursor-not-allowed",
   };
 
-  const width = {
+  const widths = {
     initial: "table",
     full: "w-full",
   };
@@ -63,41 +90,42 @@ export default function Button(
     full: "rounded-full",
   };
 
-  const currentWidth = width[props?.width || "initial"];
+  const currentWidth = widths[width];
 
   // it will dynamically set the current variant of the button
   // if the variant prop is undefined it will set "initial" variant
-  const variantsContainer = props?.outline
-    ? outlines[props?.variant || "initial"]
-    : variants[props?.variant || "initial"];
+  const variantsContainer = outline ? outlines[variant] : variants[variant];
   const currentVariant = variantsContainer;
 
   // it will dynamically set the current size of the button
   // if the size prop is undefined it will set "initial" size
-  const currentSize = sizes[props?.size || "initial"];
+  const currentSize = sizes[size];
 
-  const rounded = rounds[props?.rounded || "initial"];
+  const currentRounded = rounds[rounded];
 
   const settings = `${
-    currentWidth + " " + currentVariant + " " + currentSize + " " + rounded
+    currentWidth +
+    " " +
+    currentVariant +
+    " " +
+    currentSize +
+    " " +
+    currentRounded
   }`;
 
-  // the loading depends on disabled
-  // const loading = (
-  //   <span className="relative flex h-3 w-3">
-  //     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white/50 opacity-75"></span>
-  //     <span className="relative inline-flex rounded-full h-3 w-3 bg-white"></span>
-  //   </span>
-  // );
-  const loading = (
+  const loadingJsx = (
     <span className="relative flex h-5 w-5">
       <Loader className="animate-spin absolute inline-flex h-full w-full rounded-full opacity-75" />
     </span>
   );
 
+  const Tag = tag === "button" ? "button" : Link;
+  const hasHref = href ? { href } : {};
+
   return (
-    <button
-      {...props}
+    <Tag
+      {...hasHref}
+      {...rest}
       className={`col-span-full col-start-1 first-letter:capitalize 
         ${settings}
         duration-150
@@ -109,34 +137,34 @@ export default function Button(
       <div
         className={`CLONE-OF-ELEMENT-VALUE-TO-SAVE-THE-ASPECTS invisible flex items-center gap-x-2`}
       >
-        {props?.children || props?.value}
+        {children || value}
       </div>
       <div
         className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2
       flex items-center gap-x-1
-      ${props?.className}
+      ${className}
      `}
       >
         {/* {loading} */}
-        {props.loading === 1 && loading}
+        {loading && loadingJsx}
 
-        {props?.children || props?.value}
+        {children || value}
       </div>
-    </button>
+    </Tag>
   );
 }
 
 /**Notes
- * you'll notice that I added an invisible losy <div>{props?.value}</div>
+ * you'll notice that I added an invisible losy <div>{value}</div>
  * its duty to save the height of the current button only
  * also I added the loading status and the button value in
  * an absoluted div to center the content of the button
  *
- * No need for the status props all that handled by the props?.disabled
+ * No need for the status props all that handled by the disabled
  *
  * What this component offers
  * use it as a button or Link
  * customized with variants, sizes, loading, and width
- * you can add the value as a props?.children or props?.value
+ * you can add the value as a children or value
  * The size will not interrupt if you change for loading😉
  */

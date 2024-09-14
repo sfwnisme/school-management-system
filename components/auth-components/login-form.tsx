@@ -17,7 +17,7 @@ type Inputs = {
 };
 
 export default function LoginForm() {
-  const [loading, setLoading] = React.useState(0);
+  const [loading, setLoading] = React.useState(false);
   const [serverMessage, setServerMessage] = React.useState("");
   console.log(serverMessage);
   //-------------
@@ -39,7 +39,7 @@ export default function LoginForm() {
   console.log(errorMessage("password"));
 
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
-    setLoading(1);
+    setLoading(true);
     try {
       const loginCredentials = {
         username: data?.username,
@@ -53,7 +53,7 @@ export default function LoginForm() {
     } catch (error) {
       console.error("error from login-form.tsx", error);
     } finally {
-      setLoading(0);
+      setLoading(false);
     }
   };
 
@@ -110,7 +110,7 @@ export default function LoginForm() {
           <Button
             type="submit"
             value={"login"}
-            disabled={!isValid || loading !== 0 ? true : false}
+            disabled={!isValid || loading ? true : false}
             loading={loading}
             size="sm"
           />

@@ -4,11 +4,28 @@ import UserForm from "@/components/ui/users/user-form";
 import { getAllRoles, getRolesByUserId, getUserById } from "@/lib/actions";
 import React from "react";
 
+// export const revalidate = 2;
 type Props = {
   params: {
     id: string;
   };
 };
+
+const updateUserDataSchema = {
+  id: 31,
+  userName: "ali",
+  email: "ali@project.com",
+  imagePath: null,
+  fullName: "ali mo",
+};
+// const dfkj = {
+
+//   "id": 31,
+//   "userName": "ali",
+//   "email": "ali@project.com",
+//   "imagePath": null,
+//   "fullName": "ali mo",
+// }
 
 export default async function page(props: Props) {
   const id = Number(props?.params.id);
