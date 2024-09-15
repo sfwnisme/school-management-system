@@ -2,7 +2,7 @@
 import { PanelLeft, User } from "lucide-react";
 import React from "react";
 import LogoLayout from "./logo-layout";
-import { UpdateStateType } from "@/definitions";
+import { IMUser, UpdateStateType } from "@/definitions";
 import Options from "./userbox/options";
 
 /**
@@ -13,11 +13,7 @@ type Props = {
   toggleDrawer?: boolean;
   setToggleDrawer?: UpdateStateType;
   isDashboard: boolean;
-  userDetails?: {
-    name: string;
-    username: string;
-    image: string | null;
-  };
+  userDetails?: IMUser;
 };
 
 export default function Nav(props: Props) {

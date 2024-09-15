@@ -18,9 +18,16 @@ interface IUser {
   email?: string;
   imagePath?: string;
   fullName?: string;
-  roles?: IRole[];
+  roles?: string[];
   createdAt?: string;
   lastUpdate?: string;
+}
+
+export interface IMUser {
+  username: string;
+  name: string;
+  image?: string;
+  role: string[];
 }
 
 interface IInstructor {
@@ -60,6 +67,12 @@ interface IRole {
   id?: number;
   name: "Admin" | "HR" | "User" | "afasdf";
   hasRole?: boolean;
+}
+
+enum RolesEnum {
+  Admin = "Admin",
+  User = "User",
+  HR = "HR",
 }
 
 interface IRoleByUserId {

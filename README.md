@@ -205,6 +205,11 @@ it is hard to share the response of the catch and the try, so I should use ether
 - [x] refctore: button component, now you can use it as a link.
 - [x] feat: file input component  
 
+### Sun 15/09/2024
+
+- [x] feat: role-based component as a wrapper `is-role-auth.tsx`, you need only to wrap the main layout returned value and it will handle the authorization.
+- [x] refactor: user's dropdown menu displays the links depends on its role.
+
 ### Backlog
 
 - [ ] registration page and form

@@ -13,7 +13,9 @@ export default async function DrawerContainer(props: Props) {
     username: user?.data.data.userName,
     name: user?.data.data.fullName,
     image: user?.data.data.imagePath,
+    role: user?.data.data.roles,
   };
+  console.log(userDetails.role);
   console.log(userDetails);
 
   return (

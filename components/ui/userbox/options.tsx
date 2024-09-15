@@ -2,13 +2,10 @@
 import React from "react";
 import Avatar from "./avatar";
 import Dropdown from "./dropdown";
+import { IMUser } from "@/definitions";
 
 type Props = {
-  userDetails?: {
-    name: string;
-    username: string;
-    image: string | null;
-  };
+  userDetails?:IMUser
 };
 
 export default function Options(props: Props) {

@@ -2,13 +2,10 @@
 import React from "react";
 import DrowerNavLinksLayout from "../ui/drawer-navlinks-layout";
 import Nav from "../ui/nav";
+import { IMUser } from "@/definitions";
 type Props = {
   children: React.ReactNode;
-  userDetails?: {
-    username: string;
-    name: string;
-    image: string | null;
-  };
+  userDetails?: IMUser
 };
 export default function Drawer(props: Props) {
   const [toggleDrawer, setToggleDrawer] = React.useState<boolean>(false);

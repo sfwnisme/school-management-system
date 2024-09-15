@@ -1,14 +1,11 @@
 "use client";
+import { IMUser } from "@/definitions";
 import { User } from "lucide-react";
 import Image from "next/image";
 import React from "react";
 
 type Props = {
-  userDetails?: {
-    name: string;
-    username: string;
-    image: string | null;
-  };
+  userDetails?: IMUser
 };
 
 export default function Avatar({ userDetails, ...rest }: Props) {

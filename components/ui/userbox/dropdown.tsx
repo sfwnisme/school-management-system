@@ -7,19 +7,20 @@ import { userAvatarNavlinks } from "@/lib/data";
 import { usePathname } from "next/navigation";
 import Button from "../button";
 import { LogOut } from "lucide-react";
-import { deleteCookie, hasCookie } from "cookies-next";
+import { deleteCookie } from "cookies-next";
 import { isTokenValid } from "@/lib/actions";
+import { IMUser } from "@/definitions";
 
 type Props = {
   children?: React.ReactNode;
-  userDetails?: { name: string; username: string };
+  userDetails?: IMUser;
 };
 
-export default function Dropdown(props: Props) {
+export default function Dropdown({ children, userDetails }: Props) {
   const pathname = usePathname();
+  const currentUserRole = userDetails?.role || [];
 
   const handleLogout = async () => {
-    // if (hasCookie("token") && hasCookie("refresh-token")) {
     const tokenValid = await isTokenValid();
     console.log(tokenValid);
     if (tokenValid === 200) {
@@ -30,9 +31,11 @@ export default function Dropdown(props: Props) {
     return null;
   };
 
-  const userProtectedLinks = userAvatarNavlinks.protected;
+  const userProtectedLinks = userAvatarNavlinks.protected.filter((link) =>
+    link.roles.includes(currentUserRole[0])
+  );
   const userPublicLinks = userAvatarNavlinks.public;
-  const user = props.userDetails?.name;
+  const user = userDetails?.name;
   const isUserLinksProtectedOrPublic = user
     ? userProtectedLinks
     : userPublicLinks;
@@ -49,21 +52,20 @@ export default function Dropdown(props: Props) {
     ) : null
   );
 
-  // the u
   const userDataContainer =
-    props?.userDetails?.name !== undefined ? (
+    userDetails?.name !== undefined ? (
       <div className="mb- flex items-start gap-1 w-full bg-gray-200 rounded p-1">
         <div className="flex-1">
           <p className="capitalize text-sm text-gray-600">
-            {props?.userDetails?.name}
+            {userDetails?.name}
           </p>
           <p className="capitalize text-xs text-gray-600">
-            {props?.userDetails?.username}
+            {userDetails?.username}
           </p>
           <Badge variant="warning">{"N/A"}</Badge>
         </div>
         <>
-          {props?.userDetails?.name && (
+          {userDetails?.name && (
             <Button size="xs" variant="danger" onClick={handleLogout}>
               <LogOut size={18} />
             </Button>

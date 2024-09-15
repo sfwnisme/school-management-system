@@ -150,24 +150,24 @@ export const userAvatarNavlinks = {
     {
       title: "profile",
       href: "/profile",
-      // protected: true,
+      roles: ["Admin", "User", "HR"],
     },
     {
       title: "dashboard",
       href: "/dashboard",
-      // protected: true,
+      roles: ["Admin"],
     },
   ],
   public: [
     {
       title: "login",
       href: "/login",
-      // protected: false,
+      // roles: ["public"],
     },
     {
       title: "register",
       href: "/register",
-      // protected: false,
+      // roles: ["public"],
     },
   ],
 };
