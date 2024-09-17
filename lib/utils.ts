@@ -1,5 +1,8 @@
 // import { deleteCookie, hasCookie } from "cookies-next";
 
+import { FormDataObjectType } from "@/definitions";
+import { getCurrentUser } from "./actions";
+
 // import { IRole, RolesEnum } from "@/definitions";
 
 enum RolesEnum {
@@ -7,15 +10,13 @@ enum RolesEnum {
   User = "User",
   HR = "HR",
 }
-export const isAdmin = (
-  roles: string[] = [],
-  userRoles: string[] = []
-): Boolean => {
-  const admin = RolesEnum.Admin;
-  console.log(roles);
 
-  // display the navs that have the current roles
-  // const filter
-  if (roles.includes(admin)) return true;
-  return false;
+export const appendToFormData = (data: FormDataObjectType<any>): FormData => {
+  const FD = new FormData();
+  const objectToArray = Object.entries(data);
+  for (const [key, value] of objectToArray) {
+    FD.append(key, value);
+  }
+  return FD;
 };
+

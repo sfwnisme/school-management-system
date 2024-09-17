@@ -18,9 +18,18 @@ interface IUser {
   email?: string;
   imagePath?: string;
   fullName?: string;
+  roleId: number;
   roles?: string[];
   createdAt?: string;
   lastUpdate?: string;
+}
+
+interface YupUserUpdateInputs {
+  id?: number;
+  userName: string;
+  fullName: string;
+  email: string;
+  roleId?: string;
 }
 
 export interface IMUser {
@@ -65,7 +74,7 @@ interface ISubject {
 
 interface IRole {
   id?: number;
-  name: "Admin" | "HR" | "User" | "afasdf";
+  name: string;
   hasRole?: boolean;
 }
 
@@ -87,3 +96,7 @@ type LoginInputTypes = {
   username: string;
   password: string;
 };
+
+interface FormDataObjectType<T> {
+  [key: string]: T;
+}

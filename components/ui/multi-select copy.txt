@@ -1,0 +1,39 @@
+import React, { DetailedHTMLProps, InputHTMLAttributes } from "react";
+import Input from "./input";
+
+type Props = {
+  // className: string;
+  name?: string;
+};
+
+type CheckBoxType = DetailedHTMLProps<
+  InputHTMLAttributes<HTMLInputElement>,
+  HTMLInputElement
+> &
+  Props;
+
+const MultiSelect = React.forwardRef<HTMLInputElement, CheckBoxType>(
+  (props, ref) => {
+    return (
+      // <div
+      //   className={`border border-gray-300 rounded shadow-lg shadow-gray-100 p-2 grid grid-cols-4 ${props.className}`}
+      // >
+      <div className="flex items-center justify-start gap-2">
+        <input type="checkbox" className="peer opacity-0 size-3" {...props} />
+        {/* <span className="flex size-3 min-w-3 min-h-3 border border-white outline-gray-500 outline outline-1 rounded-sm peer-checked:bg-blue-500 peer-checked:outline-blue-500"></span> */}
+        <label
+          htmlFor={props.id}
+          className={`peer-checked:text-blue-500 cursor-pointer text-sm relative
+          select-none ${props.disabled && "opacity-45 cursor-not-allowed"}
+          before:size-3 before:min-h-3 before:min-w-3 before:border before:border-white before:outline-gray-500 before:outline before:outline-1 before:peer-checked:bg-blue-500 before:peer-checked:outline-blue-500 before:rounded-sm before:absolute before:-left-5 before:top-1/2 before:-translate-y-1/2
+          `}
+        >
+          {props.name}
+        </label>
+      </div>
+      // </div>
+    );
+  }
+);
+export default MultiSelect;
+MultiSelect.displayName = "MultiSelect";

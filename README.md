@@ -210,6 +210,14 @@ it is hard to share the response of the catch and the try, so I should use ether
 - [x] feat: role-based component as a wrapper `is-role-auth.tsx`, you need only to wrap the main layout returned value and it will handle the authorization.
 - [x] refactor: user's dropdown menu displays the links depends on its role.
 
+### Mon 16/09/2024 & Tue 17/09/2024
+
+- [x] user role update.
+- [x] setting up yup schema
+- [ ] user create.
+- [x] user delete.
+- [x] button enhancements
+
 ### Backlog
 
 - [ ] registration page and form

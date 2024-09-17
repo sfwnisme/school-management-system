@@ -1,5 +1,5 @@
 "use server";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { apiClient, endpoints } from "./endpoints";
 import { cookies } from "next/headers";
 import { revalidatePath, revalidateTag } from "next/cache";
@@ -7,6 +7,7 @@ import { redirect } from "next/navigation";
 import { isRedirectError } from "next/dist/client/components/redirect";
 import { getCookie, setCookie } from "cookies-next";
 import { IUser } from "@/definitions";
+import { appendToFormData } from "./utils";
 
 //----------------------------
 // Authentication endpoints
@@ -105,7 +106,7 @@ export async function getAllUsers() {
       revalidatePath("/dashboard/users");
       revalidateTag("/dashboard/users");
       console.log(res.data.data);
-      return res;
+      return res.data.data;
     } else {
       console.log(
         "the token not found in the getAllUsers function from actions.tsx"
@@ -113,8 +114,11 @@ export async function getAllUsers() {
     }
     revalidatePath("/dashboard/users");
   } catch (error) {
-    if (error) {
-      console.log(error.response.status);
+    if (axios.isAxiosError(error)) {
+      console.log(error.response?.status);
+      return error;
+    } else {
+      console.log("get all users error", error);
       return error;
     }
   }
@@ -155,14 +159,33 @@ export async function updateUser(data: IUser) {
   const token = cookies().get("token")?.value;
   apiClient.defaults.headers.common["Authorization"] = `Bearer ${token}`;
 
+  const FD = appendToFormData(data);
   try {
     if (token) {
-      const res = await apiClient.put(endpoints.users.update, data);
+      const res = await apiClient.put(endpoints.users.update, FD);
       console.log(res.data);
       return res.data.statusCode;
     }
   } catch (error) {
     console.log("update user server action", error);
+  }
+}
+
+export async function deleteUser(id: number) {
+  const token = cookies().get("token")?.value;
+  apiClient.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+  try {
+    const res = await apiClient.delete(endpoints.users.delete + "?id=" + id);
+    console.log(res);
+    return res;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      console.log(error);
+      return error.response?.status;
+    } else {
+      console.log(error);
+      return error;
+    }
   }
 }
 

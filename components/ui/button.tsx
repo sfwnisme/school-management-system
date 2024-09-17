@@ -1,3 +1,13 @@
+import { Loader, Loader2 } from "lucide-react";
+import {
+  ButtonHTMLAttributes,
+  DetailedHTMLProps,
+  LinkHTMLAttributes,
+  ReactHTML,
+} from "react";
+import Link from "next/link";
+import type { UrlObject } from "url";
+
 type Props = {
   size?: "initial" | "xs" | "sm" | "md" | "lg";
   variant?: "initial" | "success" | "warning" | "danger" | "info";
@@ -5,18 +15,92 @@ type Props = {
   width?: "initial" | "full";
   rounded?: "none" | "initial" | "sm" | "md" | "lg" | "xl" | "full";
   loading?: boolean;
+  loadingText?: string;
   href?: string;
-  tag?: "button" | "link";
+  tag?: keyof ReactHTML;
   value?: string;
+  className?: string;
+  children?: React.ReactNode;
 };
 
-import { Loader, Loader2 } from "lucide-react";
-import {
-  ButtonHTMLAttributes,
-  DetailedHTMLProps,
-  LinkHTMLAttributes,
-} from "react";
-import Link from "next/link";
+type Url = string | UrlObject;
+
+type InternalLinkProps = {
+  /**
+   * The path or URL to navigate to. It can also be an object.
+   *
+   * @example https://nextjs.org/docs/api-reference/next/link#with-url-object
+   */
+  href: Url;
+  /**
+   * Optional decorator for the path that will be shown in the browser URL bar. Before Next.js 9.5.3 this was used for dynamic routes, check our [previous docs](https://github.com/vercel/next.js/blob/v9.5.2/docs/api-reference/next/link.md#dynamic-routes) to see how it worked. Note: when this path differs from the one provided in `href` the previous `href`/`as` behavior is used as shown in the [previous docs](https://github.com/vercel/next.js/blob/v9.5.2/docs/api-reference/next/link.md#dynamic-routes).
+   */
+  as?: Url;
+  /**
+   * Replace the current `history` state instead of adding a new url into the stack.
+   *
+   * @defaultValue `false`
+   */
+  replace?: boolean;
+  /**
+   * Whether to override the default scroll behavior
+   *
+   * @example https://nextjs.org/docs/api-reference/next/link#disable-scrolling-to-the-top-of-the-page
+   *
+   * @defaultValue `true`
+   */
+  scroll?: boolean;
+  /**
+   * Update the path of the current page without rerunning [`getStaticProps`](/docs/pages/building-your-application/data-fetching/get-static-props), [`getServerSideProps`](/docs/pages/building-your-application/data-fetching/get-server-side-props) or [`getInitialProps`](/docs/pages/api-reference/functions/get-initial-props).
+   *
+   * @defaultValue `false`
+   */
+  shallow?: boolean;
+  /**
+   * Forces `Link` to send the `href` property to its child.
+   *
+   * @defaultValue `false`
+   */
+  passHref?: boolean;
+  /**
+   * Prefetch the page in the background.
+   * Any `<Link />` that is in the viewport (initially or through scroll) will be preloaded.
+   * Prefetch can be disabled by passing `prefetch={false}`. When `prefetch` is set to `false`, prefetching will still occur on hover in pages router but not in app router. Pages using [Static Generation](/docs/basic-features/data-fetching/get-static-props.md) will preload `JSON` files with the data for faster page transitions. Prefetching is only enabled in production.
+   *
+   * @defaultValue `true`
+   */
+  prefetch?: boolean;
+  /**
+   * The active locale is automatically prepended. `locale` allows for providing a different locale.
+   * When `false` `href` has to include the locale as the default behavior is disabled.
+   */
+  locale?: string | false;
+  /**
+   * Enable legacy link behavior.
+   * @defaultValue `false`
+   * @see https://github.com/vercel/next.js/commit/489e65ed98544e69b0afd7e0cfc3f9f6c2b803b7
+   */
+  legacyBehavior?: boolean;
+  /**
+   * Optional event handler for when the mouse pointer is moved onto Link
+   */
+  onMouseEnter?: React.MouseEventHandler<HTMLAnchorElement>;
+  /**
+   * Optional event handler for when Link is touched.
+   */
+  onTouchStart?: React.TouchEventHandler<HTMLAnchorElement>;
+  /**
+   * Optional event handler for when Link is clicked.
+   */
+  onClick?: React.MouseEventHandler<HTMLAnchorElement>;
+};
+
+type LinkPropsType = React.ForwardRefExoticComponent<
+  Omit<React.AnchorHTMLAttributes<HTMLAnchorElement>, keyof InternalLinkProps> &
+    InternalLinkProps & {
+      children?: React.ReactNode;
+    } & React.RefAttributes<HTMLAnchorElement>
+>;
 
 type ButtonTypes = DetailedHTMLProps<
   ButtonHTMLAttributes<HTMLButtonElement>,
@@ -28,7 +112,10 @@ type LinkType = DetailedHTMLProps<
   HTMLLinkElement
 >;
 
-type ButtonOrLink = ButtonTypes | LinkType;
+type ButtonWithProps = ButtonTypes & Props;
+type LinkPropsTypeWithProps = LinkPropsType & Props;
+
+type ButtonOrLink = ButtonWithProps | LinkPropsTypeWithProps;
 
 export default function Button({
   size = "initial",
@@ -37,17 +124,18 @@ export default function Button({
   width = "initial",
   rounded = "initial",
   loading = false,
+  loadingText = "",
   value,
   className,
   children,
   href = "/",
   tag = "button",
   ...rest
-}: ButtonOrLink & Props) {
+}: ButtonOrLink) {
   const sizes = {
     initial: "text-base md:text-base py-2 px-6",
     xs: "text-xs p-1",
-    sm: "text-sm py-2 px-4",
+    sm: "text-xs md:text-sm py-1 px-2 md:py-2 md:px-4",
     md: "text-base py-2 px-6",
     lg: "text-lg py-3 px-7",
   };
@@ -119,7 +207,9 @@ export default function Button({
     </span>
   );
 
+  // const Tag = tag === "button" ? "button" : Link;
   const Tag = tag === "button" ? "button" : Link;
+  // const Tag = tag ? Link : 'button';
   const hasHref = href ? { href } : {};
 
   return (
@@ -148,7 +238,7 @@ export default function Button({
         {/* {loading} */}
         {loading && loadingJsx}
 
-        {children || value}
+        {loading && loadingText !== "" ? loadingText : children || value}
       </div>
     </Tag>
   );

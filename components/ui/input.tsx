@@ -23,9 +23,10 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>((props, ref) => {
   };
 
   const sizes = {
-    initial: "text-xs px-4 py-2 min-h-[40px] w-full",
-    sm: "text-xs px-4 py-1 min-h-[30px] w-full",
-    lg: "text-sm px-4 p-2 min-h-[50px] w-full",
+    initial: "text-sm px-4 py-2 min-h-[40px] w-full",
+    xs: "text-xs px-4 py-1 min-h-[30px] w-full",
+    sm: "text-sm px-4 py-2 min-h-[30px] w-full",
+    lg: "text-base px-4 p-2 min-h-[50px] w-full",
   };
 
   const focusVisible = "focus-visible:outline outline-[3px] outline-gray-200";

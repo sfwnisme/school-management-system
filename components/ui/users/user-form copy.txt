@@ -1,14 +1,12 @@
 "use client";
 import React, { ChangeEvent, Fragment, useState } from "react";
 import Input from "../input";
-import { IRole, IUser, YupUserUpdateInputs } from "@/definitions";
+import { IRole, IUser } from "@/definitions";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { updateUser } from "@/lib/actions";
 import Button from "../button";
 import MultiSelect from "../multi-select";
-import { yupUserSchema } from "@/lib/validation-schema-yup";
-import Message from "../message";
 
 type Props = {
   user: IUser;
@@ -20,24 +18,29 @@ type Props = {
 };
 
 type Inputs = {
+  id?: number;
   userName: string;
   fullName: string;
-  email?: string;
+  email: string;
 };
 
 export default function UserForm(props: Props) {
   const user = props?.user;
   const roles = props?.roles;
+  const userRoles = props?.userRoles;
   const [isPending, setIsPending] = useState(false);
+  const [giveRoles, setGiveRoles] = useState<IRole[]>(userRoles.roles);
 
-  const currentRole = () => {
-    const findTheCurrentRole = roles.find((role) => {
-      if (role.name === user.roles?.[0]) {
-        return role.id;
-      }
-    });
-    return findTheCurrentRole?.id;
+  const theRoles = {
+    admin: { id: 1, name: "Admin", hasRole: false },
+    user: { id: 2, name: "User", hasRole: true },
+    hr: { id: 3, name: "HR", hasRole: false },
+    afasdf: { id: 4, name: "Afasdf", hasRole: false },
   };
+
+  console.log(user.roles);
+  console.log(roles);
+  console.log(userRoles);
 
   //--------------------------------
   // form submit
@@ -45,9 +48,11 @@ export default function UserForm(props: Props) {
   const {
     register,
     handleSubmit,
+    watch,
+    getValues,
     formState: { errors, isValid },
-  } = useForm<YupUserUpdateInputs>({
-    resolver: yupResolver(yupUserSchema),
+  } = useForm<IUser>({
+    // resolver: yupResolver(UserSchema),
     mode: "onChange",
     defaultValues: {
       userName: user?.userName,
@@ -56,16 +61,25 @@ export default function UserForm(props: Props) {
     },
   });
 
-  const onSubmit: SubmitHandler<YupUserUpdateInputs> = async (data) => {
+  const handleRoles = (e: ChangeEvent<HTMLInputElement>) => {
+    const { id, name, checked } = e.target;
+    console.log(id, name, checked);
+    const changeTheRole = setGiveRoles((prev) =>
+      prev.map((p) => (p?.id === +id ? { ...p, hasRole: checked } : p))
+    );
+    changeTheRole;
+    console.log(giveRoles);
+  };
+  console.log(giveRoles);
+
+  const onSubmit: SubmitHandler<IUser> = async (data) => {
     setIsPending(true);
-    console.log(data?.roleId);
     try {
       const newUserData = {
         id: user?.id,
         userName: data?.userName,
         fullName: data?.fullName,
         email: data?.email,
-        roleId: Number(data.roleId),
       };
       let res = await updateUser(newUserData);
       return res;
@@ -77,10 +91,35 @@ export default function UserForm(props: Props) {
   };
 
   // this function helps me select the initial role "User", in this scenario I can prevent modifying this role
-  const userRolesSelectJsx = roles.map((role) => (
-    <option id={role?.id?.toString()} value={role.id} key={role.id}>
-      {role.name}
-    </option>
+  const getTheDefaultRole = (id: number = 1000): boolean =>
+    id === 2 ? true : false;
+
+  console.log(getTheDefaultRole(2));
+
+  console.log(giveRoles);
+
+  // { id: 1, name: 'Admin', hasRole: false }
+  console.log(userRoles);
+  const userRolesJsx = userRoles.roles.map((role) => (
+    <Fragment key={role.id}>
+      {getTheDefaultRole(role.id) ? (
+        <MultiSelect
+          id={`${role.id}`}
+          key={role.id}
+          name={role?.name}
+          disabled={getTheDefaultRole(role.id)}
+          checked={role.hasRole}
+        />
+      ) : (
+        <MultiSelect
+          id={`${role.id}`}
+          key={role.id}
+          name={role?.name}
+          onChange={handleRoles}
+          checked={role.hasRole}
+        />
+      )}
+    </Fragment>
   ));
 
   return (
@@ -94,47 +133,23 @@ export default function UserForm(props: Props) {
             <Input
               type="text"
               placeholder="Your full name"
-              variant={
-                errors.fullName?.message
-                  ? "danger"
-                  : isValid
-                  ? "success"
-                  : "initial"
-              }
               {...register("fullName")}
             />
-            <Message variant="danger">{errors.fullName?.message}</Message>
           </div>
           <div className="col-span-full md:col-span-2">
             <Input
               type="text"
               placeholder="Your user name"
-              variant={
-                errors.userName?.message
-                  ? "danger"
-                  : isValid
-                  ? "success"
-                  : "initial"
-              }
               {...register("userName")}
             />
-            <Message variant="danger">{errors.userName?.message}</Message>
-            </div>
-          <div className="col-span-full md:col-span-3">
+          </div>
+          <div className="col-span-full md:col-span-full">
             <Input
               type="text"
               placeholder="Your email"
-              variant={
-                errors.email?.message
-                  ? "danger"
-                  : isValid
-                  ? "success"
-                  : "initial"
-              }
               {...register("email")}
             />
-            <Message variant="danger">{errors.email?.message}</Message>
-            </div>
+          </div>
           {/* <div className="col-span-full">
             <FileInput
               type="file"
@@ -144,19 +159,19 @@ export default function UserForm(props: Props) {
               onChange={(e) => setImageState(e.target.files[0])}
             />
           </div> */}
-          <select
-            {...register("roleId")}
-            defaultValue={currentRole()}
-            className="w-full h-fit border border-gray-500 rounded text-black text-sm px-4 py-2 cursor-pointer col-span-1"
+          {/* <MultiSelect className="col-span-full" id={"1"} name={"name"}>
+            admin
+          </MultiSelect> */}
+          <div
+            className={`border border-gray-300 rounded shadow-lg shadow-gray-100 p-2 grid grid-cols-4 col-span-full`}
           >
-            {userRolesSelectJsx}
-          </select>
+            {userRolesJsx}
+          </div>{" "}
           <Button
             variant="info"
             type="submit"
             loading={isPending}
             disabled={isPending}
-            loadingText="Updating..."
           >
             Update
           </Button>

@@ -53,11 +53,14 @@ export default function Hero({}: Props) {
             effort consumption.
           </h2>
           <div className="mt-10 flex items-center justify-center gap-x-6">
-            <Link href={"/dashboard"}>
-              <Button value="Explore" variant="info">
-                Explore <ArrowRight strokeWidth={1} />
-              </Button>
-            </Link>
+            <Button
+              value="Explore"
+              variant="info"
+              href={"/dashboard"}
+              tag={'link'}
+            >
+              Explore <ArrowRight strokeWidth={1} />
+            </Button>
           </div>
         </div>
       </div>
