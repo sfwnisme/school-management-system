@@ -6,7 +6,7 @@ import { revalidatePath, revalidateTag } from "next/cache";
 import { redirect } from "next/navigation";
 import { isRedirectError } from "next/dist/client/components/redirect";
 import { getCookie, setCookie } from "cookies-next";
-import { IUser } from "@/definitions";
+import { IUser, YupUserCreateInputs } from "@/definitions";
 import { appendToFormData } from "./utils";
 
 //----------------------------
@@ -171,17 +171,36 @@ export async function updateUser(data: IUser) {
   }
 }
 
+export async function createUser(data: FormData) {
+  const token = cookies().get("token")?.value;
+  apiClient.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+
+  try {
+    const res = await apiClient.post(endpoints.users.create, data);
+    console.log(res);
+    return res.data.statusCode;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      console.log(error.response);
+      return error?.response;
+    } else {
+      console.log(error);
+      return error;
+    }
+  }
+}
+
 export async function deleteUser(id: number) {
   const token = cookies().get("token")?.value;
   apiClient.defaults.headers.common["Authorization"] = `Bearer ${token}`;
   try {
     const res = await apiClient.delete(endpoints.users.delete + "?id=" + id);
     console.log(res);
-    return res;
+    return res.data;
   } catch (error) {
     if (axios.isAxiosError(error)) {
       console.log(error);
-      return error.response?.status;
+      return error.response;
     } else {
       console.log(error);
       return error;

@@ -1,3 +1,4 @@
+"use client";
 import React, { DetailedHTMLProps, InputHTMLAttributes } from "react";
 
 type Props = {

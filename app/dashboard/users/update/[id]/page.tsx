@@ -1,6 +1,6 @@
 import Input from "@/components/ui/input";
 import Title from "@/components/ui/title";
-import UserForm from "@/components/ui/users/user-form";
+import UserForm from "@/components/ui/users/user-update-form";
 import { getAllRoles, getRolesByUserId, getUserById } from "@/lib/actions";
 import React from "react";
 

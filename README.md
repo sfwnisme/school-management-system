@@ -214,9 +214,13 @@ it is hard to share the response of the catch and the try, so I should use ether
 
 - [x] user role update.
 - [x] setting up yup schema
-- [ ] user create.
 - [x] user delete.
 - [x] button enhancements
+
+### Wed 18/09/2024
+
+- [x] user create.
+- [ ] improve the delete button
 
 ### Backlog
 

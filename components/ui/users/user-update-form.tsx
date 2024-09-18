@@ -7,7 +7,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { updateUser } from "@/lib/actions";
 import Button from "../button";
 import MultiSelect from "../multi-select";
-import { yupUserSchema } from "@/lib/validation-schema-yup";
+import { yupUserUpdateSchema } from "@/lib/validation-schema-yup";
 import Message from "../message";
 
 type Props = {
@@ -25,7 +25,7 @@ type Inputs = {
   email?: string;
 };
 
-export default function UserForm(props: Props) {
+export default function UserUpdateForm(props: Props) {
   const user = props?.user;
   const roles = props?.roles;
   const [isPending, setIsPending] = useState(false);
@@ -47,7 +47,7 @@ export default function UserForm(props: Props) {
     handleSubmit,
     formState: { errors, isValid },
   } = useForm<YupUserUpdateInputs>({
-    resolver: yupResolver(yupUserSchema),
+    resolver: yupResolver(yupUserUpdateSchema),
     mode: "onChange",
     defaultValues: {
       userName: user?.userName,

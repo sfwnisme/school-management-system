@@ -32,6 +32,15 @@ interface YupUserUpdateInputs {
   roleId?: string;
 }
 
+interface YupUserCreateInputs {
+  userName: string;
+  fullName: string;
+  email: string;
+  image: keyof number;
+  password: string;
+  confirmPassword: string;
+}
+
 export interface IMUser {
   username: string;
   name: string;

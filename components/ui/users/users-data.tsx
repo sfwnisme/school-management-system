@@ -1,12 +1,11 @@
 import Button from "../button";
 import { Edit, Trash } from "lucide-react";
-import { deleteUser, getAllUsers, getCurrentUser } from "@/lib/actions";
+import { getAllUsers, getCurrentUser } from "@/lib/actions";
 import Tr from "../table/tr";
 import Td from "../table/td";
 import { IUser } from "@/definitions";
 import Image from "next/image";
 import { Suspense } from "react";
-import { AxiosResponse } from "axios";
 import DeleteButton from "../delete-button";
 
 export default async function UsersData() {
@@ -59,20 +58,7 @@ export default async function UsersData() {
                 <Edit size={15} />
               </Button>
             </Suspense>
-            {!isCurrentUser(id as number) && (
-              <DeleteButton id={Number(id)}>
-                <Button
-                  size="sm"
-                  outline
-                  variant="danger"
-                  width="full"
-                  tag="button"
-                  // onClick={() => deleteTheUser(id)}
-                >
-                  <Trash size={15} />
-                </Button>
-              </DeleteButton>
-            )}
+            {!isCurrentUser(id as number) && <DeleteButton id={Number(id)} />}
           </div>
         </Td>
       </Tr>

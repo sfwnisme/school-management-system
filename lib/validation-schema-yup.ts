@@ -1,4 +1,4 @@
-import { object, string } from "yup";
+import { object, ref, string } from "yup";
 
 const user = {
   userName: string()
@@ -16,10 +16,21 @@ export const loginSchema = object({
   username: user.userName,
   password: user.password,
 });
-export const yupUserSchema = object({
+export const yupUserUpdateSchema = object({
   userName: user.userName,
   fullName: user.fullName,
   email: user.email,
+});
+
+export const yupUserCreateSchema = object({
+  userName: user.userName,
+  fullName: user.fullName,
+  email: user.email,
+  password: user.password,
+  confirmPassword: user.password.oneOf(
+    [ref("password"), ""],
+    "Password must match"
+  ),
 });
 
 //safimooo

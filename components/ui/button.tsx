@@ -1,3 +1,4 @@
+'use client'
 import { Loader, Loader2 } from "lucide-react";
 import {
   ButtonHTMLAttributes,
