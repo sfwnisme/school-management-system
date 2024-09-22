@@ -2,11 +2,15 @@
 import axios, { AxiosError } from "axios";
 import { apiClient, endpoints } from "./endpoints";
 import { cookies } from "next/headers";
-import { revalidatePath, revalidateTag } from "next/cache";
+import {
+  revalidatePath,
+  revalidateTag,
+  unstable_noStore as noStore,
+} from "next/cache";
 import { redirect } from "next/navigation";
 import { isRedirectError } from "next/dist/client/components/redirect";
 import { getCookie, setCookie } from "cookies-next";
-import { IUser, YupUserCreateInputs } from "@/definitions";
+import { IUser, YupUserResetPassword } from "@/definitions";
 import { appendToFormData } from "./utils";
 
 //----------------------------
@@ -103,16 +107,14 @@ export async function getAllUsers() {
     const token = getCookie("token", { cookies });
     if (token) {
       const res = await apiClient.get(endpoints.users.all);
-      revalidatePath("/dashboard/users");
-      revalidateTag("/dashboard/users");
       console.log(res.data.data);
+      revalidatePath("dashboard/users");
       return res.data.data;
     } else {
       console.log(
         "the token not found in the getAllUsers function from actions.tsx"
       );
     }
-    revalidatePath("/dashboard/users");
   } catch (error) {
     if (axios.isAxiosError(error)) {
       console.log(error.response?.status);
@@ -136,7 +138,7 @@ export async function getCurrentUser() {
       console.log(res.data.data.userName);
       console.log(res.data.data.fullName);
       console.log(res.data.data);
-      return res;
+      return res.data.data;
     }
   } catch (error) {
     console.error("current user endpoint function errro", error);
@@ -201,6 +203,34 @@ export async function deleteUser(id: number) {
     if (axios.isAxiosError(error)) {
       console.log(error);
       return error.response;
+    } else {
+      console.log(error);
+      return error;
+    }
+  }
+}
+
+export async function resetUserPassword(data: YupUserResetPassword) {
+  const token = cookies().get("token")?.value;
+  apiClient.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+  console.log(data);
+
+  const FD = new FormData();
+  FD.append("password", data.password);
+  FD.append("confirmPassword", data.confirmPassword);
+  FD.append("email", data.email);
+
+  try {
+    const res = await apiClient.post(
+      endpoints.authentication.resetPassword,
+      FD
+    );
+    console.log(res.data);
+    return res.data.statusCode;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      console.log(error.response?.data);
+      return error.response?.data.statusCode;
     } else {
       console.log(error);
       return error;

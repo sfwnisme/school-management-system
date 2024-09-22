@@ -27,7 +27,7 @@ export default function Nav(props: Props) {
 
   if (isDashboard) {
     content = (
-      <nav className="w-full  border-b p-4 relative">
+      <nav className="z-20 w-full border-b p-4 relative bg-white">
         <ul className="flex items-stretch gap-2 justify-between">
           {!toggleDrawer ? (
             <li className="py-1 flex items-center gap-4">

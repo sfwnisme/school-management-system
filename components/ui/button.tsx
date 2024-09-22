@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import { Loader, Loader2 } from "lucide-react";
 import {
   ButtonHTMLAttributes,
@@ -11,7 +11,7 @@ import type { UrlObject } from "url";
 
 type Props = {
   size?: "initial" | "xs" | "sm" | "md" | "lg";
-  variant?: "initial" | "success" | "warning" | "danger" | "info";
+  variant?: "initial" | "success" | "warning" | "danger" | "info" | "link";
   outline?: boolean;
   width?: "initial" | "full";
   rounded?: "none" | "initial" | "sm" | "md" | "lg" | "xl" | "full";
@@ -151,6 +151,7 @@ export default function Button({
     danger:
       "hover:bg-red-600 bg-red-500 text-white disabled:opacity-[0.5] disabled:cursor-not-allowed",
     info: "hover:bg-blue-600 bg-blue-500 text-white disabled:opacity-[0.5] disabled:cursor-not-allowed",
+    link: "hover:text-blue-600 text-blue-500 disabled:opacity-[0.5] disabled:cursor-not-allowed",
   };
   const outlines = {
     initial:
@@ -162,6 +163,7 @@ export default function Button({
     danger:
       "hover:bg-red-200 bg-red-50 outline outline-red-300 text-red-500 hover:text-red-600  disabled:opacity-[0.5] disabled:cursor-not-allowed",
     info: "hover:bg-blue-200 bg-blue-50 outline outline-blue-300 text-blue-500 hover:text-blue-600 disabled:opacity-[0.5] disabled:cursor-not-allowed",
+    link: "hover:text-blue-600 text-blue-500 disabled:opacity-[0.5] disabled:cursor-not-allowed",
   };
 
   const widths = {
@@ -217,7 +219,8 @@ export default function Button({
     <Tag
       {...hasHref}
       {...rest}
-      className={`col-span-full col-start-1 first-letter:capitalize 
+      className={`
+        col-span-full col-start-1 first-letter:capitalize 
         ${settings}
         duration-150
         flex items-center justify-center
@@ -228,15 +231,14 @@ export default function Button({
       <div
         className={`CLONE-OF-ELEMENT-VALUE-TO-SAVE-THE-ASPECTS invisible flex items-center gap-x-2`}
       >
-        {children || value}
+        {loading && loadingText !== "" ? loadingText : children || value}
       </div>
       <div
         className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2
-      flex items-center gap-x-1
+      flex items-center gap-x-1 w-full justify-center
       ${className}
      `}
       >
-        {/* {loading} */}
         {loading && loadingJsx}
 
         {loading && loadingText !== "" ? loadingText : children || value}

@@ -1,5 +1,8 @@
+import Button from "@/components/ui/button";
 import Input from "@/components/ui/input";
 import Title from "@/components/ui/title";
+import UserResetPasswordForm from "@/components/ui/users/user-reset-password-form";
+import UserResetPassword from "@/components/ui/users/user-reset-password-form";
 import UserForm from "@/components/ui/users/user-update-form";
 import { getAllRoles, getRolesByUserId, getUserById } from "@/lib/actions";
 import React from "react";
@@ -47,12 +50,16 @@ export default async function page(props: Props) {
   console.log(userData);
   return (
     <div>
-      <Title>Update User</Title>
+      <Title title="Update User">
+        <Button tag="link" href="/dashboard/users" value="Users" />
+      </Title>
       <UserForm
         user={userData}
         roles={allRolesData}
         userRoles={userRolesData}
       />
+      <br />
+      <UserResetPasswordForm user={userData} />
     </div>
   );
 }

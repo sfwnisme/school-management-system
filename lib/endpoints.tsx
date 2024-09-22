@@ -19,7 +19,6 @@ export const endpoints = {
     sendResetPasswordCode: "authentication/confirm-email",
     confirmResetPassword: "authentication/confirm-reset-password",
     resetPassword: "authentication/reset-password",
-  //
   },
   authorization: {
     roles: {

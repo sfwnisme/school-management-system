@@ -1,4 +1,4 @@
-// 'use client'
+'use client'
 import { Suspense } from "react";
 import UsersData from "./users-data";
 import Table from "../table/table";
@@ -7,8 +7,12 @@ import Th from "../table/th";
 import Thead from "../table/thead";
 import Tbody from "../table/tbody";
 import TableSkeleton from "../skeletons/table-skeleton";
-
-export default function UsersTable() {
+import { IUser } from "@/definitions";
+type Props = {
+  users: IUser[];
+  currentUser: IUser;
+};
+export default function UsersTable(props: Props) {
   return (
     <div>
       <Suspense fallback={<TableSkeleton cols={6} />}>
@@ -24,7 +28,7 @@ export default function UsersTable() {
             </Tr>
           </Thead>
           <Tbody>
-            <UsersData />
+            <UsersData users={props.users} currentUser={props.currentUser} />
           </Tbody>
         </Table>
       </Suspense>

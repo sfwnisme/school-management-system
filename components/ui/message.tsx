@@ -22,7 +22,7 @@ export default function Message(props: Props) {
   return (
     <small className={`${settings} ${props?.className || ""} text-xs`}>
       {props?.children}
-      <span className="invisible">this for the height</span>
+      {/* <span className="invisible">this for the height</span> */}
     </small>
   );
 }

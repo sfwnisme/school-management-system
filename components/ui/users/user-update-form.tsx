@@ -4,9 +4,8 @@ import Input from "../input";
 import { IRole, IUser, YupUserUpdateInputs } from "@/definitions";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { updateUser } from "@/lib/actions";
+import { getAllUsers, resetUserPassword, updateUser } from "@/lib/actions";
 import Button from "../button";
-import MultiSelect from "../multi-select";
 import { yupUserUpdateSchema } from "@/lib/validation-schema-yup";
 import Message from "../message";
 
@@ -24,8 +23,13 @@ type Inputs = {
   fullName: string;
   email?: string;
 };
-
+export const revalid = 1;
 export default function UserUpdateForm(props: Props) {
+  const [responseMessage, setResponseMessage] = useState({
+    status: -1,
+    message: "",
+  });
+  const [resetPassword, setResetPassword] = useState(false);
   const user = props?.user;
   const roles = props?.roles;
   const [isPending, setIsPending] = useState(false);
@@ -58,7 +62,6 @@ export default function UserUpdateForm(props: Props) {
 
   const onSubmit: SubmitHandler<YupUserUpdateInputs> = async (data) => {
     setIsPending(true);
-    console.log(data?.roleId);
     try {
       const newUserData = {
         id: user?.id,
@@ -67,7 +70,16 @@ export default function UserUpdateForm(props: Props) {
         email: data?.email,
         roleId: Number(data.roleId),
       };
-      let res = await updateUser(newUserData);
+      const res = await updateUser(newUserData);
+      console.log(res);
+      setResponseMessage({
+        status: res,
+        message:
+          res === 200
+            ? "User's information updated successfully"
+            : "Try another time",
+      });
+      await getAllUsers();
       return res;
     } catch (error) {
       console.log("update user error", error);
@@ -84,84 +96,81 @@ export default function UserUpdateForm(props: Props) {
   ));
 
   return (
-    <div>
-      <div className="max-w-[700px]">
-        <form
-          onSubmit={handleSubmit(onSubmit)}
-          className="grid grid-cols-4 gap-2"
+    <div className="w-full md:max-w-[700px] md:w-auto mx-auto rounded border border-gray-300 p-4">
+      <h1 className="mb-4 text-lg font-medium underline">
+        Update user's info:
+      </h1>
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="grid grid-cols-4 gap-2"
+      >
+        <div className="col-span-full md:col-span-2">
+          <Input
+            type="text"
+            placeholder="Your full name"
+            variant={
+              errors.fullName?.message
+                ? "danger"
+                : isValid
+                ? "success"
+                : "initial"
+            }
+            {...register("fullName")}
+          />
+          <Message variant="danger">{errors.fullName?.message}</Message>
+        </div>
+        <div className="col-span-full md:col-span-2">
+          <Input
+            type="text"
+            placeholder="Your user name"
+            variant={
+              errors.userName?.message
+                ? "danger"
+                : isValid
+                ? "success"
+                : "initial"
+            }
+            {...register("userName")}
+          />
+          <Message variant="danger">{errors.userName?.message}</Message>
+        </div>
+        <div className="col-span-full md:col-span-3">
+          <Input
+            type="text"
+            placeholder="Your email"
+            variant={
+              errors.email?.message ? "danger" : isValid ? "success" : "initial"
+            }
+            {...register("email")}
+          />
+          <Message variant="danger">{errors.email?.message}</Message>
+        </div>
+        <select
+          {...register("roleId")}
+          defaultValue={currentRole()}
+          className="w-full h-fit border border-gray-500 rounded text-black text-sm px-4 py-2 cursor-pointer col-span-1"
         >
-          <div className="col-span-full md:col-span-2">
-            <Input
-              type="text"
-              placeholder="Your full name"
-              variant={
-                errors.fullName?.message
-                  ? "danger"
-                  : isValid
-                  ? "success"
-                  : "initial"
-              }
-              {...register("fullName")}
-            />
-            <Message variant="danger">{errors.fullName?.message}</Message>
+          {userRolesSelectJsx}
+        </select>
+        <Button
+          variant="info"
+          type="submit"
+          loading={isPending}
+          disabled={isPending || !isValid}
+          loadingText="Updating..."
+        >
+          Update
+        </Button>
+        {responseMessage.message && (
+          <div className="col-span-full">
+            <Message
+              variant={responseMessage.status === 200 ? "success" : "danger"}
+            >
+              {responseMessage.message}
+            </Message>
           </div>
-          <div className="col-span-full md:col-span-2">
-            <Input
-              type="text"
-              placeholder="Your user name"
-              variant={
-                errors.userName?.message
-                  ? "danger"
-                  : isValid
-                  ? "success"
-                  : "initial"
-              }
-              {...register("userName")}
-            />
-            <Message variant="danger">{errors.userName?.message}</Message>
-            </div>
-          <div className="col-span-full md:col-span-3">
-            <Input
-              type="text"
-              placeholder="Your email"
-              variant={
-                errors.email?.message
-                  ? "danger"
-                  : isValid
-                  ? "success"
-                  : "initial"
-              }
-              {...register("email")}
-            />
-            <Message variant="danger">{errors.email?.message}</Message>
-            </div>
-          {/* <div className="col-span-full">
-            <FileInput
-              type="file"
-              // name="imagePath"
-              placeholder="Your image"
-              {...register("imagePath")}
-              onChange={(e) => setImageState(e.target.files[0])}
-            />
-          </div> */}
-          <select
-            {...register("roleId")}
-            defaultValue={currentRole()}
-            className="w-full h-fit border border-gray-500 rounded text-black text-sm px-4 py-2 cursor-pointer col-span-1"
-          >
-            {userRolesSelectJsx}
-          </select>
-          <Button
-            variant="info"
-            type="submit"
-            loading={isPending}
-            disabled={isPending}
-            loadingText="Updating..."
-          >
-            Update
-          </Button>
-        </form>
-      </div>
+        )}
+      </form>
     </div>
   );
 }

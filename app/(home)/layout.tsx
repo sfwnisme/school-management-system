@@ -11,10 +11,10 @@ type Props = {
 export default async function layout({ children }: Props) {
   const user = await getCurrentUser();
   const userDetails: IMUser = {
-    username: user?.data.data.userName,
-    name: user?.data.data.fullName,
-    image: user?.data.data.imagePath,
-    role: user?.data.data.roles || [],
+    username: user?.userName,
+    name: user?.fullName,
+    image: user?.imagePath,
+    role: user?.roles || [],
   };
 
   console.log(userDetails.role);

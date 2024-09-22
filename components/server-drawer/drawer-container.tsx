@@ -8,12 +8,12 @@ type Props = {
 
 export default async function DrawerContainer(props: Props) {
   const user = await getCurrentUser();
-  console.log(user?.data.data);
+  console.log(user);
   const userDetails = {
-    username: user?.data.data.userName,
-    name: user?.data.data.fullName,
-    image: user?.data.data.imagePath,
-    role: user?.data.data.roles,
+    username: user?.userName,
+    name: user?.fullName,
+    image: user?.imagePath,
+    role: user?.roles,
   };
   console.log(userDetails.role);
   console.log(userDetails);

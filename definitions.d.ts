@@ -30,7 +30,11 @@ interface YupUserUpdateInputs {
   fullName: string;
   email: string;
   roleId?: string;
+  // password?: string;
+  // confirmPassword?: string;
 }
+interface YupUserResetPassword
+  extends Pick<YupUserCreateInputs, "password" | "confirmPassword" | "email"> {}
 
 interface YupUserCreateInputs {
   userName: string;

@@ -1,6 +1,6 @@
 "use client";
 import { YupUserCreateInputs } from "@/definitions";
-import { createUser } from "@/lib/actions";
+import { createUser, getAllUsers } from "@/lib/actions";
 import {
   yupUserCreateSchema,
   yupUserUpdateSchema,
@@ -17,11 +17,6 @@ import { getCookie } from "cookies-next";
 import { appendToFormData } from "@/lib/utils";
 
 type Props = {};
-//formdata
-//form hook
-//loading state
-// input with message component
-// delete button component
 export default function UserCreateForm({}: Props) {
   const [isPending, setIsPending] = useState(false);
   const [profileImage, setProfileImage] = useState("");
@@ -62,6 +57,7 @@ export default function UserCreateForm({}: Props) {
     try {
       const res = await createUser(FD);
       console.log(res);
+      await getAllUsers();
       return res;
     } catch (error) {
       console.log(error);
@@ -70,146 +66,114 @@ export default function UserCreateForm({}: Props) {
     }
   };
 
-  const create = async (e) => {
-    e.preventDefault();
-    const token = getCookie("token");
-    apiClient.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-    const FD = new FormData(e.target);
-
-    const imageFD = FD.get("image");
-    console.log(imageFD?.name);
-    console.log(FD.get("userName"));
-    console.log(FD.get("fullName"));
-    console.log(FD.get("email"));
-    console.log(FD.get("password"));
-    console.log(FD.get("confirmPassword"));
-    console.log(FD.get("image"));
-
-    const theData = {
-      userName: FD.get("userName"),
-      fullName: FD.get("fullName"),
-      email: FD.get("email"),
-      password: FD.get("password"),
-      confirmPassword: FD.get("confirmPassword"),
-      image: FD.get("image"),
-    };
-    try {
-      // const res = await apiClient.post(endpoints.users.create, FD);
-      const res = await createUser(theData);
-      console.log(res);
-      return res;
-    } catch (error) {
-      console.log("this is an error", error);
-    }
-  };
-
   return (
-    <div>
-      <div className="max-w-[700px]">
-        <form
-          // onSubmit={create}
-          onSubmit={handleSubmit(onSubmit)}
-          className="grid grid-cols-4 gap-2"
-        >
-          <div className="col-span-full md:col-span-2">
-            <Input
-              type="text"
-              placeholder="Your full name"
-              variant={
-                errors.fullName?.message
-                  ? "danger"
-                  : isValid
-                  ? "success"
-                  : "initial"
-              }
-              {...register("fullName")}
-            />
-            <Message variant="danger">{errors.fullName?.message}</Message>
-          </div>
-          <div className="col-span-full md:col-span-2">
-            <Input
-              type="text"
-              placeholder="Your user name"
-              variant={
-                errors.userName?.message
-                  ? "danger"
-                  : isValid
-                  ? "success"
-                  : "initial"
-              }
-              {...register("userName")}
-            />
-            <Message variant="danger">{errors.userName?.message}</Message>
-          </div>
-          <div className="col-span-full md:col-span-full">
-            <Input
-              type="text"
-              placeholder="Your email"
-              variant={
-                errors.email?.message
-                  ? "danger"
-                  : isValid
-                  ? "success"
-                  : "initial"
-              }
-              {...register("email")}
-            />
-            <Message variant="danger">{errors.email?.message}</Message>
-          </div>
-          <div className="col-span-full md:col-span-2">
-            <Input
-              type="text"
-              placeholder="Your Password"
-              variant={
-                errors.password?.message
-                  ? "danger"
-                  : isValid
-                  ? "success"
-                  : "initial"
-              }
-              {...register("password")}
-            />
-            <Message variant="danger">{errors.password?.message}</Message>
-          </div>
-          <div className="col-span-full md:col-span-2">
-            <Input
-              type="text"
-              placeholder="Confirm your password"
-              variant={
-                errors.confirmPassword?.message
-                  ? "danger"
-                  : isValid
-                  ? "success"
-                  : "initial"
-              }
-              {...register("confirmPassword")}
-            />
-            <Message variant="danger">
-              {errors.confirmPassword?.message}
-            </Message>
-          </div>
-          <div className="col-span-full">
-            <FileInput
-              type="file"
-              // name="imagePath"
-              placeholder="Your image"
-              {...register("image")}
-              onChange={imagePreview}
-              accept="image/*"
-            />
-          </div>
-          <Button
-            variant="info"
-            type="submit"
-            loading={isPending}
-            disabled={isPending}
-            loadingText="Updating..."
-          >
-            Update
-          </Button>
-          <img src={profileImage} />
-        </form>
+    <div className="w-full md:max-w-[700px] md:w-auto mx-auto rounded border border-gray-300 p-4">
+      <div className="size-20 border border-gray-300 rounded mx-auto mb-8 overflow-hidden">
+        <img
+          src={
+            profileImage ||
+            "https://www.transparentpng.com/thumb/user/gray-user-profile-icon-png-fP8Q1P.png"
+          }
+          alt="user image"
+          className="size-full object-cover aspect-square"
+        />
       </div>
+      <form
+        // onSubmit={create}
+        onSubmit={handleSubmit(onSubmit)}
+        className="grid grid-cols-4 gap-2"
+      >
+        <div className="col-span-full md:col-span-2">
+          <Input
+            type="text"
+            placeholder="Your full name"
+            variant={
+              errors.fullName?.message
+                ? "danger"
+                : isValid
+                ? "success"
+                : "initial"
+            }
+            {...register("fullName")}
+          />
+          <Message variant="danger">{errors.fullName?.message}</Message>
+        </div>
+        <div className="col-span-full md:col-span-2">
+          <Input
+            type="text"
+            placeholder="Your user name"
+            variant={
+              errors.userName?.message
+                ? "danger"
+                : isValid
+                ? "success"
+                : "initial"
+            }
+            {...register("userName")}
+          />
+          <Message variant="danger">{errors.userName?.message}</Message>
+        </div>
+        <div className="col-span-full md:col-span-full">
+          <Input
+            type="text"
+            placeholder="Your email"
+            variant={
+              errors.email?.message ? "danger" : isValid ? "success" : "initial"
+            }
+            {...register("email")}
+          />
+          <Message variant="danger">{errors.email?.message}</Message>
+        </div>
+        <div className="col-span-full md:col-span-2">
+          <Input
+            type="text"
+            placeholder="Your Password"
+            variant={
+              errors.password?.message
+                ? "danger"
+                : isValid
+                ? "success"
+                : "initial"
+            }
+            {...register("password")}
+          />
+          <Message variant="danger">{errors.password?.message}</Message>
+        </div>
+        <div className="col-span-full md:col-span-2">
+          <Input
+            type="text"
+            placeholder="Confirm your password"
+            variant={
+              errors.confirmPassword?.message
+                ? "danger"
+                : isValid
+                ? "success"
+                : "initial"
+            }
+            {...register("confirmPassword")}
+          />
+          <Message variant="danger">{errors.confirmPassword?.message}</Message>
+        </div>
+        <div className="col-span-full">
+          <FileInput
+            type="file"
+            // name="imagePath"
+            placeholder="Your image"
+            {...register("image")}
+            onChange={imagePreview}
+            accept="image/*"
+          />
+        </div>
+        <Button
+          variant="info"
+          type="submit"
+          loading={isPending}
+          disabled={isPending}
+          loadingText="Updating..."
+        >
+          Update
+        </Button>
+      </form>
     </div>
   );
 }

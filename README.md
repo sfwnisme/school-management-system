@@ -220,15 +220,22 @@ it is hard to share the response of the catch and the try, so I should use ether
 ### Wed 18/09/2024
 
 - [x] user create.
-- [ ] improve the delete button
+  
+### Sat 21/09/2024 & Sun 22/09/2024
+
+- [x] improve the delete button. I changed the main component to client component, thus I did not needed to customize delete button client component.
+- [x] reset user's password.
+- [x] I created a popover for the delete button of the users; to avoid deleting users unintentionally.
+- [x] enhanced the typescript deffinections and yup schemas.
+- [x] I needed to replace the className attribute at the last of the UI components props to apply the additional className prop.  
 
 ### Backlog
 
-- [ ] registration page and form
-- [ ] user and the current user's profile
-- [ ] implement the refresh token function. bug from the backend, it returns 500 "internal server error" status instead of 204 "no content"
-- [ ] in UI Components we need some times to add-on a customization while it is currentlly a customized component, thus you need to add the following snippet into the `className` of the UI Component `${props?.className}`. I need to check all the UI Components to add this feature
-- [ ] user protected-routes depends on the role
+- [ ] customize dynamic table for all the data, avoiding the duplication.
+- [ ] forget password endpoint with the code and email.
+- [ ] instructors delete, udpate, create.
+- [ ] user and the current user's profile.
+- [ ] dynamic breadcrump.
 
 ## UI components
 

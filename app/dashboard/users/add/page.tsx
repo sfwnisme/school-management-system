@@ -6,8 +6,10 @@ import React from "react";
 export default function page() {
   return (
     <div>
-      <Title>
-        Add user
+      <Title title="Add User">
+        <Button tag="link" href="/dashboard/users">
+          Users
+        </Button>
       </Title>
       <UserCreateForm />
     </div>

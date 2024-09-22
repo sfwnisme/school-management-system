@@ -1,11 +1,11 @@
 "use client";
-import { deleteUser } from "@/lib/actions";
+import { deleteUser, getAllUsers } from "@/lib/actions";
 import React, { EventHandler, Fragment, useState } from "react";
 import Button from "./button";
 import { Loader, Trash } from "lucide-react";
 
 type Props = {
-  children: React.ReactNode;
+  // children: React.ReactNode;
   id: number;
 };
 
@@ -15,6 +15,7 @@ export default function DeleteButton(props: Props) {
     setIsDeleting(true);
     try {
       const res = await deleteUser(props.id);
+      await getAllUsers();
       console.log(res);
     } catch (error) {
       console.log(error);
