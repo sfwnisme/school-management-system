@@ -19,7 +19,6 @@ export default function LogoLayout(props: LogoType) {
   width = width || 40;
   hasText = hasText || true;
   textIsWrap = textIsWrap || false;
-  console.log(hasText);
   return (
     <Link href={"/"} className="flex items-center gap-2 h-full w-full">
       <Image

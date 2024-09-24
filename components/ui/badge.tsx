@@ -3,6 +3,7 @@ import React, { PropsWithChildren, PropsWithRef } from "react";
 
 type Props = {
   children?: string;
+  className?: string;
   title?: string;
   size?: "xs" | "sm" | "md" | "lg" | "xl";
   variant?: "initial" | "success" | "warning" | "danger" | "info";
@@ -35,7 +36,9 @@ export default function Badge(props: Props) {
   const settings = `${size} ${variant}`;
 
   return (
-    <span className={`${settings} rounded-[2.5px] cursor-default`}>
+    <span
+      className={`${settings} ${props?.className} rounded-[2.5px] cursor-default`}
+    >
       {title}
     </span>
   );

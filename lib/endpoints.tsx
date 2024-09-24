@@ -1,13 +1,17 @@
-// 'use client'
 import axios from "axios";
-import Cookies from "js-cookie";
+import { getCookie } from "cookies-next";
+import { cookies } from "next/headers";
 
-console.log(Cookies.get("token"));
-
+// 'use client'
 export const baseURL = "http://schoolmanagmentsystem.runasp.net/api/v1/";
+// const TOKEN = getCookie("token", { cookies });
+// console.log(TOKEN);
 
+export const apiClient = axios.create({
+  baseURL,
+});
 export const endpoints = {
-  auth: {
+  authentication: {
     signin: "authentication/sign-in",
     refreshToken: "authentication/refresh-token",
     validateToken: "authentication/validate-token",
@@ -16,22 +20,38 @@ export const endpoints = {
     confirmResetPassword: "authentication/confirm-reset-password",
     resetPassword: "authentication/reset-password",
   },
+  authorization: {
+    roles: {
+      create: "authorization/create", // add new role
+      update: "authorization/update", // update current role
+      all: "authorization/list", // available roles
+      id: "authorization/id", // get role by id
+      delete: "authorization/delete", // delete role
+      getRolesByUserId: "authorization/manage-user-roles/", // { userId } user roles by id
+      updateUserRoles: "authorization/update-user-roles/", //  send plain object
+    },
+    cliams: {
+      getClaimsByUserId: "authorization/manage-user-claims/", // { userId }
+      updateUserClaims: "authorization/update-user-claims",
+    },
+  },
   users: {
     current: "users/current-user",
     all: "users/list",
     id: "users/",
     create: "users/create",
-    edit: "users/edit/",
+    update: "users/update/",
     delete: "users/delete/",
     changePassword: "users/change-password",
   },
   instructors: {
-    all: "instructors/all-instructors",
-    id: "instructors/instructor-by-id",
+    all: "instructors/list",
+    id: "instructors/",
     create: "instructors/create",
+    edit: "instructors/delete/",
   },
   departments: {
-    all: "departments/departments-list",
+    all: "departments/list",
     id: "departments/",
     create: "departments/create",
     update: "departments/update",
@@ -45,7 +65,7 @@ export const endpoints = {
     paginated: "students/pagination",
     id: "students/",
     create: "students/create",
-    edit: "students/edit",
+    update: "students/update",
     delete: "students/delete/",
     addStudentToDepartment: "students/add-student-to-department",
   },

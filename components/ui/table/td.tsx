@@ -14,8 +14,8 @@ export default function Td(
 ) {
   return (
     <td
-      className={`py-1 md:py-2 px-2 md:px-4 whitespace-nowrap text-xs md:text-sm text-gray-500 ${props?.className}`}
-      {...props}
+    {...props}
+    className={`${props?.className} py-1 md:py-2 px-2 md:px-4 whitespace-nowrap text-xs md:text-sm text-gray-500`}
     >
       {props?.children}
     </td>

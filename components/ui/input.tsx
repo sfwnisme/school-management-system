@@ -1,4 +1,6 @@
-import React, { DetailedHTMLProps, InputHTMLAttributes } from "react";
+"use client";
+import { X } from "lucide-react";
+import React, { DetailedHTMLProps, InputHTMLAttributes, useState } from "react";
 
 type Props = {
   styles?: string;
@@ -15,17 +17,18 @@ type InputProps = DetailedHTMLProps<
 const Input = React.forwardRef<HTMLInputElement, InputProps>((props, ref) => {
   const variants = {
     initial:
-      "border-gray-500 text-gray-500 placeholder:text-gray-400 outline-gray-200",
+      "border-gray-500 text-gray-800 placeholder:text-gray-400 outline-gray-200",
     success:
-      "border-green-700 text-green-500 placeholder:text-green-400 outline-green-200 ",
+      "border-green-700 text-green-800 placeholder:text-green-400 outline-green-200 ",
     danger:
-      "border-red-700 text-red-500 placeholder:text-red-400 outline-red-200 ",
+      "border-red-700 text-red-800 placeholder:text-red-400 outline-red-200 ",
   };
 
   const sizes = {
-    initial: "text-xs px-4 py-2 min-h-[40px] w-full",
-    sm: "text-xs px-4 py-1 min-h-[30px] w-full",
-    lg: "text-sm px-4 p-2 min-h-[50px] w-full",
+    initial: "text-sm px-4 py-2 min-h-[40px] w-full",
+    xs: "text-xs px-4 py-1 min-h-[30px] w-full",
+    sm: "text-sm px-4 py-2 min-h-[30px] w-full",
+    lg: "text-base px-4 p-2 min-h-[50px] w-full",
   };
 
   const focusVisible = "focus-visible:outline outline-[3px] outline-gray-200";
@@ -37,11 +40,14 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>((props, ref) => {
   // const currentSize = sizes[sze || "initial"];
 
   return (
-    <input
-      {...props}
-      ref={ref}
-      className={` bg-transparent border rounded text-black col-span-full w-full ${currentSize} ${currentStatus} ${focusVisible} ${props?.styles}`}
-    />
+    <div>
+      <input
+        {...props}
+        ref={ref}
+        className={`${props.className} 
+          bg-transparent border rounded text-black col-span-full w-full ${currentSize} ${currentStatus} ${focusVisible} ${props?.styles}`}
+      />
+    </div>
   );
 });
 export default Input;

@@ -5,7 +5,8 @@ import Link from "next/link";
 import LogoLayout from "./logo-layout";
 import { PanelLeft } from "lucide-react";
 import { usePathname } from "next/navigation";
-import { navLinks } from "@/lib/nav-links";
+import { navLinks } from "@/lib/data";
+import { UpdateStateType } from "@/definitions";
 
 type Props = {
   toggleDrawer: boolean;
@@ -28,10 +29,14 @@ export default function DrowerNavLinksLayout(props: Props) {
         key={link?.href}
         className={`text-gray-800 ${
           isActive ? "text-gray-600 bg-gray-50" : null
-        } hover:text-gray-600 hover:bg-gray-50 font-normal rounded-sm mx-px my-1 p-3 flex items-end gap-1 duration-150 text-sm md:text-base`}
+        } hover:text-gray-600 hover:bg-gray-100 font-normal rounded-sm mx-px my-1 p-3 flex items-end gap-1 duration-150 text-sm md:text-base`}
       >
         {link?.icon ? (
-          <link.icon className="stroke-[1.5] bg-gray-50 p-[2px] rounded" />
+          <link.icon
+            strokeWidth={1.5}
+            size={25}
+            className="bg-gray-400 text-white p-[3px] rounded"
+          />
         ) : (
           <div className="h-[25px] w-[25px]" />
         )}
@@ -52,6 +57,7 @@ export default function DrowerNavLinksLayout(props: Props) {
       </div>
       <div className="flex flex-col items-stretch justify-start px-2 pb-10">
         {navLinksData}
+        <Link href={""}></Link>
       </div>
     </aside>
   );

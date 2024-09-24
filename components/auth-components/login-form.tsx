@@ -8,10 +8,8 @@ import { handleSignIn } from "@/lib/actions";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { loginSchema } from "@/lib/validation-schema-yup";
-import { useGetCookie } from "@/hooks/use-cookies";
-import { getCookie } from "cookies-next";
-import { LoginInputTypes } from "@/definitions";
-import ErrorMessage from "../ui/error-message";
+import { IResponse, LoginInputTypes } from "@/definitions";
+import Message from "../ui/message";
 
 type Inputs = {
   username: string;
@@ -19,9 +17,19 @@ type Inputs = {
 };
 
 export default function LoginForm() {
-  const [loading, setLoading] = React.useState(0);
+  const [loading, setLoading] = React.useState(false);
   const [serverMessage, setServerMessage] = React.useState("");
-  console.log(getCookie("token"));
+  const [responseMessage, setResponseMessage] = React.useState<{
+    statusCode: number;
+    success: boolean | null;
+    message: string;
+  }>({
+    statusCode: 0,
+    success: null,
+    message: "",
+  });
+
+  console.log(serverMessage);
   //-------------
   const {
     register,
@@ -32,29 +40,38 @@ export default function LoginForm() {
     resolver: yupResolver(loginSchema),
     mode: "onChange",
   });
+
+  const errorMessage = (value: keyof LoginInputTypes) => {
+    let message = errors[`${value}`]?.message;
+    if (message !== undefined) return message;
+    return null;
+  };
+  console.log(errorMessage("password"));
+
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
-    console.log("final data", data);
-    console.log("errrrrrror", errors);
-    setLoading(1);
+    setLoading(true);
     try {
       const loginCredentials = {
         username: data?.username,
         password: data?.password,
       };
-      let response = await handleSignIn(
+      const res = await handleSignIn(
         loginCredentials?.username as string,
         loginCredentials?.password as string
       );
-      if (response?.message) setServerMessage(response?.message);
+      if (res) {
+        setResponseMessage({
+          statusCode: res.statusCode,
+          success: res.success,
+          message: res.message,
+        });
+      }
     } catch (error) {
       console.error("error from login-form.tsx", error);
     } finally {
-      setLoading(0);
+      setLoading(false);
     }
   };
-  console.log("isvalid", isValid);
-
-  //-------------
 
   return (
     <div className="mx-auto flex flex-col-reverse  md:flex-row gap-3 justify-center items-center max-w-[1200px] shadow-lg shadow-gray-50 rounded overflow-hidden">
@@ -72,7 +89,7 @@ export default function LoginForm() {
         >
           <div className="col-span-full">
             <Input
-              type="username"
+              type="name"
               placeholder="Your username"
               variant={
                 errors.username?.message
@@ -83,7 +100,7 @@ export default function LoginForm() {
               }
               {...register("username")}
             />
-            <ErrorMessage>{errors.username?.message}</ErrorMessage>
+            <Message variant="danger">{errors.username?.message}</Message>
           </div>
           <div className="col-span-full">
             <Input
@@ -98,7 +115,7 @@ export default function LoginForm() {
               }
               {...register("password")}
             />
-            <ErrorMessage>{errors.password?.message}</ErrorMessage>
+            <Message variant="danger">{errors.password?.message}</Message>
           </div>
           <Link
             href={""}
@@ -109,14 +126,18 @@ export default function LoginForm() {
           <Button
             type="submit"
             value={"login"}
-            disabled={!isValid || loading !== 0 ? true : false}
-            // disabled={loading === 0 ? false : true}
+            disabled={!isValid || loading ? true : false}
             loading={loading}
+            size="sm"
           />
-          {/* {serverMessage && ( */}
-          <ErrorMessage>{serverMessage.toLowerCase()}</ErrorMessage>
-          {/* )} */}
         </form>
+        {responseMessage.message && (
+          <div className="col-span-full">
+            <Message variant={responseMessage.success ? "success" : "danger"}>
+              {responseMessage.message}
+            </Message>
+          </div>
+        )}
         <Link
           href={""}
           className="text-gray-400 hover:text-gray-500 text-xs lg:text-sm flex items-center justify-center gap-1 col-span-full mt-4"

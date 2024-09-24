@@ -164,24 +164,84 @@ it is hard to share the response of the catch and the try, so I should use ether
 - [x] subjects **data**
 - [x] reinforce the table and data component
 - [x] created reusable skeleton table
-- [ ] user protected-routes depends on the role
 
 ### Fri 06/09/2024
 
-- [x] Refactor: `button.tsx` component now has `props.outline` prop contains `boolean` type.
-- [x] Refactor: `badge.tsx` component you can add variant prop
+- [x] refactor: `button.tsx` component now has `props.outline` prop contains `boolean` type.
+- [x] refactor: `badge.tsx` component you can add variant prop
+
+### Sat 07/09/2024
+
+- [x] feat: message UI component for the error and success messages
+- [x] reafactor: endpoints
+
+### Sun 08/09/2024
+
+- just strugling with server and client components pattern concept
+
+### Mon 09/09/2024
+
+- [x] user avatar and dropdown uses the API data to display the user details and check if the user is loggedin instead of using the token
+- [x] create `drawer-container.tsx` component to use it as a parent async/await component, so I can use it to pass the data to the navbar for the user details and avatar image.
+- [x] created `avatar` and `dropdown` components instead of `avatar-with-list`.
+
+### Tu 10/09/2024
+
+- [x] block login and register pages if the user logged in
+- [x] clean up some components and unneeded files
+- [x] using validToken endpoint to check if the user is logged in for the logout function instead of using tokens to have more security.
+
+### Wed 11/09/2024
+
+- [/] update user page. // I completed the half of this work
+- [x] display the user image
+- [x] `file-input.tsx` UI Component
+- [x] changed the get user by id schema with the backend developer
+- [x] removed the cookies from any global scope or client side components.
+
+### Sat 14/09/2024
+
+- [x] fixed the catch block bug "I got error but the user updates the data to the server successfull" the solution was that I needed to return the status code or the data, if I returned only the response it will return nextjs's error, due to it is a server code.
+- [x] refctore: button component, now you can use it as a link.
+- [x] feat: file input component  
+
+### Sun 15/09/2024
+
+- [x] feat: role-based component as a wrapper `is-role-auth.tsx`, you need only to wrap the main layout returned value and it will handle the authorization.
+- [x] refactor: user's dropdown menu displays the links depends on its role.
+
+### Mon 16/09/2024 & Tue 17/09/2024
+
+- [x] user role update.
+- [x] setting up yup schema
+- [x] user delete.
+- [x] button enhancements
+
+### Wed 18/09/2024
+
+- [x] user create.
+  
+### Sat 21/09/2024 & Sun 22/09/2024
+
+- [x] improve the delete button. I changed the main component to client component, thus I did not needed to customize delete button client component.
+- [x] reset user's password.
+- [x] I created a popover for the delete button of the users; to avoid deleting users unintentionally.
+- [x] enhanced the typescript deffinections and yup schemas.
+- [x] I needed to replace the className attribute at the last of the UI components props to apply the additional className prop.  
+
+### Mon 23/09/2024
+
+- [x] customize dynamic table for all the data, avoiding the duplication.
+- [x] error messages for all forms, login, create user, update user and reset password
+- [x] created response deffinition for the endpoints that return errors and success messages.
+- [ ] delete button of the `table-layer.tsx` disabled in all pages include the current user table row, thus I need to solve this issue the next session.
 
 ### Backlog
 
-- [ ] set up cookies functions for the `cookies` of the nextjs `next/headers`
-- [ ] display the nav with the loading UI of the isAuth component
-- [ ] set up the base settings for the forms validation
-- [ ] registration page and form
-- [ ] user and the current user's profile
-- [ ] change the avatar and dropdown UI Components
-- [ ] I need to change the authentication of the user avatar and list to the api instead of the cookies
-- [ ] implement the refresh token function. bug from the backend, it returns 500 "internal server error" status instead of 204 "no content"
-- [ ] in UI Components we need some times to add-on a customization while it is currentlly a customized component, thus you need to add the following snippet into the `className` of the UI Component `${props?.className}`. I need to check all the UI Components to add this feature
+- [ ] forget password endpoint with the code and email.
+- [ ] instructors delete, udpate, create.
+- [ ] user and the current user's profile.
+- [ ] dynamic breadcrump.
 
 ## UI components
 

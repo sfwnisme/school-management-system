@@ -1,16 +1,25 @@
-"use client";
-import Cookies from "js-cookie";
+// import { deleteCookie, hasCookie } from "cookies-next";
 
-// export const isAuth = Cookies.get("token");
+import { FormDataObjectType } from "@/definitions";
+import { getCurrentUser } from "./actions";
 
-// status object
-// const status = {
-//   idle
-// }
+// import { IRole, RolesEnum } from "@/definitions";
 
-export const handleLogout = () => {
-  Cookies.remove("token");
-  Cookies.remove("refresh-token");
-  window.location.href = "/login";
+enum RolesEnum {
+  Admin = "Admin",
+  User = "User",
+  HR = "HR",
+}
+
+export const appendToFormData = (data: FormDataObjectType<any>): FormData => {
+  const FD = new FormData();
+  const objectToArray = Object.entries(data);
+  for (const [key, value] of objectToArray) {
+    if (key === "image") {
+      FD.append(key, value[0]);
+    } else {
+      FD.append(key, value);
+    }
+  }
+  return FD;
 };
-

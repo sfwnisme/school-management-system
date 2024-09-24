@@ -2,17 +2,27 @@
 // "use server";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
-import { getCurrentUser, isTokenValid } from "./actions";
-import { childrenType } from "@/definitions";
+import { getCurrentUser, isTokenValid, renewTokenIfNeeded } from "./actions";
 
-export default async function IsAuth({ children }: childrenType) {
+type Props = {
+  children: React.ReactNode;
+  route: "public" | "protected";
+};
+export default async function IsAuth({ children, route }: Props) {
   const checkTokenIfValid = await isTokenValid();
-  console.log(checkTokenIfValid);
-  const currentUser = await getCurrentUser();
-  console.log(currentUser);
-  if (checkTokenIfValid === undefined) {
+  const currentUser = await getCurrentUser()
+  console.log(currentUser)
+  console.log(checkTokenIfValid)
+
+  // check if the token expired
+  renewTokenIfNeeded();
+
+  if (checkTokenIfValid === undefined && route === "protected") {
     revalidatePath("/login");
     redirect("/login");
+  } else if (checkTokenIfValid !== undefined && route === "public") {
+    revalidatePath("/dashboard");
+    redirect("/dashboard");
   }
   revalidatePath("/dashboard");
   return <>{children}</>;

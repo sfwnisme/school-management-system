@@ -1,10 +1,9 @@
 // "use client";
-import { PanelLeft } from "lucide-react";
-import React, { useEffect, useState } from "react";
+import { PanelLeft, User } from "lucide-react";
+import React from "react";
 import LogoLayout from "./logo-layout";
-import AvatarWithList from "./avatar-with-list";
-import UserList from "./user-list";
-import { UpdateStateType } from "@/definitions";
+import { IMUser, UpdateStateType } from "@/definitions";
+import Options from "./userbox/options";
 
 /**
  * @type isDashboard - boolean: you can change the boolean value to display main page or dashboard nav
@@ -14,6 +13,7 @@ type Props = {
   toggleDrawer?: boolean;
   setToggleDrawer?: UpdateStateType;
   isDashboard: boolean;
+  userDetails?: IMUser;
 };
 
 export default function Nav(props: Props) {
@@ -27,7 +27,7 @@ export default function Nav(props: Props) {
 
   if (isDashboard) {
     content = (
-      <nav className="w-full  border-b p-4 relative">
+      <nav className="z-20 w-full border-b p-4 relative bg-white">
         <ul className="flex items-stretch gap-2 justify-between">
           {!toggleDrawer ? (
             <li className="py-1 flex items-center gap-4">
@@ -36,18 +36,11 @@ export default function Nav(props: Props) {
                 className="stroke-[1.5] bg-gray-50 p-[2px] rounded text-gray-500 hover:text-gray-600 cursor-pointer"
                 onClick={handleToggleDrawer}
               />
-
               <LogoLayout height={30} width={30} hasText={false} />
             </li>
           ) : null}
           <li className="px-3 py-1 ml-auto">
-            <AvatarWithList
-              src="https://media.licdn.com/dms/image/v2/D4D03AQFtPWGRKCfKFQ/profile-displayphoto-shrink_200_200/profile-displayphoto-shrink_200_200/0/1720437017398?e=1729728000&v=beta&t=bQkEWjG9YS4ii2qFWkb-NOJ1LwYyVkMuIXQk3v3ruoc"
-              alt="user avatar"
-              height={30}
-              width={30}
-            />
-            {/* <UserList /> */}
+            <Options userDetails={props?.userDetails} />
           </li>
         </ul>
       </nav>
@@ -60,13 +53,7 @@ export default function Nav(props: Props) {
             <LogoLayout height={30} width={30} hasText={false} />
           </li>
           <li className="px-3 py-1 ml-auto">
-            <AvatarWithList
-              src="https://media.licdn.com/dms/image/v2/D4D03AQFtPWGRKCfKFQ/profile-displayphoto-shrink_200_200/profile-displayphoto-shrink_200_200/0/1720437017398?e=1729728000&v=beta&t=bQkEWjG9YS4ii2qFWkb-NOJ1LwYyVkMuIXQk3v3ruoc"
-              alt="user avatar"
-              height={30}
-              width={30}
-            />
-            {/* <UserList /> */}
+            <Options userDetails={props?.userDetails} />
           </li>
         </ul>
       </nav>
