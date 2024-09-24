@@ -8,7 +8,7 @@ import { handleSignIn } from "@/lib/actions";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { loginSchema } from "@/lib/validation-schema-yup";
-import { LoginInputTypes } from "@/definitions";
+import { IResponse, LoginInputTypes } from "@/definitions";
 import Message from "../ui/message";
 
 type Inputs = {
@@ -19,6 +19,16 @@ type Inputs = {
 export default function LoginForm() {
   const [loading, setLoading] = React.useState(false);
   const [serverMessage, setServerMessage] = React.useState("");
+  const [responseMessage, setResponseMessage] = React.useState<{
+    statusCode: number;
+    success: boolean | null;
+    message: string;
+  }>({
+    statusCode: 0,
+    success: null,
+    message: "",
+  });
+
   console.log(serverMessage);
   //-------------
   const {
@@ -45,11 +55,17 @@ export default function LoginForm() {
         username: data?.username,
         password: data?.password,
       };
-      let response = await handleSignIn(
+      const res = await handleSignIn(
         loginCredentials?.username as string,
         loginCredentials?.password as string
       );
-      if (response?.message) setServerMessage(response?.message);
+      if (res) {
+        setResponseMessage({
+          statusCode: res.statusCode,
+          success: res.success,
+          message: res.message,
+        });
+      }
     } catch (error) {
       console.error("error from login-form.tsx", error);
     } finally {
@@ -115,7 +131,13 @@ export default function LoginForm() {
             size="sm"
           />
         </form>
-        <Message variant="danger">{serverMessage || ""}</Message>
+        {responseMessage.message && (
+          <div className="col-span-full">
+            <Message variant={responseMessage.success ? "success" : "danger"}>
+              {responseMessage.message}
+            </Message>
+          </div>
+        )}
         <Link
           href={""}
           className="text-gray-400 hover:text-gray-500 text-xs lg:text-sm flex items-center justify-center gap-1 col-span-full mt-4"

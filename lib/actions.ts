@@ -10,19 +10,30 @@ import {
 import { redirect } from "next/navigation";
 import { isRedirectError } from "next/dist/client/components/redirect";
 import { getCookie, setCookie } from "cookies-next";
-import { IUser, YupUserResetPassword } from "@/definitions";
+import { IResponse, IUser, YupUserResetPassword } from "@/definitions";
 import { appendToFormData } from "./utils";
 
 //----------------------------
 // Authentication endpoints
 //----------------------------
-export async function handleSignIn(username: string, password: string) {
+export async function handleSignIn(
+  username: string,
+  password: string
+): Promise<IResponse | undefined> {
   const FD: FormData = new FormData();
   FD.append("UserName", username);
   FD.append("Password", password);
 
   try {
     const res = await apiClient.post(endpoints.authentication.signin, FD);
+    console.log(res.data);
+
+    const successResponse = res.data.data;
+    const successData = {
+      statusCode: successResponse.statusCode,
+      success: true,
+      message: "Log in ase been successfully done",
+    };
 
     const token = await res.data.data.accessToken;
     const refreshToken = await res.data.data.refreshToken;
@@ -33,6 +44,7 @@ export async function handleSignIn(username: string, password: string) {
       revalidatePath("/dashboard");
       redirect("/dashboard");
     }
+    return successData;
   } catch (error) {
     if (isRedirectError(error)) {
       console.log("success");
@@ -40,9 +52,14 @@ export async function handleSignIn(username: string, password: string) {
     }
     if (axios.isAxiosError(error)) {
       if (error.response) {
-        const errorMessage = error.response.data.message;
-        console.log("login error", errorMessage);
-        return { message: errorMessage };
+        console.log(error.response?.data);
+        const errorResponse = error.response?.data;
+        const errorData = {
+          statusCode: errorResponse.statusCode,
+          success: false,
+          message: errorResponse.message,
+        };
+        return errorData;
       }
     }
   }
@@ -108,7 +125,7 @@ export async function getAllUsers() {
     if (token) {
       const res = await apiClient.get(endpoints.users.all);
       console.log(res.data.data);
-      revalidatePath("dashboard/users");
+      revalidatePath("/dashboard/users");
       return res.data.data;
     } else {
       console.log(
@@ -157,7 +174,7 @@ export async function getUserById(id: number) {
   }
 }
 
-export async function updateUser(data: IUser) {
+export async function updateUser(data: IUser): Promise<IResponse | undefined> {
   const token = cookies().get("token")?.value;
   apiClient.defaults.headers.common["Authorization"] = `Bearer ${token}`;
 
@@ -165,29 +182,69 @@ export async function updateUser(data: IUser) {
   try {
     if (token) {
       const res = await apiClient.put(endpoints.users.update, FD);
+      const successReponse = res.data;
       console.log(res.data);
-      return res.data.statusCode;
+      const responseData = {
+        statusCode: successReponse.statusCode,
+        success: true,
+        message: "The user updated successfully",
+      };
+      return responseData;
     }
   } catch (error) {
-    console.log("update user server action", error);
+    if (axios.isAxiosError(error)) {
+      console.log(error.response?.data);
+      const errorResponse = error.response?.data;
+      const errorData = {
+        statusCode: errorResponse.status,
+        success: false,
+        message: errorResponse.message || errorResponse.errors.Image[0],
+      };
+      return errorData;
+    } else {
+      const errorData = {
+        statusCode: 400,
+        success: false,
+        message: "edit this error message",
+      };
+      return errorData;
+    }
   }
 }
 
-export async function createUser(data: FormData) {
+export async function createUser(
+  data: FormData
+): Promise<IResponse | undefined> {
   const token = cookies().get("token")?.value;
   apiClient.defaults.headers.common["Authorization"] = `Bearer ${token}`;
 
   try {
     const res = await apiClient.post(endpoints.users.create, data);
     console.log(res);
-    return res.data.statusCode;
+    const successResponse = res.data;
+    const responseData = {
+      statusCode: successResponse.statusCode,
+      success: true,
+      message: "The user has successfully created",
+    };
+    return responseData;
   } catch (error) {
     if (axios.isAxiosError(error)) {
-      console.log(error.response);
-      return error?.response;
+      const errorResponse = error.response?.data;
+      console.log(error.response?.data);
+      const errorData = {
+        statusCode: errorResponse.status,
+        success: false,
+        message: errorResponse.message || errorResponse.errors.Image[0],
+      };
+      return errorData;
     } else {
-      console.log(error);
-      return error;
+      const errorData = {
+        statusCode: 400,
+        success: false,
+        message: "edit this error message",
+      };
+      return errorData;
     }
   }
 }
@@ -202,15 +259,17 @@ export async function deleteUser(id: number) {
   } catch (error) {
     if (axios.isAxiosError(error)) {
       console.log(error);
-      return error.response;
+      // return error;
     } else {
       console.log(error);
-      return error;
+      // return error;
     }
   }
 }
 
-export async function resetUserPassword(data: YupUserResetPassword) {
+export async function resetUserPassword(
+  data: YupUserResetPassword
+): Promise<IResponse | undefined> {
   const token = cookies().get("token")?.value;
   apiClient.defaults.headers.common["Authorization"] = `Bearer ${token}`;
   console.log(data);
@@ -225,15 +284,30 @@ export async function resetUserPassword(data: YupUserResetPassword) {
       endpoints.authentication.resetPassword,
       FD
     );
-    console.log(res.data);
-    return res.data.statusCode;
+    const successResponse = res.data;
+    const responseData = {
+      statusCode: successResponse.statusCode,
+      success: true,
+      message: "The user updated successfully",
+    };
+    return responseData;
   } catch (error) {
     if (axios.isAxiosError(error)) {
       console.log(error.response?.data);
-      return error.response?.data.statusCode;
+      const errorResponse = error.response?.data;
+      const errorData = {
+        statusCode: errorResponse.status,
+        success: false,
+        message: errorResponse.message,
+      };
+      return errorData;
     } else {
-      console.log(error);
-      return error;
+      const errorData = {
+        statusCode: 400,
+        success: false,
+        message: "edit this error message",
+      };
+      return errorData;
     }
   }
 }
@@ -275,11 +349,13 @@ export async function getAllInstructors() {
     if (token) {
       const res = await apiClient.get(endpoints.instructors.all);
       console.log("instructors", res?.data.data);
-      return res;
+      return res.data.data;
     }
     return null;
   } catch (error) {
-    console.error(error);
+    if (axios.isAxiosError(error)) {
+      console.error(error);
+    }
   }
 }
 

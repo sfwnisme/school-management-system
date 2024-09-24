@@ -40,9 +40,9 @@ interface YupUserCreateInputs {
   userName: string;
   fullName: string;
   email: string;
-  image: keyof number;
   password: string;
   confirmPassword: string;
+  image: keyof number;
 }
 
 export interface IMUser {
@@ -112,4 +112,10 @@ type LoginInputTypes = {
 
 interface FormDataObjectType<T> {
   [key: string]: T;
+}
+
+interface IResponse {
+  statusCode: number;
+  success: boolean | null;
+  message: string;
 }

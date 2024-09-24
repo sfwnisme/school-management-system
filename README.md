@@ -229,9 +229,15 @@ it is hard to share the response of the catch and the try, so I should use ether
 - [x] enhanced the typescript deffinections and yup schemas.
 - [x] I needed to replace the className attribute at the last of the UI components props to apply the additional className prop.  
 
+### Mon 23/09/2024
+
+- [x] customize dynamic table for all the data, avoiding the duplication.
+- [x] error messages for all forms, login, create user, update user and reset password
+- [x] created response deffinition for the endpoints that return errors and success messages.
+- [ ] delete button of the `table-layer.tsx` disabled in all pages include the current user table row, thus I need to solve this issue the next session.
+
 ### Backlog
 
-- [ ] customize dynamic table for all the data, avoiding the duplication.
 - [ ] forget password endpoint with the code and email.
 - [ ] instructors delete, udpate, create.
 - [ ] user and the current user's profile.

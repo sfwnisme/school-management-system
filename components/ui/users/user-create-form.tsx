@@ -21,6 +21,15 @@ export default function UserCreateForm({}: Props) {
   const [isPending, setIsPending] = useState(false);
   const [profileImage, setProfileImage] = useState("");
   const [nativeImage, setNativeImage] = useState<File>();
+  const [responseMessage, setResponseMessage] = useState<{
+    statusCode: number;
+    success: boolean | null;
+    message: string;
+  }>({
+    statusCode: 0,
+    success: null,
+    message: "",
+  });
 
   const imagePreview = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -29,7 +38,6 @@ export default function UserCreateForm({}: Props) {
       setProfileImage(URL.createObjectURL(file));
     }
   };
-  console.log(nativeImage);
 
   const {
     register,
@@ -57,6 +65,13 @@ export default function UserCreateForm({}: Props) {
     try {
       const res = await createUser(FD);
       console.log(res);
+      if (res) {
+        setResponseMessage({
+          statusCode: res?.statusCode,
+          success: res?.success,
+          message: res?.message,
+        });
+      }
       await getAllUsers();
       return res;
     } catch (error) {
@@ -173,6 +188,13 @@ export default function UserCreateForm({}: Props) {
         >
           Update
         </Button>
+        {responseMessage.message && (
+          <div className="col-span-full">
+            <Message variant={responseMessage.success ? "success" : "danger"}>
+              {responseMessage.message}
+            </Message>
+          </div>
+        )}
       </form>
     </div>
   );

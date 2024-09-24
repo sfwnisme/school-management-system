@@ -27,7 +27,7 @@ const user = {
     .required("confirm password is required")
     .oneOf([ref("password")], "Password must match"),
   email: string().email().required(),
-  image: mixed(),
+  image: mixed().required(),
 };
 export const loginSchema = object({
   username: user.userName,

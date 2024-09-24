@@ -1,20 +1,12 @@
 "use client";
-import React, { ChangeEvent, Fragment, useState } from "react";
+import React, { useState } from "react";
 import Input from "../input";
-import {
-  IRole,
-  IUser,
-  YupUserResetPassword,
-  YupUserUpdateInputs,
-} from "@/definitions";
+import { IResponse, IUser, YupUserResetPassword } from "@/definitions";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { getAllUsers, resetUserPassword, updateUser } from "@/lib/actions";
+import { getAllUsers, resetUserPassword } from "@/lib/actions";
 import Button from "../button";
-import {
-  yupUserResetPasswordSchema,
-  yupUserUpdateSchema,
-} from "@/lib/validation-schema-yup";
+import { yupUserResetPasswordSchema } from "@/lib/validation-schema-yup";
 import Message from "../message";
 
 type Props = {
@@ -30,8 +22,13 @@ export const revalid = 1;
 export default function UserResetPasswordForm(props: Props) {
   const email = props?.user.email;
   const [isPending, setIsPending] = useState(false);
-  const [responseMessage, setResponseMessage] = useState({
-    status: -1,
+  const [responseMessage, setResponseMessage] = useState<{
+    statusCode: number;
+    success: boolean | null;
+    message: string;
+  }>({
+    statusCode: 0,
+    success: null,
     message: "",
   });
 
@@ -59,14 +56,16 @@ export default function UserResetPasswordForm(props: Props) {
         confirmPassword: data.confirmPassword,
         email: data.email,
       };
-      const res = await resetUserPassword(newPassword);
-      setResponseMessage({
-        status: res,
-        message:
-          res === 200 ? "Password updated successfully" : "Try another time",
-      });
+      const res= await resetUserPassword(newPassword);
+      if (res) {
+        setResponseMessage({
+          statusCode: res.statusCode,
+          success: res.success,
+          message: res.message,
+        });
+      }
       await getAllUsers();
-      return res;
+      // return res;
     } catch (error) {
       console.log("update user error", error);
     } finally {
@@ -124,9 +123,7 @@ export default function UserResetPasswordForm(props: Props) {
         </Button>
         {responseMessage.message && (
           <div className="col-span-full">
-            <Message
-              variant={responseMessage.status === 200 ? "success" : "danger"}
-            >
+            <Message variant={responseMessage.success ? "success" : "danger"}>
               {responseMessage.message}
             </Message>
           </div>

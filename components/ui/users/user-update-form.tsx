@@ -1,7 +1,7 @@
 "use client";
 import React, { ChangeEvent, Fragment, useState } from "react";
 import Input from "../input";
-import { IRole, IUser, YupUserUpdateInputs } from "@/definitions";
+import { IResponse, IRole, IUser, YupUserUpdateInputs } from "@/definitions";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { getAllUsers, resetUserPassword, updateUser } from "@/lib/actions";
@@ -25,11 +25,15 @@ type Inputs = {
 };
 export const revalid = 1;
 export default function UserUpdateForm(props: Props) {
-  const [responseMessage, setResponseMessage] = useState({
-    status: -1,
+  const [responseMessage, setResponseMessage] = useState<{
+    statusCode: number;
+    success: boolean | null;
+    message: string;
+  }>({
+    statusCode: 0,
+    success: null,
     message: "",
   });
-  const [resetPassword, setResetPassword] = useState(false);
   const user = props?.user;
   const roles = props?.roles;
   const [isPending, setIsPending] = useState(false);
@@ -72,13 +76,13 @@ export default function UserUpdateForm(props: Props) {
       };
       const res = await updateUser(newUserData);
       console.log(res);
-      setResponseMessage({
-        status: res,
-        message:
-          res === 200
-            ? "User's information updated successfully"
-            : "Try another time",
-      });
+      if (res) {
+        setResponseMessage({
+          statusCode: res.statusCode,
+          success: res.success,
+          message: res.message,
+        });
+      }
       await getAllUsers();
       return res;
     } catch (error) {
@@ -163,9 +167,7 @@ export default function UserUpdateForm(props: Props) {
         </Button>
         {responseMessage.message && (
           <div className="col-span-full">
-            <Message
-              variant={responseMessage.status === 200 ? "success" : "danger"}
-            >
+            <Message variant={responseMessage.success ? "success" : "danger"}>
               {responseMessage.message}
             </Message>
           </div>
