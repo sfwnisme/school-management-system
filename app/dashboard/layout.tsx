@@ -10,13 +10,13 @@ type Props = {
 export default function layout({ children }: Props) {
   return (
     <div>
-      <Suspense fallback={<Loading />}>
-        <IsAuth route="protected">
-          <IsRoleAuth>
-            <DrawerContainer>{children}</DrawerContainer>
-          </IsRoleAuth>
-        </IsAuth>
-      </Suspense>
+      {/* <Suspense fallback={<Loading />}> */}
+      <IsAuth route="protected">
+        <IsRoleAuth>
+          <DrawerContainer>{children}</DrawerContainer>
+        </IsRoleAuth>
+      </IsAuth>
+      {/* </Suspense> */}
     </div>
   );
 }

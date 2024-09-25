@@ -168,7 +168,7 @@ export async function getUserById(id: number) {
   }`;
   try {
     const res = await apiClient.get(endpoints.users.id + id);
-    return res;
+    return res.data.data;
   } catch (error) {
     console.log("get user by id error", error);
   }
@@ -355,6 +355,39 @@ export async function getAllInstructors() {
   } catch (error) {
     if (axios.isAxiosError(error)) {
       console.error(error);
+    }
+  }
+}
+
+export async function getInstructorById(id: number) {
+  apiClient.defaults.headers.common["Authorization"] = `Bearer ${
+    cookies().get("token")?.value
+  }`;
+  try {
+    const res = await apiClient.get(endpoints.instructors.id + id);
+    return res.data.data;
+  } catch (error) {
+    console.log("get user by id error", error);
+  }
+}
+
+export async function deleteInstructor(id: number) {
+  const token = cookies().get("token")?.value;
+  apiClient.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+  try {
+    const res = await apiClient.delete(
+      endpoints.instructors.delete + id
+      // endpoints.instructors.delete + "?id=" + id
+    );
+    console.log(res);
+    return res.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      console.log(error);
+      return error;
+    } else {
+      console.log(error);
+      return error;
     }
   }
 }

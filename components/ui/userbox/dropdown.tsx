@@ -1,12 +1,12 @@
 "use client";
 // import { usePathname } from "next/navigation";
-import React from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import Badge from "../badge";
 import { userAvatarNavlinks } from "@/lib/data";
 import { usePathname } from "next/navigation";
 import Button from "../button";
-import { LogOut } from "lucide-react";
+import { Loader, Loader2, LogOut } from "lucide-react";
 import { deleteCookie } from "cookies-next";
 import { isTokenValid } from "@/lib/actions";
 import { IMUser } from "@/definitions";
@@ -20,7 +20,10 @@ export default function Dropdown({ children, userDetails }: Props) {
   const pathname = usePathname();
   const currentUserRole = userDetails?.role || [];
 
+  const [isLoggingout, setIsLoggingout] = useState(false);
+
   const handleLogout = async () => {
+    setIsLoggingout(true);
     const tokenValid = await isTokenValid();
     console.log(tokenValid);
     if (tokenValid === 200) {
@@ -28,6 +31,7 @@ export default function Dropdown({ children, userDetails }: Props) {
       deleteCookie("refresh-token");
       window.location.href = "/login";
     }
+    setIsLoggingout(false);
     return null;
   };
 
@@ -66,8 +70,17 @@ export default function Dropdown({ children, userDetails }: Props) {
         </div>
         <>
           {userDetails?.name && (
-            <Button size="xs" variant="danger" onClick={handleLogout}>
-              <LogOut size={18} />
+            <Button
+              size="xs"
+              variant="danger"
+              onClick={handleLogout}
+              disabled={isLoggingout}
+            >
+              {!isLoggingout ? (
+                <LogOut size={18} />
+              ) : (
+                <Loader size={18} className="animate-spin" />
+              )}
             </Button>
           )}
         </>

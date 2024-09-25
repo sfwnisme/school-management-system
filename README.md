@@ -234,12 +234,19 @@ it is hard to share the response of the catch and the try, so I should use ether
 - [x] customize dynamic table for all the data, avoiding the duplication.
 - [x] error messages for all forms, login, create user, update user and reset password
 - [x] created response deffinition for the endpoints that return errors and success messages.
-- [ ] delete button of the `table-layer.tsx` disabled in all pages include the current user table row, thus I need to solve this issue the next session.
+
+### Tu 24/09/2024
+
+- [x] delete button of the `table-layer.tsx` disabled in all pages include the current user table row, thus I need to solve this issue the next session.
+- [x] instructor delete.
+- [x] fix: all pages loading delay.
+- [x] fix: all pages error UI.
+- [x] fix: delete button visibility for current user and common ids for other tables
 
 ### Backlog
 
 - [ ] forget password endpoint with the code and email.
-- [ ] instructors delete, udpate, create.
+- [ ] instructors udpate, create.
 - [ ] user and the current user's profile.
 - [ ] dynamic breadcrump.
 

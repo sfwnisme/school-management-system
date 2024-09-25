@@ -2,11 +2,12 @@ import Button from "@/components/ui/button";
 import InstructorsTable from "@/components/ui/instructors/instructors-table";
 import TableLayer from "@/components/ui/table-layer";
 import Title from "@/components/ui/title";
-import { getAllInstructors } from "@/lib/actions";
+import { deleteInstructor, getAllInstructors } from "@/lib/actions";
 import React from "react";
 
 export default async function page() {
   const instructors = await getAllInstructors();
+  // const deleteInstructor = "";
   console.log(instructors);
   //   instId: 3,
   //   name: 'Dr. Sarah Khaled',
@@ -45,9 +46,10 @@ export default async function page() {
       </Title>
       <TableLayer
         dataFunction={instructors}
+        deleteFunction={deleteInstructor}
         tableHeader={instructorsKeysAndNames}
+        route={"instructors"}
       />
-      {/* <InstructorsTable /> */}
     </div>
   );
 }

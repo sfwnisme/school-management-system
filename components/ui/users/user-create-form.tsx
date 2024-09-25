@@ -1,10 +1,8 @@
 "use client";
+// import Image from 'next'
 import { YupUserCreateInputs } from "@/definitions";
 import { createUser, getAllUsers } from "@/lib/actions";
-import {
-  yupUserCreateSchema,
-  yupUserUpdateSchema,
-} from "@/lib/validation-schema-yup";
+import { yupUserCreateSchema } from "@/lib/validation-schema-yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import React, { ChangeEvent, FormEventHandler, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
@@ -84,6 +82,7 @@ export default function UserCreateForm({}: Props) {
   return (
     <div className="w-full md:max-w-[700px] md:w-auto mx-auto rounded border border-gray-300 p-4">
       <div className="size-20 border border-gray-300 rounded mx-auto mb-8 overflow-hidden">
+        {/*  eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={
             profileImage ||

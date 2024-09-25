@@ -48,7 +48,8 @@ export const endpoints = {
     all: "instructors/list",
     id: "instructors/",
     create: "instructors/create",
-    edit: "instructors/delete/",
+    edit: "instructors/edit",
+    delete: "instructors/delete/",
   },
   departments: {
     all: "departments/list",

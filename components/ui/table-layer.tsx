@@ -9,12 +9,14 @@ import Tr from "./table/tr";
 import Button from "./button";
 import { Edit, Trash } from "lucide-react";
 import { IUser } from "@/definitions";
+import Image from "next/image";
 
 type Props = {
   dataFunction: any;
   deleteFunction?: any;
   tableHeader: { key: string; name: string }[];
   currentUser?: IUser;
+  route: string;
 };
 
 export default function TableLayer(props: Props) {
@@ -24,23 +26,25 @@ export default function TableLayer(props: Props) {
   const [targetedUserId, setTargetedUserId] = useState(-1);
   const userRef = useRef(-1);
 
-  const currentUser = props.currentUser;
-  console.log(currentUser);
+  // some endpoints id's names are not united, thus this
+  // variable will check if it's 'id', 'instId' or whatever
+  const idKey =
+    props.tableHeader[0].key === "id" ? props.tableHeader[0].key : "instId";
 
   // check if the targeted id is the id of the current user
+  const currentUser = props.currentUser;
   function isCurrentUser(id: number) {
-    if (currentUser?.id === id) {
-      return true;
+    if (currentUser) {
+      if (currentUser?.id === id) {
+        return true;
+      }
     }
     return false;
   }
-  // function isUsersPage() {
-  //   if(props.currentUser) {
-  //     return true
-  //   }
-  //   return false
-  // }
-  const isUsersPage = props?.currentUser ? true : false;
+
+  // this variable helps me check if the current table is for the users
+  // I can use this to remove the delete button from the loggedin user's table row.
+  const isUsersPage = Boolean(props?.currentUser);
   console.log(isUsersPage);
 
   const handleDeletePopoverToggle = (id: number) => {
@@ -91,7 +95,7 @@ export default function TableLayer(props: Props) {
 
   // table header
   const tableHeaderCells = props.tableHeader?.map((header) => (
-    <Th key={header.key}>{header.name}</Th>
+    <Th key={header.name}>{header.name}</Th>
   ));
 
   // table body
@@ -100,15 +104,19 @@ export default function TableLayer(props: Props) {
       {props.tableHeader?.map((head) => (
         <>
           {head.key === "imagePath" ? (
-            <Td key={data.id}>
-              <img
-                src={data[head?.key]}
-                alt={data[head?.key]}
-                className="size-10"
+            <Td key={data.id + data}>
+              <Image
+                width={40}
+                height={40}
+                src={
+                  data?.[head?.key] ||
+                  "https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/User-avatar.svg/2048px-User-avatar.svg.png"
+                }
+                alt={data?.[idKey] || "data avatar"}
+                className="size-10 border border-gray-300 rounded shadow-sm"
               />
             </Td>
           ) : (
-            // ""
             <>
               <Td key={data.id}>{data[head?.key]}</Td>
             </>
@@ -122,13 +130,13 @@ export default function TableLayer(props: Props) {
             outline
             variant="info"
             width="full"
-            href={`users/update/${data["id" || "instId"]}`}
+            href={`${props.route}/update/${data[idKey]}`}
             tag="link"
-            id={data["id" || "instId"]}
+            id={data[idKey]}
           >
             <Edit size={15} />
           </Button>
-          {isUsersPage && !isCurrentUser(data["id" || "instId"] as number) ? (
+          {isUsersPage && isCurrentUser(data["id"] as number) ? null : (
             <Button
               size="sm"
               outline
@@ -137,39 +145,23 @@ export default function TableLayer(props: Props) {
               tag="button"
               disabled={isDeleting}
               // loading={isDeleting}
-              onClick={() => handleDeletePopoverToggle(Number(data["id"]))}
-              id={data["id" || "instId"]}
-            >
-              <Trash size={15} />
-            </Button>
-          ) : (
-            <Button
-              size="sm"
-              outline
-              variant="danger"
-              width="full"
-              tag="button"
-              disabled={isDeleting}
-              // loading={isDeleting}
-              onClick={() => handleDeletePopoverToggle(Number(data["id"]))}
-              id={data["id" || "instId"]}
+              onClick={() => handleDeletePopoverToggle(Number(data[idKey]))}
+              id={data[idKey]}
             >
               <Trash size={15} />
             </Button>
           )}
         </div>
-        {deletePopoverToggle && targetedUserId === data["id" || "instId"] ? (
+        {deletePopoverToggle && targetedUserId === data[idKey] ? (
           <div className="min-w-full z-50 absolute right-1 top-1/2 -translate-y-1/2 flex flex-col items-center justify-center gap-4 bg-white rounded border border-gray-300 shadow-lg shadow-gray-300 p-2">
             <p className="text-center">
-              Delete User {data["id" || "instId"]}.{data?.fullName}
+              Delete User {data[idKey]}.{data?.fullName}
             </p>
             <div className="flex items-center gap-2">
               <Button
                 variant="danger"
                 size="xs"
-                onClick={() =>
-                  deleteDataFunction(Number(data["id" || "instId"]))
-                }
+                onClick={() => deleteDataFunction(Number(data[idKey]))}
               >
                 {!isDeleting ? "Delete" : "Deleting..."}
               </Button>

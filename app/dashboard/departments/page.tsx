@@ -5,7 +5,7 @@ import React from "react";
 export default function page() {
   return (
     <div>
-      <Title>Departments</Title>
+      <Title title="All Departments"></Title>
       <DepartmentsTable />
     </div>
   );

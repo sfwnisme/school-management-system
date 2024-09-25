@@ -14,28 +14,11 @@ type Props = {
   };
 };
 
-const updateUserDataSchema = {
-  id: 31,
-  userName: "ali",
-  email: "ali@project.com",
-  imagePath: null,
-  fullName: "ali mo",
-};
-// const dfkj = {
-
-//   "id": 31,
-//   "userName": "ali",
-//   "email": "ali@project.com",
-//   "imagePath": null,
-//   "fullName": "ali mo",
-// }
-
 export default async function page(props: Props) {
   const id = Number(props?.params.id);
 
-  // user by id
   const userById = await getUserById(id);
-  const userData = userById?.data.data;
+  const userData = userById;
 
   // all roles
   const allRoles = await getAllRoles();

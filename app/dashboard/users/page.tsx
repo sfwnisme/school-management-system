@@ -1,7 +1,6 @@
 import Button from "@/components/ui/button";
 import TableLayer from "@/components/ui/table-layer";
 import Title from "@/components/ui/title";
-import UsersTable from "@/components/ui/users/users-table";
 import { deleteUser, getAllUsers, getCurrentUser } from "@/lib/actions";
 
 export default async function page() {
@@ -49,8 +48,8 @@ export default async function page() {
         deleteFunction={deleteUser}
         tableHeader={userKeysAndNames}
         currentUser={currentUser}
+        route={'users'}
       />
-      {/* <UsersTable users={users} currentUser={currentUser} /> */}
     </div>
   );
 }
