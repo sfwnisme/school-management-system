@@ -8,7 +8,7 @@ import ErrorMessage from "../error-message";
 
 export default async function SubjectsData() {
   const subjects = await getAllSubjects();
-  console.log(subjects?.data.data);
+  console.log(subjects);
   let content;
 
   const noData = (
@@ -28,9 +28,9 @@ export default async function SubjectsData() {
   //     departments: [
   //       { departmentId: 2, departmentName: 'Physics Department' }
   // ]
-  if (subjects?.data.data === undefined) content = noData;
+  if (subjects === undefined) content = noData;
 
-  const data = subjects?.data.data.map((subject: ISubject) => (
+  const data = subjects.map((subject: ISubject) => (
     <Tr key={subject?.subjectId}>
       <Td>{subject?.subjectId}</Td>
       <Td>{subject?.subjectName}</Td>
@@ -46,7 +46,7 @@ export default async function SubjectsData() {
     </Tr>
   ));
 
-  if (subjects?.data.data !== undefined) content = data;
+  if (subjects !== undefined) content = data;
 
   return <>{content}</>;
 }

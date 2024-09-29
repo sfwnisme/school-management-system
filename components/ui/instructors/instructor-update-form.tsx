@@ -6,6 +6,7 @@ import {
   IResponse,
   IRole,
   IUser,
+  YupInstructorUpdateInputs,
   YupUserUpdateInputs,
 } from "@/definitions";
 import { SubmitHandler, useForm } from "react-hook-form";
@@ -45,8 +46,8 @@ export default function InstructorUpdateForm(props: Props) {
     register,
     handleSubmit,
     formState: { errors, isValid },
-  } = useForm<YupUserUpdateInputs>({
-    resolver: yupResolver(yupUserUpdateSchema),
+  } = useForm<YupInstructorUpdateInputs>({
+    resolver: yupResolver(yupInstructorUpdateSchema),
     mode: "onChange",
     defaultValues: {
       name: instructor?.name,

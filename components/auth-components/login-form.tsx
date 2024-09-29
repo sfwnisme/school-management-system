@@ -19,15 +19,12 @@ type Inputs = {
 export default function LoginForm() {
   const [loading, setLoading] = React.useState(false);
   const [serverMessage, setServerMessage] = React.useState("");
-  const [responseMessage, setResponseMessage] = React.useState<{
-    statusCode: number;
-    success: boolean | null;
-    message: string;
-  }>({
+  const [responseMessage, setResponseMessage] = React.useState({
     statusCode: 0,
-    success: null,
+    success: false,
     message: "",
   });
+  console.log(responseMessage);
 
   console.log(serverMessage);
   //-------------
@@ -44,7 +41,7 @@ export default function LoginForm() {
   const errorMessage = (value: keyof LoginInputTypes) => {
     let message = errors[`${value}`]?.message;
     if (message !== undefined) return message;
-    return null;
+    return "";
   };
   console.log(errorMessage("password"));
 

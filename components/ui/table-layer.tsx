@@ -1,5 +1,5 @@
 "use client";
-import React, { useRef, useState } from "react";
+import React, { Fragment, useRef, useState } from "react";
 import Table from "./table/table";
 import Thead from "./table/thead";
 import Th from "./table/th";
@@ -8,13 +8,22 @@ import Td from "./table/td";
 import Tr from "./table/tr";
 import Button from "./button";
 import { Edit, Trash } from "lucide-react";
-import { IUser } from "@/definitions";
+import { ITableHead, IUser } from "@/definitions";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { revalidateTag } from "next/cache";
+import { toast } from "react-toastify";
+// import { useRouter } from "next/router";
 
 type Props = {
   dataFunction: any;
   deleteFunction?: any;
-  tableHeader: { key: string; name: string }[];
+  tableHeader: ITableHead[];
+  // tableHeader: {
+  //   [key: string]: string | { [key: string]: string; name: string }[];
+  //   name: string;
+  //   arr?: { [key: string]: string; name: string }[];
+  // }[];
   currentUser?: IUser;
   route: string;
 };
@@ -28,8 +37,9 @@ export default function TableLayer(props: Props) {
 
   // some endpoints id's names are not united, thus this
   // variable will check if it's 'id', 'instId' or whatever
-  const idKey =
-    props.tableHeader[0].key === "id" ? props.tableHeader[0].key : "instId";
+  const idKey = props.tableHeader[0].key.toString();
+  console.log(idKey);
+  // props.tableHeader[0].key === "id" ? props.tableHeader[0].key : "instId";
 
   // check if the targeted id is the id of the current user
   const currentUser = props.currentUser;
@@ -84,10 +94,11 @@ export default function TableLayer(props: Props) {
     setIsDeleting(true);
     try {
       const res = await props.deleteFunction(Number(id));
-      const updatedData = await props.dataFunction();
+      const toastType = res.success ? "success" : "error";
+      toast?.[toastType](res.message);
       closeDeletePopover();
     } catch (error) {
-      console.log(error);
+      toast.error("catch table layer" as string);
     } finally {
       setIsDeleting(false);
     }
@@ -95,33 +106,35 @@ export default function TableLayer(props: Props) {
 
   // table header
   const tableHeaderCells = props.tableHeader?.map((header) => (
-    <Th key={header.name}>{header.name}</Th>
+    <Th key={header.name as string}>{header.name as string}</Th>
   ));
 
   // table body
   const tableBodyCells = props.dataFunction?.map((data: any) => (
-    <Tr key={data.id}>
+    <Tr key={data.idKey}>
       {props.tableHeader?.map((head) => (
-        <>
+        <Td key={data[head.name as string]} id={data[idKey]}>
           {head.key === "imagePath" ? (
-            <Td key={data.id + data}>
-              <Image
-                width={40}
-                height={40}
-                src={
-                  data?.[head?.key] ||
-                  "https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/User-avatar.svg/2048px-User-avatar.svg.png"
-                }
-                alt={data?.[idKey] || "data avatar"}
-                className="size-10 border border-gray-300 rounded shadow-sm"
-              />
-            </Td>
+            <Image
+              width={40}
+              height={40}
+              src={
+                data?.[head?.key] ||
+                "https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/User-avatar.svg/2048px-User-avatar.svg.png"
+              }
+              alt={data?.[idKey] || "data avatar"}
+              className="size-10 border border-gray-300 rounded shadow-sm"
+            />
+          ) : Array.isArray(data[head.key as string]) ? (
+            data[head.key as string].map((nestedArrayItem: ITableHead) =>
+              (head.arr as ITableHead[])?.map(
+                (ar: ITableHead) => `${[nestedArrayItem[ar.key as string]]}, `
+              )
+            )
           ) : (
-            <>
-              <Td key={data.id}>{data[head?.key]}</Td>
-            </>
+            data[head.key as string]
           )}
-        </>
+        </Td>
       ))}
       <Td className="relative">
         <div className="flex gap-1 md:gap-2 whitespace-nowrap text-sm font-medium text-gray-500 w-full h-full">
@@ -144,7 +157,6 @@ export default function TableLayer(props: Props) {
               width="full"
               tag="button"
               disabled={isDeleting}
-              // loading={isDeleting}
               onClick={() => handleDeletePopoverToggle(Number(data[idKey]))}
               id={data[idKey]}
             >

@@ -21,9 +21,6 @@ const roles = {
 export default async function IsRoleAuth({ children }: Props) {
   const currentUser = await getCurrentUser();
   const currentUserRole = await currentUser?.roles;
-  const headerList = headers();
-  // console.log(headerList.get("referer")?.split("/"));
-  // console.log(currentUserRole);
 
   console.log(currentUser);
   console.log(!currentUserRole.includes("Admin"));

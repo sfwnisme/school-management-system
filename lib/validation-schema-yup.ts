@@ -1,4 +1,4 @@
-import { mixed, object, ref, string } from "yup";
+import { mixed, number, object, ref, string } from "yup";
 
 const user = {
   userName: string()
@@ -23,6 +23,7 @@ const user = {
       /^(?=.*[^a-zA-Z0-9])/,
       "Password must contain at least one special character, Ex: &"
     ),
+  // .matches(/[0-9]/, "Password must contain at least one number"),
   confirmPassword: string()
     .required("confirm password is required")
     .oneOf([ref("password")], "Password must match"),
@@ -54,6 +55,13 @@ export const yupUserCreateSchema = object({
   password: user.password,
   confirmPassword: user.confirmPassword,
   image: user.image,
+});
+
+export const yupInstructorUpdateSchema = object({
+  name: user.fullName,
+  address: user.fullName,
+  position: user.fullName,
+  salary: user.fullName,
 });
 
 //safimooo

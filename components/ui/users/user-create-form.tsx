@@ -183,9 +183,9 @@ export default function UserCreateForm({}: Props) {
           type="submit"
           loading={isPending}
           disabled={isPending}
-          loadingText="Updating..."
+          loadingText="Creating..."
         >
-          Update
+          Create
         </Button>
         {responseMessage.message && (
           <div className="col-span-full">

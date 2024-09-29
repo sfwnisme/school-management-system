@@ -237,11 +237,16 @@ it is hard to share the response of the catch and the try, so I should use ether
 
 ### Tu 24/09/2024
 
-- [x] delete button of the `table-layer.tsx` disabled in all pages include the current user table row, thus I need to solve this issue the next session.
+- [x] delete button of the `table-layer.tsx` disabled in all pages include the current user's table row, thus I need to solve this issue the next session.
 - [x] instructor delete.
 - [x] fix: all pages loading delay.
 - [x] fix: all pages error UI.
 - [x] fix: delete button visibility for current user and common ids for other tables
+
+### Sat 28/09/2024 & Sun 29/09/2024
+
+- [x] dynamic error handling for all the endpoints(create,update, delete, and reset password for user endpoint).
+- [x] students, departments, and subjects get and delete endpoints
 
 ### Backlog
 
@@ -257,3 +262,7 @@ it is hard to share the response of the catch and the try, so I should use ether
 - **nav**: dynamically displaying the data depending on the user status
 - **user avatar with a list**: displays data and links depending on its authentication data if authenticated or not
 - **logo layout**: provide some props to customize it
+
+## Common Errors
+
+- `Error: Maximum call stack size exceeded` if you mapped the `response` from the API instead of `response.data.data`

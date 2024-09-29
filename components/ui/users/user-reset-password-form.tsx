@@ -28,7 +28,7 @@ export default function UserResetPasswordForm(props: Props) {
     message: string;
   }>({
     statusCode: 0,
-    success: null,
+    success: false,
     message: "",
   });
 
@@ -56,7 +56,7 @@ export default function UserResetPasswordForm(props: Props) {
         confirmPassword: data.confirmPassword,
         email: data.email,
       };
-      const res= await resetUserPassword(newPassword);
+      const res = await resetUserPassword(newPassword);
       if (res) {
         setResponseMessage({
           statusCode: res.statusCode,

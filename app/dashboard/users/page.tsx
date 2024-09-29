@@ -40,7 +40,7 @@ export default async function page() {
     <div className="relative">
       <Title title="All Users">
         <Button tag="link" href="/dashboard/users/add">
-          Add User
+          Create
         </Button>
       </Title>
       <TableLayer

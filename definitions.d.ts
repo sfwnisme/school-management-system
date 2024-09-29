@@ -62,6 +62,8 @@ interface IInstructor {
   salary: number;
   deptId: number;
 }
+interface YupInstructorUpdateInputs
+  extends Pick<IInstructor, "name" | "position" | "salary"> {}
 
 interface IDepartment {
   deptId: number;
@@ -116,6 +118,20 @@ interface FormDataObjectType<T> {
 
 interface IResponse {
   statusCode: number;
-  success: boolean | null;
+  success: boolean;
   message: string;
+}
+type IResponse2 = string;
+
+/**
+ * Table head names and the keys of the endpoints data
+ * this interface used to identify the array that passeed into the <TableLayer/> component into tableHead
+ */
+interface ITableHead {
+  /**
+   * make the type works dynamically with the array and the object keys
+   */
+  [key: string]: string | { key: string; name: string }[];
+  // name: string;
+  // arr: { key: string; name: string }[];
 }

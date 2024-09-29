@@ -41,14 +41,14 @@ export default async function page() {
     <div>
       <Title title="All Instructors">
         <Button tag="link" href="/dashboard/instructors/create">
-          Add Instructor
+          Create
         </Button>
       </Title>
       <TableLayer
         dataFunction={instructors}
         deleteFunction={deleteInstructor}
         tableHeader={instructorsKeysAndNames}
-        route={"instructors"}
+        route="instructors"
       />
     </div>
   );
