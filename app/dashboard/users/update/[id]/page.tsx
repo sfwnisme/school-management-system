@@ -1,9 +1,11 @@
+import NotFound from "@/app/not-found";
 import Button from "@/components/ui/button";
 import Input from "@/components/ui/input";
 import Title from "@/components/ui/title";
 import UserResetPasswordForm from "@/components/ui/users/user-reset-password-form";
 import UserResetPassword from "@/components/ui/users/user-reset-password-form";
 import UserForm from "@/components/ui/users/user-update-form";
+import { IUser } from "@/definitions";
 import { getAllRoles, getRolesByUserId, getUserById } from "@/lib/actions";
 import React from "react";
 
@@ -18,7 +20,8 @@ export default async function page(props: Props) {
   const id = Number(props?.params.id);
 
   const userById = await getUserById(id);
-  const userData = userById;
+  const userData = userById?.data;
+  console.log(userById);
 
   // all roles
   const allRoles = await getAllRoles();
@@ -30,6 +33,7 @@ export default async function page(props: Props) {
   const userRolesData = userRoles?.data.data;
   console.log(userRolesData);
 
+  if (!userById?.data || userById?.status === "error") return NotFound();
   console.log(userData);
   return (
     <div>
@@ -37,12 +41,12 @@ export default async function page(props: Props) {
         <Button tag="link" href="/dashboard/users" value="Users" />
       </Title>
       <UserForm
-        user={userData}
+        user={userData ?? ({} as IUser)}
         roles={allRolesData}
         userRoles={userRolesData}
       />
       <br />
-      <UserResetPasswordForm user={userData} />
+      <UserResetPasswordForm user={userData ?? ({} as IUser)} />
     </div>
   );
 }

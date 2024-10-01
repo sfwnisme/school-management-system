@@ -15,6 +15,7 @@ export default function Error(props: Props) {
   }, [props.error]);
 
   console.log(props);
+  console.log(props.error?.stack);
 
   return (
     <div className="grid place-items-center place-content-center gap-5">

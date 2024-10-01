@@ -22,8 +22,8 @@ const user = {
     .matches(
       /^(?=.*[^a-zA-Z0-9])/,
       "Password must contain at least one special character, Ex: &"
-    ),
-  // .matches(/[0-9]/, "Password must contain at least one number"),
+    )
+    .matches(/[0-9]/, "Password must contain at least one number"),
   confirmPassword: string()
     .required("confirm password is required")
     .oneOf([ref("password")], "Password must match"),

@@ -1,13 +1,18 @@
 "use server";
-import axios, { AxiosError } from "axios";
+import axios, { AxiosError, AxiosResponse } from "axios";
 import { apiClient, endpoints } from "./endpoints";
 import { cookies } from "next/headers";
 import { revalidatePath, revalidateTag } from "next/cache";
 import { redirect } from "next/navigation";
 import { isRedirectError } from "next/dist/client/components/redirect";
 import { getCookie, setCookie } from "cookies-next";
-import { IResponse, IUser, YupUserResetPassword } from "@/definitions";
-import { appendToFormData, responseMessage } from "./utils";
+import {
+  IApiResponseReturn,
+  IResponse,
+  IUser,
+  YupUserResetPassword,
+} from "@/definitions";
+import { apiResponse, appendToFormData, responseMessage } from "./utils";
 import { toast } from "react-toastify";
 
 //----------------------------
@@ -16,37 +21,43 @@ import { toast } from "react-toastify";
 export async function handleSignIn(
   username: string,
   password: string
-): Promise<IResponse | undefined> {
+): Promise<IApiResponseReturn<any> | undefined> {
   const FD: FormData = new FormData();
   FD.append("UserName", username);
   FD.append("Password", password);
 
   try {
     const res = await apiClient.post(endpoints.authentication.signin, FD);
+    const { statusCode, statusText } = res.data.data;
     const token = await res.data.data.accessToken;
     const refreshToken = await res.data.data.refreshToken;
     if (token) {
-      setCookie("token", token, { cookies });
-      setCookie("refresh-token", refreshToken.token, { cookies });
+      cookies().set("token", token);
+      cookies().set("refresh-token", refreshToken.token);
       revalidatePath("dashboard");
       redirect("/dashboard");
     }
-    const { statusCode, statusText } = res.data.data;
-    return responseMessage(statusCode, statusText);
+    return apiResponse(statusCode, statusText);
   } catch (error) {
     if (isRedirectError(error)) {
-      console.log("success");
+      console.log("success and redirected");
       throw error;
     }
     if (axios.isAxiosError(error)) {
       if (error.response) {
+        console.log(error.response.data);
         const {
           data: { statusCode, message },
           status,
           statusText,
         } = error.response;
-        return responseMessage(statusCode || status, message || statusText);
+        return apiResponse(statusCode || status, message || statusText);
       }
+    } else {
+      return apiResponse(
+        400,
+        "edit this error message in the actions.ts file handleSignIn() server action"
+      );
     }
   }
 }
@@ -57,12 +68,11 @@ export async function renewTokenIfNeeded() {
   }`;
   try {
     const FD = new FormData();
-    const token = getCookie("token", { cookies });
-    const refreshToken = getCookie("refresh-token");
+    const token = cookies().get("token")?.value;
+    const refreshToken = cookies().get("refresh-token")?.value;
     if (token && refreshToken) {
       FD.append("RefreshToken", refreshToken);
       FD.append("AccessToken", token);
-
       const res = await apiClient.post(
         endpoints.authentication.refreshToken,
         FD
@@ -71,8 +81,8 @@ export async function renewTokenIfNeeded() {
       console.log(status);
       if (status === 204) return res;
       if (status !== 204) {
-        setCookie("token", res.data.AccessToken, { cookies });
-        setCookie("refresh-token", res.data.refreshToken, { cookies });
+        cookies().set("token", res.data.AccessToken);
+        cookies().set("refresh-token", res.data.refreshToken);
       }
     }
   } catch (error) {
@@ -85,7 +95,7 @@ export async function isTokenValid() {
     cookies().get("token")?.value
   }`;
   try {
-    const token = getCookie("token", { cookies });
+    const token = cookies().get("token")?.value;
     if (token) {
       const res = await apiClient.get(
         endpoints.authentication.validateToken + "?AccessToken=" + token
@@ -107,12 +117,13 @@ export async function getAllUsers() {
     cookies().get("token")?.value
   }`;
   try {
-    const token = getCookie("token", { cookies });
+    const token = cookies().get("token")?.value;
     if (token) {
-      const res = await apiClient.get(endpoints.users.all);
-      console.log(res.data.data);
+      const {
+        data: { statusCode, data, message },
+      } = await apiClient.get(endpoints.users.all);
       revalidatePath("/dashboard/users");
-      return res.data.data;
+      return apiResponse(statusCode, message, data);
     } else {
       console.log(
         "the token not found in the getAllUsers function from actions.tsx"
@@ -120,8 +131,12 @@ export async function getAllUsers() {
     }
   } catch (error) {
     if (axios.isAxiosError(error)) {
-      console.log(error.response?.status);
-      return error;
+      const {
+        status,
+        statusText,
+        data: { statusCode, errors },
+      } = error?.response as AxiosResponse;
+      return apiResponse(status || statusCode, statusText || errors.id.id[0]);
     } else {
       console.log("get all users error", error);
       return error;
@@ -134,33 +149,63 @@ export async function getCurrentUser() {
   apiClient.defaults.headers.common["Authorization"] = `Bearer ${
     cookies().get("token")?.value
   }`;
-  const token = getCookie("token", { cookies });
+  const token = cookies().get("token")?.value;
   try {
     if (token) {
-      const res = await apiClient.get(endpoints.users.current);
-      console.log(res.data.data.userName);
-      console.log(res.data.data.fullName);
-      console.log(res.data.data);
-      return res.data.data;
+      // const res = await apiClient.get(endpoints.users.current);
+      const {
+        status,
+        statusText,
+        data: { statusCode, message, data },
+      } = await apiClient.get(endpoints.users.current);
+      return apiResponse(status || statusCode, message || statusText, data);
     }
   } catch (error) {
-    console.error("current user endpoint function errro", error);
+    if (axios.isAxiosError(error)) {
+      console.log(error.response);
+      console.log(error.response?.data);
+      const {
+        status,
+        statusText,
+        data: { statusCode, message, data },
+      } = error.response as AxiosResponse;
+      console.log(status, statusText, statusCode, message);
+      return apiResponse(status || statusCode, message || statusText, data);
+    } else {
+      console.log("current user endpoint function errro", error);
+    }
   }
 }
 
-export async function getUserById(id: number) {
+export async function getUserById(
+  id: number
+): Promise<IApiResponseReturn<IUser> | undefined> {
   apiClient.defaults.headers.common["Authorization"] = `Bearer ${
     cookies().get("token")?.value
   }`;
   try {
-    const res = await apiClient.get(endpoints.users.id + id);
-    return res.data.data;
+    const {
+      status,
+      statusText,
+      data: { statusCode, message, data },
+    } = await apiClient.get(endpoints.users.id + id);
+    return apiResponse(status || statusCode, message || statusText, data);
   } catch (error) {
+    if (axios.isAxiosError(error)) {
+      const {
+        status,
+        statusText,
+        data: { statusCode, message, data },
+      } = error.response as AxiosResponse;
+      return apiResponse(status || statusCode, message || statusText, data);
+    }
     console.log("get user by id error", error);
   }
 }
 
-export async function updateUser(data: IUser): Promise<IResponse | undefined> {
+export async function updateUser(
+  data: IUser
+): Promise<IApiResponseReturn<any> | undefined> {
   const token = cookies().get("token")?.value;
   apiClient.defaults.headers.common["Authorization"] = `Bearer ${token}`;
 
@@ -169,19 +214,15 @@ export async function updateUser(data: IUser): Promise<IResponse | undefined> {
     if (token) {
       const res = await apiClient.put(endpoints.users.update, FD);
       const { statusCode, message } = res.data;
-      return responseMessage(statusCode, message);
+      return apiResponse(statusCode, message);
     }
   } catch (error) {
     if (axios.isAxiosError(error)) {
       console.log(error.response?.data);
-      const {
-        status,
-        message,
-        errors: { Image },
-      } = error.response?.data;
-      return responseMessage(status, message || Image[0]);
+      const { statusCode, message, errors } = error.response?.data;
+      return apiResponse(statusCode, message || JSON.stringify(errors));
     } else {
-      return responseMessage(
+      return apiResponse(
         400,
         "edit this message from updateUser function action"
       );
@@ -191,63 +232,62 @@ export async function updateUser(data: IUser): Promise<IResponse | undefined> {
 
 export async function createUser(
   data: FormData
-): Promise<IResponse | undefined> {
+): Promise<IApiResponseReturn<undefined> | undefined> {
   const token = cookies().get("token")?.value;
   apiClient.defaults.headers.common["Authorization"] = `Bearer ${token}`;
 
   try {
-    const res = await apiClient.post(endpoints.users.create, data);
-    const { statusCode, message } = res.data;
-    return responseMessage(statusCode, "user created successfully");
+    const {
+      status,
+      statusText,
+      data: { statusCode, message },
+    } = await apiClient.post(endpoints.users.create, data);
+    return apiResponse(status || statusCode, "user created successfully");
   } catch (error) {
     if (axios.isAxiosError(error)) {
+      console.log(error.response?.data.errors);
       const {
         status,
-        message,
-        errors: { Image },
-      } = error.response?.data;
-      return responseMessage(status, message || Image[0]);
+        statusText,
+        data: { statusCode, message, errors },
+      } = error.response as AxiosResponse;
+      return apiResponse(status, errors || message);
     } else {
-      const errorData = {
-        statusCode: 400,
-        success: false,
-        message: "edit this error message from createUser function action",
-      };
-      return errorData;
+      return apiResponse(
+        400,
+        "edit this message from updateUser function action"
+      );
     }
   }
 }
 
-export async function deleteUser(id: number) {
-  const token = cookies().get("token")?.value;
-  apiClient.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+export async function deleteUser(
+  id: number
+): Promise<IApiResponseReturn<undefined> | undefined> {
   try {
-    const res = await apiClient.delete(endpoints.users.delete + "?id=" + id);
+    const token = cookies().get("token")?.value;
+    apiClient.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+
+    const {
+      data: { statusCode },
+    } = await apiClient.delete(endpoints.users.delete + "?id=" + id);
     revalidatePath("users");
-    const { statusCode } = res.data;
-    return responseMessage(statusCode, "user deleted successfully");
+    return apiResponse(statusCode, "the user has deleted successfully");
   } catch (error) {
     if (axios.isAxiosError(error)) {
       const {
         status,
         statusText,
         data: { errors: id },
-      } = error?.response || {};
-      console.log("sfnw", error?.response?.data.errors);
-      console.log("sfnw", id);
-      return responseMessage(status as number, id?.id[0] || statusText);
-    } else {
-      console.log("safimo", error);
-      return responseMessage(400 as number, "hi error");
-
-      // return error;
+      } = error?.response as AxiosResponse;
+      return apiResponse(status, id?.id[0] || statusText);
     }
   }
 }
 
 export async function resetUserPassword(
   data: YupUserResetPassword
-): Promise<IResponse | undefined> {
+): Promise<IApiResponseReturn<any> | undefined> {
   const token = cookies().get("token")?.value;
   apiClient.defaults.headers.common["Authorization"] = `Bearer ${token}`;
   console.log(data);
@@ -263,30 +303,20 @@ export async function resetUserPassword(
       FD
     );
     const successResponse = res.data;
-    const responseData = {
-      statusCode: successResponse.statusCode,
-      success: true,
-      message: "The user updated successfully",
-    };
-    return responseData;
+    return apiResponse(
+      successResponse.statusCode,
+      "The user password updated successfully"
+    );
   } catch (error) {
     if (axios.isAxiosError(error)) {
-      console.log("sfwn", error.response?.data);
-      console.log("sfwn", error.response);
       const {
         data: { status, message },
-        status: statusOne,
+        status: anotherStatus,
         statusText,
-      } = error?.response;
-      return responseMessage(status || statusOne, message || statusText);
-      // return errorData;
+      } = error?.response as AxiosResponse;
+      return apiResponse(status || anotherStatus, message || statusText);
     } else {
-      const errorData = {
-        statusCode: 400,
-        success: false,
-        message: "edit this error message",
-      };
-      return errorData;
+      return apiResponse(400, "edit this message resetUserPassword");
     }
   }
 }
@@ -323,7 +353,7 @@ export async function getAllInstructors() {
   apiClient.defaults.headers.common["Authorization"] = `Bearer ${
     cookies().get("token")?.value
   }`;
-  const token = getCookie("token", { cookies });
+  const token = cookies().get("token")?.value;
   try {
     if (token) {
       const res = await apiClient.get(endpoints.instructors.all);
@@ -428,7 +458,7 @@ export async function getAllStudents() {
   apiClient.defaults.headers.common["Authorization"] = `Bearer ${
     cookies().get("token")?.value
   }`;
-  const token = getCookie("token", { cookies });
+  const token = cookies().get("token")?.value;
   try {
     if (token) {
       const res = await apiClient.get(endpoints.students.all);
@@ -474,7 +504,7 @@ export async function getAllSubjects() {
   apiClient.defaults.headers.common["Authorization"] = `Bearer ${
     cookies().get("token")?.value
   }`;
-  const token = getCookie("token", { cookies });
+  const token = cookies().get("token")?.value;
   try {
     if (token) {
       const res = await apiClient.get(endpoints.subjects.all);

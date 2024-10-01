@@ -248,12 +248,39 @@ it is hard to share the response of the catch and the try, so I should use ether
 - [x] dynamic error handling for all the endpoints(create,update, delete, and reset password for user endpoint).
 - [x] students, departments, and subjects get and delete endpoints
 
+### Mon 30/09/2024 & Tu 01/10/2024
+
+- [x] solve the try and catch data resolves
+- [x] notfound component
+- [x] create error message for the endpoints `conditional-message.tsx`
+- [ ] I must check if the endpoints data availible then map and make logic to avoid the errors
+- update all the api response with the new object schema
+  - [x] `getAllUsers`
+  - [x] `getCurrentUser`
+  - [x] `getUserById`
+  - [x] `updateUser` there is errors object
+  - [ ] `createUser` there is errors object
+  - [x] `deleteUser`
+  - [x] `resetPassword`
+  - [ ] `getAllRoles`
+  - [ ] `getRolesByUserId`
+  - [ ] `getAllInstructors`
+  - [ ] `getInstructorById`
+  - [ ] `deleteInstructor`
+  - [ ] `getAllDepartments`
+  - [ ] `deleteDepartment`
+  - [ ] `getAllStudents`
+  - [ ] `deleteStudent`
+  - [ ] `getAllSubjects`
+  - [ ] `deleteSubject`
+
 ### Backlog
 
 - [ ] forget password endpoint with the code and email.
 - [ ] instructors udpate, create.
 - [ ] user and the current user's profile.
 - [ ] dynamic breadcrump.
+- [ ] try and catch of the server returns into the try block of the client components
 
 ## UI components
 

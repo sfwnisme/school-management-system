@@ -20,15 +20,16 @@ const roles = {
 };
 export default async function IsRoleAuth({ children }: Props) {
   const currentUser = await getCurrentUser();
-  const currentUserRole = await currentUser?.roles;
-
-  console.log(currentUser);
-  console.log(!currentUserRole.includes("Admin"));
+  const currentUserRole = currentUser?.data && currentUser?.data.roles;
 
   // if the current user's role do not equal the authentic role; redirect to home '/'
-  if (!currentUserRole.includes("Admin")) {
-    revalidatePath("/");
-    redirect("/");
+  if (currentUser?.data) {
+    if (!currentUserRole.includes("Admin")) {
+      revalidatePath("/");
+      redirect("/");
+    }
+  } else {
+    console.log("hi I");
   }
   //if the current user's role not equal the authentic role; redirect to dashboard
   return <>{children}</>;

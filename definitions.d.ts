@@ -121,7 +121,12 @@ interface IResponse {
   success: boolean;
   message: string;
 }
-type IResponse2 = string;
+interface IApiResponseReturn<T> {
+  data?: T | null | undefined;
+  error: string | undefined | string[];
+  success: string | undefined | string[];
+  status: "idle" | "success" | "error";
+}
 
 /**
  * Table head names and the keys of the endpoints data

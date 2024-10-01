@@ -5,7 +5,7 @@ import Tr from "../table/tr";
 import Td from "../table/td";
 import { IUser } from "@/definitions";
 import Image from "next/image";
-import { useRef, useState } from "react";
+import { useState } from "react";
 
 type Props = {
   users: IUser[];
@@ -15,8 +15,6 @@ export default function UsersData(props: Props) {
   const [deletePopoverToggle, setDeletePopoverToggle] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [targetedUserId, setTargetedUserId] = useState(-1);
-
-  const userRef = useRef(-1);
 
   const users = props?.users;
   const currentUser = props?.currentUser;
@@ -46,7 +44,6 @@ export default function UsersData(props: Props) {
     if (deletePopoverToggle === false) {
       // if the client clicked the button display the popup
       setDeletePopoverToggle(true);
-      userRef.current = userId;
       setTargetedUserId(userId);
     } else if (deletePopoverToggle === true && targetedUserId === userId) {
       // if the client clicked the same button for the next time close the popup
@@ -54,7 +51,6 @@ export default function UsersData(props: Props) {
       setTargetedUserId(-1);
     } else if (deletePopoverToggle === true && targetedUserId !== -1) {
       // if the client clicked another delete button display its popup
-      userRef.current = userId;
       setTargetedUserId(userId);
     } else {
       // any other logic disable the popup
@@ -65,7 +61,6 @@ export default function UsersData(props: Props) {
 
   const closeDeletePopover = () => {
     setDeletePopoverToggle(false);
-    userRef.current = -1;
   };
 
   const noData = (
@@ -128,7 +123,6 @@ export default function UsersData(props: Props) {
             )}
           </div>
           {/* {toggle ? ( */}
-          {/* {deletePopoverToggle && userRef.current === id ? ( */}
           {deletePopoverToggle && targetedUserId === id ? (
             <div className="min-w-full z-50 absolute right-1 top-full flex flex-col items-center justify-center gap-4 bg-white rounded border border-gray-300 shadow-lg shadow-gray-300 p-2">
               <p className="text-center">
@@ -160,5 +154,5 @@ export default function UsersData(props: Props) {
 
   if (users !== undefined) content = data;
 
-  return <>{content}</>;
+  return <div>{content}</div>;
 }

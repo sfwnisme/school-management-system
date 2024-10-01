@@ -1,13 +1,19 @@
 "use client";
-import React, { useState } from "react";
+import React, { useRef, useState, useTransition } from "react";
 import Input from "../input";
-import { IResponse, IUser, YupUserResetPassword } from "@/definitions";
+import {
+  IApiResponseReturn,
+  IResponse,
+  IUser,
+  YupUserResetPassword,
+} from "@/definitions";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { getAllUsers, resetUserPassword } from "@/lib/actions";
 import Button from "../button";
 import { yupUserResetPasswordSchema } from "@/lib/validation-schema-yup";
 import Message from "../message";
+import ConditionalMessage from "../conditional-message";
 
 type Props = {
   user: IUser;
@@ -20,63 +26,57 @@ type Inputs = {
 };
 export const revalid = 1;
 export default function UserResetPasswordForm(props: Props) {
-  const email = props?.user.email;
-  const [isPending, setIsPending] = useState(false);
-  const [responseMessage, setResponseMessage] = useState<{
-    statusCode: number;
-    success: boolean | null;
-    message: string;
-  }>({
-    statusCode: 0,
-    success: false,
-    message: "",
+  const [isResetPassword, startResetPassword] = useTransition();
+  const apiResponseMessagesRef = useRef<IApiResponseReturn<any>>({
+    success: undefined,
+    error: undefined,
+    status: "idle",
   });
 
-  //--------------------------------
-  // form submit
-  //--------------------------------
+  const email = props?.user && props?.user.email;
+
   const {
     register,
     handleSubmit,
-    formState: { errors, isValid },
+    formState: { errors, isValid, disabled, isValidating },
   } = useForm<YupUserResetPassword>({
     resolver: yupResolver(yupUserResetPasswordSchema),
+    reValidateMode: "onChange",
     mode: "onChange",
     defaultValues: {
       email,
     },
   });
 
-  const onSubmit: SubmitHandler<YupUserResetPassword> = async (data) => {
-    setIsPending(true);
-    try {
-      console.log(email);
-      const newPassword = {
-        password: data.password,
-        confirmPassword: data.confirmPassword,
-        email: data.email,
-      };
+  console.log(isValidating);
+
+  const onSubmit: SubmitHandler<YupUserResetPassword> = (data) => {
+    const newPassword = {
+      password: data.password,
+      confirmPassword: data.confirmPassword,
+      email: data.email,
+    };
+    startResetPassword(async () => {
       const res = await resetUserPassword(newPassword);
       if (res) {
-        setResponseMessage({
-          statusCode: res.statusCode,
-          success: res.success,
-          message: res.message,
-        });
+        const { success, error, status } = res;
+        apiResponseMessagesRef.current = {
+          success,
+          error,
+          status,
+        };
+      } else {
+        console.log(
+          "unexpected error on the onSubmit user-reset-password-form.tsx"
+        );
       }
-      await getAllUsers();
-      // return res;
-    } catch (error) {
-      console.log("update user error", error);
-    } finally {
-      setIsPending(false);
-    }
+    });
   };
 
   return (
     <div className="w-full md:max-w-[700px] md:w-auto mx-auto rounded border border-gray-300 p-4">
       <h1 className="mb-4 text-lg font-medium underline">
-        Update user's password:
+        Update user&apos;s password:
       </h1>
       <form
         onSubmit={handleSubmit(onSubmit)}
@@ -115,19 +115,17 @@ export default function UserResetPasswordForm(props: Props) {
         <Button
           variant="info"
           type="submit"
-          loading={isPending}
-          disabled={isPending || !isValid}
+          loading={isResetPassword}
+          disabled={isResetPassword || !isValid}
           loadingText="Updating..."
         >
           Update
         </Button>
-        {responseMessage.message && (
-          <div className="col-span-full">
-            <Message variant={responseMessage.success ? "success" : "danger"}>
-              {responseMessage.message}
-            </Message>
-          </div>
-        )}
+        <ConditionalMessage
+          success={apiResponseMessagesRef.current.success}
+          error={apiResponseMessagesRef.current.error}
+          status={apiResponseMessagesRef.current.status}
+        />
       </form>
     </div>
   );

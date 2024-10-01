@@ -2,10 +2,11 @@ import { getCurrentUser } from "@/lib/actions";
 import { userAvatarNavlinks } from "@/lib/data";
 import Link from "next/link";
 import Badge from "../badge";
+import { Fragment } from "react";
 
 export default async function UserDropdown() {
   const currentUser = await getCurrentUser();
-  const user = currentUser?.data.data;
+  const user = currentUser?.data;
 
   const shortLinks = userAvatarNavlinks.protected.map((link) => (
     <Link
@@ -23,17 +24,17 @@ export default async function UserDropdown() {
         <div className="flex-1">
           <p className="capitalize text-sm text-gray-600">{user?.name}</p>
           <p className="capitalize text-xs text-gray-600">{user?.username}</p>
-          {/* <Badge>{user?.role}</Badge> */}
+          <Badge>{...user?.role}</Badge>
         </div>
       </div>
     ) : null;
 
   let content = (
-    <>
+    <Fragment>
       {shortLinks}
       {userDataContainer}
-    </>
+    </Fragment>
   );
 
-  return <>{content}</>;
+  return <Fragment>{content}</Fragment>;
 }

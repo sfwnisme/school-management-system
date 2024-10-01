@@ -21,7 +21,7 @@ export default function Message({
   };
   // const variant = variants[variant || "initial"];
 
-  const settings = `${variants[variant]}`;
+  const settings = variants[variant];
   // const children = props.children = ''
 
   return (

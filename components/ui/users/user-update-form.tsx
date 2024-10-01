@@ -1,13 +1,19 @@
 "use client";
-import React, { ChangeEvent, Fragment, useState } from "react";
+import React, { useRef, useTransition } from "react";
 import Input from "../input";
-import { IResponse, IRole, IUser, YupUserUpdateInputs } from "@/definitions";
+import {
+  IApiResponseReturn,
+  IRole,
+  IUser,
+  YupUserUpdateInputs,
+} from "@/definitions";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { getAllUsers, resetUserPassword, updateUser } from "@/lib/actions";
+import { updateUser } from "@/lib/actions";
 import Button from "../button";
 import { yupUserUpdateSchema } from "@/lib/validation-schema-yup";
 import Message from "../message";
+import ConditionalMessage from "../conditional-message";
 
 type Props = {
   user: IUser;
@@ -25,31 +31,25 @@ type Inputs = {
 };
 export const revalid = 1;
 export default function UserUpdateForm(props: Props) {
-  const [responseMessage, setResponseMessage] = useState<{
-    statusCode: number;
-    success: boolean | null;
-    message: string;
-  }>({
-    statusCode: 0,
-    success: null,
-    message: "",
+  const [isUpdatingUser, startUpdatingUser] = useTransition();
+  const apiResponseMessagesRef = useRef<IApiResponseReturn<undefined>>({
+    success: undefined,
+    error: undefined,
+    status: "idle",
   });
+
   const user = props?.user;
   const roles = props?.roles;
-  const [isPending, setIsPending] = useState(false);
 
   const currentRole = () => {
     const findTheCurrentRole = roles.find((role) => {
-      if (role.name === user.roles?.[0]) {
+      if (role.name === user?.roles?.[0]) {
         return role.id;
       }
     });
     return findTheCurrentRole?.id;
   };
 
-  //--------------------------------
-  // form submit
-  //--------------------------------
   const {
     register,
     handleSubmit,
@@ -65,8 +65,7 @@ export default function UserUpdateForm(props: Props) {
   });
 
   const onSubmit: SubmitHandler<YupUserUpdateInputs> = async (data) => {
-    setIsPending(true);
-    try {
+    startUpdatingUser(async () => {
       const newUserData = {
         id: user?.id,
         userName: data?.userName,
@@ -75,23 +74,16 @@ export default function UserUpdateForm(props: Props) {
         roleId: Number(data.roleId),
       };
       const res = await updateUser(newUserData);
-      console.log(res);
       if (res) {
-        setResponseMessage({
-          statusCode: res.statusCode,
-          success: res.success,
-          message: res.message,
-        });
+        const { success, error, status } = res;
+        apiResponseMessagesRef.current = {
+          success,
+          error,
+          status,
+        };
       }
-      await getAllUsers();
-      return res;
-    } catch (error) {
-      console.log("update user error", error);
-    } finally {
-      setIsPending(false);
-    }
+    });
   };
-
   // this function helps me select the initial role "User", in this scenario I can prevent modifying this role
   const userRolesSelectJsx = roles.map((role) => (
     <option id={role?.id?.toString()} value={role.id} key={role.id}>
@@ -102,7 +94,7 @@ export default function UserUpdateForm(props: Props) {
   return (
     <div className="w-full md:max-w-[700px] md:w-auto mx-auto rounded border border-gray-300 p-4">
       <h1 className="mb-4 text-lg font-medium underline">
-        Update user's info:
+        Update user&apos;s info:
       </h1>
       <form
         onSubmit={handleSubmit(onSubmit)}
@@ -159,19 +151,17 @@ export default function UserUpdateForm(props: Props) {
         <Button
           variant="info"
           type="submit"
-          loading={isPending}
-          disabled={isPending || !isValid}
+          loading={isUpdatingUser}
+          disabled={isUpdatingUser || !isValid}
           loadingText="Updating..."
         >
           Update
         </Button>
-        {responseMessage.message && (
-          <div className="col-span-full">
-            <Message variant={responseMessage.success ? "success" : "danger"}>
-              {responseMessage.message}
-            </Message>
-          </div>
-        )}
+        <ConditionalMessage
+          success={apiResponseMessagesRef.current.success}
+          error={apiResponseMessagesRef.current.error}
+          status={apiResponseMessagesRef.current.status}
+        />
       </form>
     </div>
   );

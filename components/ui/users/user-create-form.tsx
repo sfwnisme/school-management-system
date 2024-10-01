@@ -1,10 +1,16 @@
 "use client";
 // import Image from 'next'
-import { YupUserCreateInputs } from "@/definitions";
+import { IApiResponseReturn, YupUserCreateInputs } from "@/definitions";
 import { createUser, getAllUsers } from "@/lib/actions";
 import { yupUserCreateSchema } from "@/lib/validation-schema-yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import React, { ChangeEvent, FormEventHandler, useState } from "react";
+import React, {
+  ChangeEvent,
+  FormEventHandler,
+  useRef,
+  useState,
+  useTransition,
+} from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import Button from "../button";
 import FileInput from "../file-input";
@@ -13,21 +19,28 @@ import Input from "../input";
 import { apiClient, endpoints } from "@/lib/endpoints";
 import { getCookie } from "cookies-next";
 import { appendToFormData } from "@/lib/utils";
+import ConditionalMessage from "../conditional-message";
 
 type Props = {};
 export default function UserCreateForm({}: Props) {
-  const [isPending, setIsPending] = useState(false);
+  const [isCreatingUser, startCreatingUser] = useTransition();
+  const apiResponseMessagesRef = useRef<IApiResponseReturn<undefined>>({
+    success: undefined,
+    error: undefined,
+    status: "idle",
+  });
+  // const [isCreatingUser, setIsCisCreatingUser] = useState(false);
   const [profileImage, setProfileImage] = useState("");
   const [nativeImage, setNativeImage] = useState<File>();
-  const [responseMessage, setResponseMessage] = useState<{
-    statusCode: number;
-    success: boolean | null;
-    message: string;
-  }>({
-    statusCode: 0,
-    success: null,
-    message: "",
-  });
+  // const [responseMessage, setResponseMessage] = useState<{
+  //   statusCode: number;
+  //   success: boolean | null;
+  //   message: string;
+  // }>({
+  //   statusCode: 0,
+  //   success: null,
+  //   message: "",
+  // });
 
   const imagePreview = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -47,11 +60,8 @@ export default function UserCreateForm({}: Props) {
   });
 
   const onSubmit: SubmitHandler<YupUserCreateInputs> = async (data) => {
-    setIsPending(true);
-
     const { userName, fullName, email, password, confirmPassword, image } =
       data;
-
     const FD = new FormData();
     FD.append("userName", userName);
     FD.append("fullName", fullName);
@@ -60,24 +70,38 @@ export default function UserCreateForm({}: Props) {
     FD.append("confirmPassword", confirmPassword);
     FD.append("image", image[0]);
 
-    try {
-      const res = await createUser(FD);
-      console.log(res);
-      if (res) {
-        setResponseMessage({
-          statusCode: res?.statusCode,
-          success: res?.success,
-          message: res?.message,
-        });
+    startCreatingUser(async () => {
+      const { success, error, status } = (await createUser(
+        FD
+      )) as IApiResponseReturn<undefined>;
+      if (status !== "idle") {
+        apiResponseMessagesRef.current = {
+          success,
+          error,
+          status,
+        };
       }
-      await getAllUsers();
-      return res;
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setIsPending(false);
-    }
+    });
+
+    // try {
+    //   const res = await createUser(FD);
+    //   console.log(res);
+    //   if (res) {
+    //     setResponseMessage({
+    //       statusCode: res?.statusCode,
+    //       success: res?.success,
+    //       message: res?.message,
+    //     });
+    //   }
+    //   await getAllUsers();
+    //   return res;
+    // } catch (error) {
+    //   console.log(error);
+    // } finally {
+    //   setIsCisCreatingUser(false);
+    // }
   };
+  console.log("sfwn");
 
   return (
     <div className="w-full md:max-w-[700px] md:w-auto mx-auto rounded border border-gray-300 p-4">
@@ -181,19 +205,24 @@ export default function UserCreateForm({}: Props) {
         <Button
           variant="info"
           type="submit"
-          loading={isPending}
-          disabled={isPending}
+          loading={isCreatingUser}
+          disabled={isCreatingUser || !isValid}
           loadingText="Creating..."
         >
           Create
         </Button>
-        {responseMessage.message && (
+        <ConditionalMessage
+          success={apiResponseMessagesRef.current.success}
+          error={apiResponseMessagesRef.current.error}
+          status={apiResponseMessagesRef.current.status}
+        />
+        {/* {responseMessage.message && (
           <div className="col-span-full">
             <Message variant={responseMessage.success ? "success" : "danger"}>
               {responseMessage.message}
             </Message>
           </div>
-        )}
+        )} */}
       </form>
     </div>
   );

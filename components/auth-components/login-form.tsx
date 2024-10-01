@@ -1,15 +1,16 @@
 "use client";
-import React, { FormEvent, useEffect } from "react";
+import React, { useRef, useTransition } from "react";
 import Input from "../ui/input";
 import Button from "../ui/button";
-import { HelpCircle, User } from "lucide-react";
+import { User } from "lucide-react";
 import Link from "next/link";
 import { handleSignIn } from "@/lib/actions";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { loginSchema } from "@/lib/validation-schema-yup";
-import { IResponse, LoginInputTypes } from "@/definitions";
+import { IApiResponseReturn, LoginInputTypes } from "@/definitions";
 import Message from "../ui/message";
+import ConditionalMessage from "../ui/conditional-message";
 
 type Inputs = {
   username: string;
@@ -17,17 +18,13 @@ type Inputs = {
 };
 
 export default function LoginForm() {
-  const [loading, setLoading] = React.useState(false);
-  const [serverMessage, setServerMessage] = React.useState("");
-  const [responseMessage, setResponseMessage] = React.useState({
-    statusCode: 0,
-    success: false,
-    message: "",
+  const [isLogin, startLogin] = useTransition();
+  const apiResponseMessagesRef = useRef<IApiResponseReturn<undefined>>({
+    success: undefined,
+    error: undefined,
+    status: "idle",
   });
-  console.log(responseMessage);
 
-  console.log(serverMessage);
-  //-------------
   const {
     register,
     handleSubmit,
@@ -39,15 +36,13 @@ export default function LoginForm() {
   });
 
   const errorMessage = (value: keyof LoginInputTypes) => {
-    let message = errors[`${value}`]?.message;
+    let message = errors[value]?.message;
     if (message !== undefined) return message;
     return "";
   };
-  console.log(errorMessage("password"));
 
-  const onSubmit: SubmitHandler<Inputs> = async (data) => {
-    setLoading(true);
-    try {
+  const onSubmit: SubmitHandler<Inputs> = (data) => {
+    startLogin(async () => {
       const loginCredentials = {
         username: data?.username,
         password: data?.password,
@@ -57,17 +52,18 @@ export default function LoginForm() {
         loginCredentials?.password as string
       );
       if (res) {
-        setResponseMessage({
-          statusCode: res.statusCode,
-          success: res.success,
-          message: res.message,
-        });
+        const { success, error, status } = res;
+        apiResponseMessagesRef.current = {
+          success,
+          error,
+          status,
+        };
+      } else {
+        console.log(
+          "unexpected error from onSubmit function of login-form.tsx"
+        );
       }
-    } catch (error) {
-      console.error("error from login-form.tsx", error);
-    } finally {
-      setLoading(false);
-    }
+    });
   };
 
   return (
@@ -123,18 +119,16 @@ export default function LoginForm() {
           <Button
             type="submit"
             value={"login"}
-            disabled={!isValid || loading ? true : false}
-            loading={loading}
+            disabled={!isValid || isLogin ? true : false}
+            loading={isLogin}
             size="sm"
           />
         </form>
-        {responseMessage.message && (
-          <div className="col-span-full">
-            <Message variant={responseMessage.success ? "success" : "danger"}>
-              {responseMessage.message}
-            </Message>
-          </div>
-        )}
+        <ConditionalMessage
+          success={apiResponseMessagesRef.current.success}
+          error={apiResponseMessagesRef.current.error}
+          status={apiResponseMessagesRef.current.status}
+        />
         <Link
           href={""}
           className="text-gray-400 hover:text-gray-500 text-xs lg:text-sm flex items-center justify-center gap-1 col-span-full mt-4"

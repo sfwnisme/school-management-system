@@ -47,8 +47,8 @@ export default async function page() {
         dataFunction={users}
         deleteFunction={deleteUser}
         tableHeader={userKeysAndNames}
-        currentUser={currentUser}
-        route={'users'}
+        currentUser={currentUser?.data}
+        route={"users"}
       />
     </div>
   );

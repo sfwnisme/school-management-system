@@ -3,6 +3,7 @@
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { getCurrentUser, isTokenValid, renewTokenIfNeeded } from "./actions";
+import { Fragment } from "react";
 
 type Props = {
   children: React.ReactNode;
@@ -10,9 +11,9 @@ type Props = {
 };
 export default async function IsAuth({ children, route }: Props) {
   const checkTokenIfValid = await isTokenValid();
-  const currentUser = await getCurrentUser()
-  console.log(currentUser)
-  console.log(checkTokenIfValid)
+  // const currentUser = await getCurrentUser()
+  // console.log(currentUser)
+  console.log(checkTokenIfValid);
 
   // check if the token expired
   renewTokenIfNeeded();
@@ -25,5 +26,5 @@ export default async function IsAuth({ children, route }: Props) {
     redirect("/dashboard");
   }
   revalidatePath("/dashboard");
-  return <>{children}</>;
+  return <Fragment>{children}</Fragment>;
 }
