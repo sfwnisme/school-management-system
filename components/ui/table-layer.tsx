@@ -81,15 +81,15 @@ export default function TableLayer(props: Props) {
   function deleteDataFunction(id: number) {
     closeDeletePopover();
     startDeleting(async () => {
-      const { success, error } = await props.deleteFunction(id);
-      const toastType = success ? "success" : "error";
-      toast?.[toastType](success || error);
+      const { isSuccess, isError, message } = await props.deleteFunction(id);
+      const toastType = isSuccess ? "success" : "error";
+      toast?.[toastType](message);
     });
   }
 
   // table header
   const tableHeaderCells = props.tableHeader?.map((header) => (
-    <Th key={header.name as string}>{header.name as string}</Th>
+    <Th key={header.key as React.Key}>{header.name}</Th>
   ));
 
   let content;

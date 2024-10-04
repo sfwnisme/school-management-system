@@ -8,11 +8,20 @@ import { isRedirectError } from "next/dist/client/components/redirect";
 import { getCookie, setCookie } from "cookies-next";
 import {
   IApiResponseReturn,
+  IFetchResponse,
   IResponse,
+  IFetchResponse2,
+  IRole,
   IUser,
   YupUserResetPassword,
 } from "@/definitions";
-import { apiResponse, appendToFormData, responseMessage } from "./utils";
+import {
+  apiResponse,
+  fetchResponse,
+  appendToFormData,
+  responseMessage,
+  fetchResponse2,
+} from "./utils";
 import { toast } from "react-toastify";
 
 //----------------------------
@@ -145,7 +154,9 @@ export async function getAllUsers() {
 }
 
 //get the loged in user
-export async function getCurrentUser() {
+export async function getCurrentUser(): Promise<
+  IFetchResponse<IUser | null | undefined> | undefined
+> {
   apiClient.defaults.headers.common["Authorization"] = `Bearer ${
     cookies().get("token")?.value
   }`;
@@ -158,7 +169,8 @@ export async function getCurrentUser() {
         statusText,
         data: { statusCode, message, data },
       } = await apiClient.get(endpoints.users.current);
-      return apiResponse(status || statusCode, message || statusText, data);
+      console.log(data);
+      return fetchResponse(status || statusCode, message || statusText, data);
     }
   } catch (error) {
     if (axios.isAxiosError(error)) {
@@ -167,19 +179,23 @@ export async function getCurrentUser() {
       const {
         status,
         statusText,
-        data: { statusCode, message, data },
+        data: { statusCode, message },
       } = error.response as AxiosResponse;
       console.log(status, statusText, statusCode, message);
-      return apiResponse(status || statusCode, message || statusText, data);
+      return fetchResponse(status || statusCode, message || statusText);
     } else {
       console.log("current user endpoint function errro", error);
+      return fetchResponse(
+        400,
+        "edit this message in the getCurrentUser server action"
+      );
     }
   }
 }
 
 export async function getUserById(
   id: number
-): Promise<IApiResponseReturn<IUser> | undefined> {
+): Promise<IFetchResponse<IUser | null | undefined> | undefined> {
   apiClient.defaults.headers.common["Authorization"] = `Bearer ${
     cookies().get("token")?.value
   }`;
@@ -189,7 +205,7 @@ export async function getUserById(
       statusText,
       data: { statusCode, message, data },
     } = await apiClient.get(endpoints.users.id + id);
-    return apiResponse(status || statusCode, message || statusText, data);
+    return fetchResponse(status || statusCode, message || statusText, data);
   } catch (error) {
     if (axios.isAxiosError(error)) {
       const {
@@ -197,7 +213,7 @@ export async function getUserById(
         statusText,
         data: { statusCode, message, data },
       } = error.response as AxiosResponse;
-      return apiResponse(status || statusCode, message || statusText, data);
+      return fetchResponse(status || statusCode, message || statusText, data);
     }
     console.log("get user by id error", error);
   }
@@ -205,7 +221,7 @@ export async function getUserById(
 
 export async function updateUser(
   data: IUser
-): Promise<IApiResponseReturn<any> | undefined> {
+): Promise<IFetchResponse2<undefined> | undefined> {
   const token = cookies().get("token")?.value;
   apiClient.defaults.headers.common["Authorization"] = `Bearer ${token}`;
 
@@ -213,17 +229,34 @@ export async function updateUser(
   try {
     if (token) {
       const res = await apiClient.put(endpoints.users.update, FD);
-      const { statusCode, message } = res.data;
-      return apiResponse(statusCode, message);
+      const {
+        status,
+        statusText,
+        data: { statusCode, message },
+      } = res;
+      return fetchResponse2(
+        status || statusCode,
+        "success",
+        "the user updated successfully"
+      );
     }
   } catch (error) {
     if (axios.isAxiosError(error)) {
-      console.log(error.response?.data);
-      const { statusCode, message, errors } = error.response?.data;
-      return apiResponse(statusCode, message || JSON.stringify(errors));
+      const {
+        status,
+        statusText,
+        data: { statusCode, message, errors },
+      } = error.response as AxiosResponse;
+      console.log(errors);
+      return fetchResponse2(
+        status || statusCode,
+        "error",
+        errors || message || statusText
+      );
     } else {
-      return apiResponse(
+      return fetchResponse2(
         400,
+        "error",
         "edit this message from updateUser function action"
       );
     }
@@ -232,7 +265,7 @@ export async function updateUser(
 
 export async function createUser(
   data: FormData
-): Promise<IApiResponseReturn<undefined> | undefined> {
+): Promise<IFetchResponse2<undefined> | undefined> {
   const token = cookies().get("token")?.value;
   apiClient.defaults.headers.common["Authorization"] = `Bearer ${token}`;
 
@@ -242,7 +275,11 @@ export async function createUser(
       statusText,
       data: { statusCode, message },
     } = await apiClient.post(endpoints.users.create, data);
-    return apiResponse(status || statusCode, "user created successfully");
+    return fetchResponse2(
+      status || statusCode,
+      "success",
+      "user created successfully"
+    );
   } catch (error) {
     if (axios.isAxiosError(error)) {
       console.log(error.response?.data.errors);
@@ -251,10 +288,11 @@ export async function createUser(
         statusText,
         data: { statusCode, message, errors },
       } = error.response as AxiosResponse;
-      return apiResponse(status, errors || message);
+      return fetchResponse2(status, "error", errors || message);
     } else {
-      return apiResponse(
+      return fetchResponse2(
         400,
+        "error",
         "edit this message from updateUser function action"
       );
     }
@@ -263,7 +301,7 @@ export async function createUser(
 
 export async function deleteUser(
   id: number
-): Promise<IApiResponseReturn<undefined> | undefined> {
+): Promise<IFetchResponse2<[]> | undefined> {
   try {
     const token = cookies().get("token")?.value;
     apiClient.defaults.headers.common["Authorization"] = `Bearer ${token}`;
@@ -272,7 +310,11 @@ export async function deleteUser(
       data: { statusCode },
     } = await apiClient.delete(endpoints.users.delete + "?id=" + id);
     revalidatePath("users");
-    return apiResponse(statusCode, "the user has deleted successfully");
+    return fetchResponse2(
+      statusCode,
+      "success",
+      "the user has deleted successfully"
+    );
   } catch (error) {
     if (axios.isAxiosError(error)) {
       const {
@@ -280,14 +322,15 @@ export async function deleteUser(
         statusText,
         data: { errors: id },
       } = error?.response as AxiosResponse;
-      return apiResponse(status, id?.id[0] || statusText);
+      return fetchResponse2(status, "error", id?.id[0] || statusText);
     }
   }
 }
 
 export async function resetUserPassword(
   data: YupUserResetPassword
-): Promise<IApiResponseReturn<any> | undefined> {
+): Promise<IFetchResponse2<[]> | undefined> {
+  // ): Promise<IFetchResponse<undefined> | undefined> {
   const token = cookies().get("token")?.value;
   apiClient.defaults.headers.common["Authorization"] = `Bearer ${token}`;
   console.log(data);
@@ -303,34 +346,61 @@ export async function resetUserPassword(
       FD
     );
     const successResponse = res.data;
-    return apiResponse(
+    console.log(res);
+    return fetchResponse2(
       successResponse.statusCode,
+      "success",
       "The user password updated successfully"
     );
   } catch (error) {
     if (axios.isAxiosError(error)) {
+      console.log(error.response);
       const {
         data: { status, message },
         status: anotherStatus,
         statusText,
       } = error?.response as AxiosResponse;
-      return apiResponse(status || anotherStatus, message || statusText);
+      return fetchResponse2(
+        status || anotherStatus,
+        "error",
+        message || statusText
+      );
     } else {
-      return apiResponse(400, "edit this message resetUserPassword");
+      return fetchResponse2(
+        400,
+        "error",
+        "edit this message resetUserPassword"
+      );
     }
   }
 }
 
-export async function getAllRoles() {
+export async function getAllRoles(): Promise<
+  IFetchResponse<IRole[]> | undefined
+> {
   apiClient.defaults.headers.common["Authorization"] = `Bearer ${
     cookies().get("token")?.value
   }`;
   try {
-    const res = await apiClient.get(endpoints.authorization.roles.all);
-    console.log(res.data.data);
-    return res;
+    const {
+      status,
+      statusText,
+      data: { statusCode, message, data },
+    } = await apiClient.get(endpoints.authorization.roles.all);
+    console.log(data);
+    return fetchResponse(status || statusCode, message, data);
   } catch (error) {
-    console.log("get roles error", error);
+    if (axios.isAxiosError(error)) {
+      const {
+        status,
+        statusText,
+        data: { status: anotherStatus, errors },
+      } = error.response as AxiosResponse;
+      console.log(error.response?.data);
+      return fetchResponse(status || anotherStatus, JSON.stringify(errors));
+    } else {
+      console.log("get roles error", error);
+    }
   }
 }
 

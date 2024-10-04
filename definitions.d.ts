@@ -42,14 +42,14 @@ interface YupUserCreateInputs {
   email: string;
   password: string;
   confirmPassword: string;
-  image: keyof number;
+  image: HTMLImageElement;
 }
 
 export interface IMUser {
-  username: string;
-  name: string;
-  image?: string;
-  role: string[];
+  username: string | undefined;
+  name: string | undefined;
+  image?: string | undefined;
+  role: string[] | undefined;
 }
 
 interface IInstructor {
@@ -122,10 +122,31 @@ interface IResponse {
   message: string;
 }
 interface IApiResponseReturn<T> {
-  data?: T | null | undefined;
+  data?: T | undefined;
   error: string | undefined | string[];
   success: string | undefined | string[];
   status: "idle" | "success" | "error";
+}
+interface IFetchResponse<T> {
+  data?: T | undefined | null;
+  message: string | undefined | string[];
+  status: "idle" | "error" | "success" | "empty" | "not_empty";
+}
+
+/**
+ * T - indicates to dynamic types
+ * T[] - indicates to dynamic array types
+ * {[key: string]: T} - indicates to dynamic object types
+ * {} - indicates to empty object
+ * null - indicates to no value
+ * undefined - indicates to unassigned value
+ */
+interface IFetchResponse2<T> {
+  data?: T | T[] | { [key: string]: T } | {} | null | undefined;
+  isEmpty?: boolean;
+  isSuccess: boolean;
+  isError: boolean;
+  message: string | string[] | { [key: string]: string[] } | {} | null;
 }
 
 /**
@@ -137,6 +158,6 @@ interface ITableHead {
    * make the type works dynamically with the array and the object keys
    */
   [key: string]: string | { key: string; name: string }[];
-  // name: string;
+  name: string;
   // arr: { key: string; name: string }[];
 }

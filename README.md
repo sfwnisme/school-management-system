@@ -248,18 +248,20 @@ it is hard to share the response of the catch and the try, so I should use ether
 - [x] dynamic error handling for all the endpoints(create,update, delete, and reset password for user endpoint).
 - [x] students, departments, and subjects get and delete endpoints
 
-### Mon 30/09/2024 & Tu 01/10/2024
+### Mon 30/09/2024 & Thu 03/10/2024
 
 - [x] solve the try and catch data resolves
 - [x] notfound component
-- [x] create error message for the endpoints `conditional-message.tsx`
-- [ ] I must check if the endpoints data availible then map and make logic to avoid the errors
+- [x] create error message for the endpoints `conditional-message.tsx` [canceled]
+- [x] create message component for the fetch proccess `fetch-message.tsx`
+- [x] I must check if the endpoints data availible then map and make logic to avoid the errors
+- [x] convert the errors object to array to display the data in the jsx and check if the error message is object or string before the process. in `fetch-message.tsx` and `utils.ts`
 - update all the api response with the new object schema
-  - [x] `getAllUsers`
-  - [x] `getCurrentUser`
-  - [x] `getUserById`
-  - [x] `updateUser` there is errors object
-  - [ ] `createUser` there is errors object
+  - [ ] `getAllUsers`
+  - [ ] `getCurrentUser`
+  - [ ] `getUserById`
+  - [x] `updateUser`
+  - [x] `createUser`
   - [x] `deleteUser`
   - [x] `resetPassword`
   - [ ] `getAllRoles`
@@ -276,6 +278,7 @@ it is hard to share the response of the catch and the try, so I should use ether
 
 ### Backlog
 
+- [ ] create a condition for every api request that invoked using the buttons to check if the requirements and the validation steps accomplished before invoking the request function ex: `updateUser(user:IUser)`
 - [ ] forget password endpoint with the code and email.
 - [ ] instructors udpate, create.
 - [ ] user and the current user's profile.

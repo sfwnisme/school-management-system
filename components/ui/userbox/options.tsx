@@ -5,7 +5,7 @@ import Dropdown from "./dropdown";
 import { IMUser } from "@/definitions";
 
 type Props = {
-  userDetails?:IMUser
+  userDetails?: IMUser;
 };
 
 export default function Options(props: Props) {
@@ -20,9 +20,7 @@ export default function Options(props: Props) {
       <div onClick={handleToggleAvatarList}>
         <Avatar userDetails={props?.userDetails} />
       </div>
-      {toggleAvatarList ? (
-          <Dropdown userDetails={props?.userDetails} />
-      ) : null}
+      {toggleAvatarList ? <Dropdown userDetails={props?.userDetails} /> : null}
     </div>
   );
 }

@@ -20,7 +20,7 @@ const roles = {
 };
 export default async function IsRoleAuth({ children }: Props) {
   const currentUser = await getCurrentUser();
-  const currentUserRole = currentUser?.data && currentUser?.data.roles;
+  const currentUserRole = currentUser?.data?.roles ?? [];
 
   // if the current user's role do not equal the authentic role; redirect to home '/'
   if (currentUser?.data) {

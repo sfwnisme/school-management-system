@@ -1,17 +1,22 @@
 "use client";
 // import Image from 'next'
-import { IApiResponseReturn, YupUserCreateInputs } from "@/definitions";
+import {
+  // IFetIFetchResponse2,
+  IFetchResponse2,
+  YupUserCreateInputs,
+} from "@/definitions";
 import { createUser, getAllUsers } from "@/lib/actions";
 import { yupUserCreateSchema } from "@/lib/validation-schema-yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import React, {
   ChangeEvent,
   FormEventHandler,
+  ReactNode,
   useRef,
   useState,
   useTransition,
 } from "react";
-import { SubmitHandler, useForm } from "react-hook-form";
+import { Resolver, SubmitHandler, useForm } from "react-hook-form";
 import Button from "../button";
 import FileInput from "../file-input";
 import Message from "../message";
@@ -20,14 +25,15 @@ import { apiClient, endpoints } from "@/lib/endpoints";
 import { getCookie } from "cookies-next";
 import { appendToFormData } from "@/lib/utils";
 import ConditionalMessage from "../conditional-message";
+import FetchMessage from "../fetch-message";
 
 type Props = {};
 export default function UserCreateForm({}: Props) {
   const [isCreatingUser, startCreatingUser] = useTransition();
-  const apiResponseMessagesRef = useRef<IApiResponseReturn<undefined>>({
-    success: undefined,
-    error: undefined,
-    status: "idle",
+  const apiResponseMessagesRef = useRef<IFetchResponse2<[]>>({
+    isSuccess: false,
+    isError: false,
+    message: "",
   });
   // const [isCreatingUser, setIsCisCreatingUser] = useState(false);
   const [profileImage, setProfileImage] = useState("");
@@ -71,37 +77,19 @@ export default function UserCreateForm({}: Props) {
     FD.append("image", image[0]);
 
     startCreatingUser(async () => {
-      const { success, error, status } = (await createUser(
+      const { isSuccess, isError, message } = (await createUser(
         FD
-      )) as IApiResponseReturn<undefined>;
+      )) as IFetchResponse2<undefined>;
       if (status !== "idle") {
         apiResponseMessagesRef.current = {
-          success,
-          error,
-          status,
+          isSuccess,
+          isError,
+          message,
         };
       }
     });
-
-    // try {
-    //   const res = await createUser(FD);
-    //   console.log(res);
-    //   if (res) {
-    //     setResponseMessage({
-    //       statusCode: res?.statusCode,
-    //       success: res?.success,
-    //       message: res?.message,
-    //     });
-    //   }
-    //   await getAllUsers();
-    //   return res;
-    // } catch (error) {
-    //   console.log(error);
-    // } finally {
-    //   setIsCisCreatingUser(false);
-    // }
   };
-  console.log("sfwn");
+  console.log("sfwn", apiResponseMessagesRef.current.message);
 
   return (
     <div className="w-full md:max-w-[700px] md:w-auto mx-auto rounded border border-gray-300 p-4">
@@ -208,21 +196,22 @@ export default function UserCreateForm({}: Props) {
           loading={isCreatingUser}
           disabled={isCreatingUser || !isValid}
           loadingText="Creating..."
+          title={
+            isValid
+              ? "click the button to create the user"
+              : "fill the required blanks to create a user"
+          }
         >
           Create
         </Button>
-        <ConditionalMessage
-          success={apiResponseMessagesRef.current.success}
-          error={apiResponseMessagesRef.current.error}
-          status={apiResponseMessagesRef.current.status}
-        />
-        {/* {responseMessage.message && (
-          <div className="col-span-full">
-            <Message variant={responseMessage.success ? "success" : "danger"}>
-              {responseMessage.message}
-            </Message>
-          </div>
-        )} */}
+
+        <div className="col-span-full">
+          <FetchMessage
+            message={apiResponseMessagesRef.current.message}
+            isSuccess={apiResponseMessagesRef.current.isSuccess}
+            isError={apiResponseMessagesRef.current.isError}
+          />
+        </div>
       </form>
     </div>
   );

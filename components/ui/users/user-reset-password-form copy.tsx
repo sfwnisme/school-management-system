@@ -1,11 +1,10 @@
 "use client";
-import React, { ReactNode, useRef, useState, useTransition } from "react";
+import React, { useRef, useState, useTransition } from "react";
 import Input from "../input";
 import {
   IApiResponseReturn,
   IFetchResponse,
   IResponse,
-  IFetchResponse2,
   IUser,
   YupUserResetPassword,
 } from "@/definitions";
@@ -25,11 +24,9 @@ type Props = {
 export const revalid = 1;
 export default function UserResetPasswordForm(props: Props) {
   const [isResetPassword, startResetPassword] = useTransition();
-  const apiResponseMessagesRef = useRef<IFetchResponse2<[]>>({
-    isEmpty: false,
-    isSuccess: false,
-    isError: false,
-    message: "",
+  const apiResponseMessagesRef = useRef<IFetchResponse<undefined>>({
+    message: undefined,
+    status: "idle",
   });
 
   const email = props.user.data?.email ?? "";
@@ -56,11 +53,10 @@ export default function UserResetPasswordForm(props: Props) {
     startResetPassword(async () => {
       const res = await resetUserPassword(newPassword);
       if (res) {
-        const { isSuccess, isError, message } = res;
+        const { message, status } = res;
         apiResponseMessagesRef.current = {
-          isSuccess,
-          isError,
           message,
+          status,
         };
       } else {
         console.log(
@@ -120,8 +116,7 @@ export default function UserResetPasswordForm(props: Props) {
         </Button>
         <FetchMessage
           message={apiResponseMessagesRef.current.message}
-          isSuccess={apiResponseMessagesRef.current.isSuccess}
-          isError={apiResponseMessagesRef.current.isError}
+          status={apiResponseMessagesRef.current.status}
         />
       </form>
     </div>

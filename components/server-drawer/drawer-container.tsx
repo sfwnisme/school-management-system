@@ -10,17 +10,17 @@ type Props = {
 export default async function DrawerContainer(props: Props) {
   const user = await getCurrentUser();
   let userDetails = {
-    username: 'current user error',
-    name: 'current user error',
+    username: "current user error",
+    name: "current user error",
     image: undefined,
-    role: ['current user error'],
+    role: ["current user error"],
   };
   if (user?.status !== "error") {
     userDetails = {
-      username: user?.data.userName,
-      name: user?.data.fullName,
-      image: user?.data.imagePath,
-      role: user?.data.roles,
+      username: user?.data?.userName,
+      name: user?.data?.fullName,
+      image: user?.data?.imagePath,
+      role: user?.data?.roles,
     };
   }
 

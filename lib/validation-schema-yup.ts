@@ -28,7 +28,7 @@ const user = {
     .required("confirm password is required")
     .oneOf([ref("password")], "Password must match"),
   email: string().email().required(),
-  image: mixed().required(),
+  image: mixed().required("select image"),
 };
 export const loginSchema = object({
   username: user.userName,
@@ -38,8 +38,6 @@ export const yupUserUpdateSchema = object({
   userName: user.userName,
   fullName: user.fullName,
   email: user.email,
-  // password: user.password,
-  // confirmPassword: user.confirmPassword,
 });
 
 export const yupUserResetPasswordSchema = object({
