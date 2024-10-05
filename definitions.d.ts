@@ -16,13 +16,22 @@ interface IUser {
   id?: 1;
   userName?: string;
   email?: string;
-  imagePath?: string;
+  imagePath?: string | null;
   fullName?: string;
-  roleId: number;
   roles?: string[];
   createdAt?: string;
   lastUpdate?: string;
 }
+// data: {
+//   id: 98,
+//   userName: 'admin',
+//   email: 'admin@project.com',
+//   imagePath: null,
+//   fullName: 'schoolProject',
+//   roles: [ 'Admin' ],
+//   createdAt: '2024-09-22T11:11:22.7410524',
+//   lastUpdate: '0001-01-01T00:00:00'
+// },
 
 interface YupUserUpdateInputs {
   id?: number;
@@ -45,13 +54,13 @@ interface YupUserCreateInputs {
   image: HTMLImageElement;
 }
 
-export interface IMUser {
+export interface IMUser extends IFetchResponse2<IUser> {}
+export interface IMUser2 {
   username: string | undefined;
   name: string | undefined;
   image?: string | undefined;
   role: string[] | undefined;
 }
-
 interface IInstructor {
   instId: number;
   name: string;
@@ -143,10 +152,26 @@ interface IFetchResponse<T> {
  */
 interface IFetchResponse2<T> {
   data?: T | T[] | { [key: string]: T } | {} | null | undefined;
+  // data?: T;
   isEmpty?: boolean;
   isSuccess: boolean;
   isError: boolean;
   message: string | string[] | { [key: string]: string[] } | {} | null;
+}
+// interface IFetchResponse2<T> {
+//   data?: T | null;
+//   data?: T;
+//   isEmpty?: boolean;
+//   isSuccess: boolean;
+//   isError: boolean;
+//   message: string | string[] | { [key: string]: string[] } | {} | null;
+// }
+interface IClientResponse<T>
+  extends Pick<
+    IFetchResponse2,
+    "isEmpty" | "isSuccess" | "isError" | "message"
+  > {
+  data?: T;
 }
 
 /**

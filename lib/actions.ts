@@ -5,13 +5,14 @@ import { cookies } from "next/headers";
 import { revalidatePath, revalidateTag } from "next/cache";
 import { redirect } from "next/navigation";
 import { isRedirectError } from "next/dist/client/components/redirect";
-import { getCookie, setCookie } from "cookies-next";
 import {
-  IApiResponseReturn,
+  IDepartment,
   IFetchResponse,
-  IResponse,
   IFetchResponse2,
+  IInstructor,
   IRole,
+  IStudent,
+  ISubject,
   IUser,
   YupUserResetPassword,
 } from "@/definitions";
@@ -22,7 +23,6 @@ import {
   responseMessage,
   fetchResponse2,
 } from "./utils";
-import { toast } from "react-toastify";
 
 //----------------------------
 // Authentication endpoints
@@ -30,7 +30,7 @@ import { toast } from "react-toastify";
 export async function handleSignIn(
   username: string,
   password: string
-): Promise<IApiResponseReturn<any> | undefined> {
+): Promise<IFetchResponse2<[]> | undefined> {
   const FD: FormData = new FormData();
   FD.append("UserName", username);
   FD.append("Password", password);
@@ -46,32 +46,37 @@ export async function handleSignIn(
       revalidatePath("dashboard");
       redirect("/dashboard");
     }
-    return apiResponse(statusCode, statusText);
+    return fetchResponse2(statusCode, "success", statusText);
   } catch (error) {
     if (isRedirectError(error)) {
-      console.log("success and redirected");
       throw error;
     }
     if (axios.isAxiosError(error)) {
       if (error.response) {
-        console.log(error.response.data);
         const {
           data: { statusCode, message },
           status,
           statusText,
         } = error.response;
-        return apiResponse(statusCode || status, message || statusText);
+        return fetchResponse2(
+          statusCode || status,
+          "error",
+          message || statusText
+        );
       }
     } else {
-      return apiResponse(
+      return fetchResponse2(
         400,
+        "error",
         "edit this error message in the actions.ts file handleSignIn() server action"
       );
     }
   }
 }
 
-export async function renewTokenIfNeeded() {
+export async function refreshTokenIfExpired(): Promise<
+  IFetchResponse2<[]> | undefined
+> {
   apiClient.defaults.headers.common["Authorization"] = `Bearer ${
     cookies().get("token")?.value
   }`;
@@ -83,37 +88,67 @@ export async function renewTokenIfNeeded() {
       FD.append("RefreshToken", refreshToken);
       FD.append("AccessToken", token);
       const res = await apiClient.post(
-        endpoints.authentication.refreshToken,
+        endpoints.authentication.refreshToken + 9,
         FD
       );
       const { status } = res;
-      console.log(status);
-      if (status === 204) return res;
-      if (status !== 204) {
+      if (status === 200) {
+        console.log(res.data);
         cookies().set("token", res.data.AccessToken);
         cookies().set("refresh-token", res.data.refreshToken);
+        return fetchResponse2(
+          status,
+          "success",
+          "the current token has expired and refreshed with a new one"
+        );
       }
+      return fetchResponse2(status, "success", "the current token is valid");
     }
   } catch (error) {
-    console.log(error);
+    if (axios.isAxiosError(error)) {
+      const { status, statusText } = error?.response as AxiosResponse;
+      fetchResponse2(status, "error", statusText);
+    } else {
+      console.log(error);
+      return fetchResponse2(400, "error", "this message should be edited");
+    }
   }
 }
 
-export async function isTokenValid() {
+export async function isTokenValid(): Promise<IFetchResponse2<[]> | undefined> {
   apiClient.defaults.headers.common["Authorization"] = `Bearer ${
     cookies().get("token")?.value
   }`;
   try {
     const token = cookies().get("token")?.value;
     if (token) {
-      const res = await apiClient.get(
+      const {
+        status,
+        statusText,
+        data: { statusCode, message },
+      } = await apiClient.get(
         endpoints.authentication.validateToken + "?AccessToken=" + token
       );
-      console.log(res);
-      return res?.status;
+      return fetchResponse2(
+        status || statusCode,
+        "success",
+        message || "token is valid"
+      );
     }
   } catch (error) {
-    console.log(error);
+    if (axios.isAxiosError(error)) {
+      return fetchResponse2(
+        error.response?.status as number,
+        "error",
+        error.response?.statusText
+      );
+    } else {
+      return fetchResponse2(
+        400,
+        "error",
+        "edit this message from isTokenValid() server action"
+      );
+    }
   }
 }
 
@@ -121,7 +156,9 @@ export async function isTokenValid() {
 // Data endpoints
 //----------------------------
 // get all the instructors data
-export async function getAllUsers() {
+export async function getAllUsers(): Promise<
+  IFetchResponse2<IUser> | undefined
+> {
   apiClient.defaults.headers.common["Authorization"] = `Bearer ${
     cookies().get("token")?.value
   }`;
@@ -132,7 +169,7 @@ export async function getAllUsers() {
         data: { statusCode, data, message },
       } = await apiClient.get(endpoints.users.all);
       revalidatePath("/dashboard/users");
-      return apiResponse(statusCode, message, data);
+      return fetchResponse2(statusCode, "success", message, data);
     } else {
       console.log(
         "the token not found in the getAllUsers function from actions.tsx"
@@ -145,32 +182,41 @@ export async function getAllUsers() {
         statusText,
         data: { statusCode, errors },
       } = error?.response as AxiosResponse;
-      return apiResponse(status || statusCode, statusText || errors.id.id[0]);
+      return fetchResponse2(
+        status || statusCode,
+        "error",
+        statusText || errors.id.id[0]
+      );
     } else {
-      console.log("get all users error", error);
-      return error;
+      return fetchResponse2(
+        400,
+        "error",
+        "edit this error message for the getAllUsers() server action"
+      );
     }
   }
 }
 
 //get the loged in user
 export async function getCurrentUser(): Promise<
-  IFetchResponse<IUser | null | undefined> | undefined
+  IFetchResponse2<IUser> | undefined
 > {
-  apiClient.defaults.headers.common["Authorization"] = `Bearer ${
-    cookies().get("token")?.value
-  }`;
   const token = cookies().get("token")?.value;
+  apiClient.defaults.headers.common["Authorization"] = `Bearer ${token}`;
   try {
     if (token) {
-      // const res = await apiClient.get(endpoints.users.current);
       const {
         status,
         statusText,
         data: { statusCode, message, data },
       } = await apiClient.get(endpoints.users.current);
       console.log(data);
-      return fetchResponse(status || statusCode, message || statusText, data);
+      return fetchResponse2(
+        status || statusCode,
+        "success",
+        message || statusText,
+        data
+      );
     }
   } catch (error) {
     if (axios.isAxiosError(error)) {
@@ -182,11 +228,16 @@ export async function getCurrentUser(): Promise<
         data: { statusCode, message },
       } = error.response as AxiosResponse;
       console.log(status, statusText, statusCode, message);
-      return fetchResponse(status || statusCode, message || statusText);
+      return fetchResponse2(
+        status || statusCode,
+        "error",
+        message || statusText
+      );
     } else {
       console.log("current user endpoint function errro", error);
-      return fetchResponse(
+      return fetchResponse2(
         400,
+        "error",
         "edit this message in the getCurrentUser server action"
       );
     }
@@ -307,11 +358,13 @@ export async function deleteUser(
     apiClient.defaults.headers.common["Authorization"] = `Bearer ${token}`;
 
     const {
-      data: { statusCode },
+      status,
+      statusText,
+      data: { statusCode, message },
     } = await apiClient.delete(endpoints.users.delete + "?id=" + id);
     revalidatePath("users");
     return fetchResponse2(
-      statusCode,
+      status || statusCode,
       "success",
       "the user has deleted successfully"
     );
@@ -320,9 +373,15 @@ export async function deleteUser(
       const {
         status,
         statusText,
-        data: { errors: id },
+        data: { errors },
       } = error?.response as AxiosResponse;
-      return fetchResponse2(status, "error", id?.id[0] || statusText);
+      return fetchResponse2(status, "error", errors || statusText);
+    } else {
+      return fetchResponse2(
+        400,
+        "error",
+        "edit this message from deleteUser() server action"
+      );
     }
   }
 }
@@ -330,7 +389,6 @@ export async function deleteUser(
 export async function resetUserPassword(
   data: YupUserResetPassword
 ): Promise<IFetchResponse2<[]> | undefined> {
-  // ): Promise<IFetchResponse<undefined> | undefined> {
   const token = cookies().get("token")?.value;
   apiClient.defaults.headers.common["Authorization"] = `Bearer ${token}`;
   console.log(data);
@@ -419,21 +477,47 @@ export async function getRolesByUserId(id: number) {
   }
 }
 
-export async function getAllInstructors() {
+export async function getAllInstructors(): Promise<
+  IFetchResponse2<IInstructor> | undefined
+> {
   apiClient.defaults.headers.common["Authorization"] = `Bearer ${
     cookies().get("token")?.value
   }`;
   const token = cookies().get("token")?.value;
   try {
     if (token) {
-      const res = await apiClient.get(endpoints.instructors.all);
-      console.log("instructors", res?.data.data);
-      return res.data.data;
+      const {
+        status,
+        statusText,
+        data: { statusCode, data, message },
+      } = await apiClient.get(endpoints.instructors.all);
+      return fetchResponse2(
+        status || statusCode,
+        "success",
+        message || statusText,
+        data
+      );
     }
-    return null;
   } catch (error) {
     if (axios.isAxiosError(error)) {
-      console.error(error);
+      const {
+        status,
+        statusText,
+        data: { status: anotherStatus, errors },
+      } = error.response as AxiosResponse;
+      console.log(error?.response);
+      console.log(error.response?.data);
+      return fetchResponse2(
+        status || anotherStatus,
+        "error",
+        errors || statusText
+      );
+    } else {
+      return fetchResponse2(
+        400,
+        "error",
+        "edit this error message from getAllInstructors() server action"
+      );
     }
   }
 }
@@ -450,170 +534,281 @@ export async function getInstructorById(id: number) {
   }
 }
 
-export async function deleteInstructor(id: number) {
+export async function deleteInstructor(
+  id: number
+): Promise<IFetchResponse2<[]> | undefined> {
   const token = cookies().get("token")?.value;
   apiClient.defaults.headers.common["Authorization"] = `Bearer ${token}`;
   try {
-    const res = await apiClient.delete(
-      endpoints.instructors.delete + id
-      // endpoints.instructors.delete + "?id=" + id
-    );
-    console.log(res);
+    const {
+      status,
+      statusText,
+      data: { statusCode, message },
+    } = await apiClient.delete(endpoints.instructors.delete + id);
     revalidatePath("instructors");
-    return res.data;
+    return fetchResponse2(
+      status || statusCode,
+      "success",
+      message || "instructor deleted successfully"
+    );
   } catch (error) {
     if (axios.isAxiosError(error)) {
-      console.log(error);
-      return error;
+      const {
+        status,
+        statusText,
+        data: { errors },
+      } = error?.response as AxiosResponse;
+      return fetchResponse2(status, "error", errors || statusText);
     } else {
-      console.log(error);
-      return error;
+      return fetchResponse2(
+        400,
+        "error",
+        "edit this message from deleteInstructors() server action"
+      );
     }
   }
 }
 
-export async function getAllDepartments() {
+export async function getAllDepartments(): Promise<
+  IFetchResponse2<IDepartment> | undefined
+> {
   const token = cookies().get("token")?.value;
   apiClient.defaults.headers.common["Authorization"] = `Bearer ${token}`;
   try {
     if (token) {
-      const res = await apiClient.get(endpoints.departments.all);
-      console.log(res.data.data);
-      return res.data.data;
+      const {
+        status,
+        statusText,
+        data: { statusCode, data, message },
+      } = await apiClient.get(endpoints.departments.all);
+      console.log(data);
+      return fetchResponse2(
+        status || statusCode,
+        "success",
+        message || statusText,
+        data
+      );
     }
-    return null;
   } catch (error) {
     if (axios.isAxiosError(error)) {
+      const {
+        status,
+        statusText,
+        data: { status: anotherStatus, errors },
+      } = error.response as AxiosResponse;
+      console.log(error?.response);
       console.log(error.response?.data);
-      const errorResponse = error.response?.data;
-      const errorData = {
-        statusCode: errorResponse.status,
-        success: false,
-        message: errorResponse.message,
-      };
-      return errorData;
+      return fetchResponse2(
+        status || anotherStatus,
+        "error",
+        errors || statusText
+      );
     } else {
-      const errorData = {
-        statusCode: 400,
-        success: false,
-        message: "edit this error message",
-      };
-      return errorData;
+      return fetchResponse2(
+        400,
+        "error",
+        "edit this error message from getAllInstructors() server action"
+      );
     }
   }
 }
-export async function deleteDepartment(id: number) {
+export async function deleteDepartment(
+  id: number
+): Promise<IFetchResponse2<[]> | undefined> {
   const token = cookies().get("token")?.value;
   apiClient.defaults.headers.common["Authorization"] = `Bearer ${token}`;
   try {
     if (token) {
-      const res = await apiClient.delete(endpoints.departments.delete + id);
-      console.log(res.data);
-      console.log(res.data.data);
+      const {
+        status,
+        statusText,
+        data: { statusCode, message },
+      } = await apiClient.delete(endpoints.departments.delete + id);
       revalidatePath("departments");
-      return res.data;
+      return fetchResponse2(
+        status || statusCode,
+        "success",
+        message || "departement deleted"
+      );
     }
   } catch (error) {
     if (axios.isAxiosError(error)) {
-      console.log(error);
-      return error;
+      const {
+        status,
+        statusText,
+        data: { errors },
+      } = error?.response as AxiosResponse;
+      return fetchResponse2(status, "error", errors || statusText);
     } else {
-      console.log(error);
-      return error;
+      return fetchResponse2(
+        400,
+        "error",
+        "edit this message from deleteDepartments() server action"
+      );
     }
   }
 }
 
-export async function getAllStudents() {
+export async function getAllStudents(): Promise<
+  IFetchResponse2<IStudent> | undefined
+> {
   apiClient.defaults.headers.common["Authorization"] = `Bearer ${
     cookies().get("token")?.value
   }`;
   const token = cookies().get("token")?.value;
   try {
     if (token) {
-      const res = await apiClient.get(endpoints.students.all);
-      console.log(res.data.data);
-      return res.data.data;
+      const {
+        status,
+        statusText,
+        data: { statusCode, data, message },
+      } = await apiClient.get(endpoints.students.all);
+      console.log(data);
+      return fetchResponse2(
+        status || statusCode,
+        "success",
+        message || statusText,
+        data
+      );
     }
-    return null;
   } catch (error) {
-    console.error(error);
+    if (axios.isAxiosError(error)) {
+      const {
+        status,
+        statusText,
+        data: { status: anotherStatus, errors },
+      } = error.response as AxiosResponse;
+      console.log(error?.response);
+      console.log(error.response?.data);
+      return fetchResponse2(
+        status || anotherStatus,
+        "error",
+        errors || statusText
+      );
+    } else {
+      return fetchResponse2(
+        400,
+        "error",
+        "edit this error message from getAllInstructors() server action"
+      );
+    }
   }
 }
-export async function deleteStudent(id: number) {
+export async function deleteStudent(
+  id: number
+): Promise<IFetchResponse2<[]> | undefined> {
   const token = cookies().get("token")?.value;
   apiClient.defaults.headers.common["Authorization"] = `Bearer ${token}`;
   try {
     if (token) {
-      const res = await apiClient.delete(endpoints.students.delete + id);
-      console.log(res.data);
-      console.log(res.data.data);
+      const {
+        status,
+        statusText,
+        data: { statusCode, message },
+      } = await apiClient.delete(endpoints.students.delete + id);
       revalidatePath("students");
-      const successResponse = res.data;
-      console.log(successResponse);
-      return responseMessage(
-        successResponse.statusCode,
-        "Deleted successfully"
+      return fetchResponse2(
+        status || statusCode,
+        "success",
+        message || "student deleted successfylly"
       );
     }
   } catch (error) {
     if (axios.isAxiosError(error)) {
-      console.log(error.response);
-      console.log(error.response?.data);
-      return responseMessage(
-        error.response?.status as number,
-        error.response?.statusText
-      );
+      const {
+        status,
+        statusText,
+        data: { errors },
+      } = error?.response as AxiosResponse;
+      return fetchResponse2(status, "error", errors || statusText);
     } else {
-      console.log(error);
-      return error;
+      return fetchResponse2(
+        400,
+        "error",
+        "edit this message from deleteStudents() server action"
+      );
     }
   }
 }
-export async function getAllSubjects() {
+export async function getAllSubjects(): Promise<
+  IFetchResponse2<ISubject> | undefined
+> {
   apiClient.defaults.headers.common["Authorization"] = `Bearer ${
     cookies().get("token")?.value
   }`;
   const token = cookies().get("token")?.value;
   try {
     if (token) {
-      const res = await apiClient.get(endpoints.subjects.all);
-      console.log(res.data.data);
-      return res.data.data;
+      const {
+        status,
+        statusText,
+        data: { statusCode, data, message },
+      } = await apiClient.get(endpoints.subjects.all);
+      console.log(data);
+      return fetchResponse2(
+        status || statusCode,
+        "success",
+        message || statusText,
+        data
+      );
     }
-    return null;
   } catch (error) {
-    console.error(error);
+    if (axios.isAxiosError(error)) {
+      const {
+        status,
+        statusText,
+        data: { status: anotherStatus, errors },
+      } = error.response as AxiosResponse;
+      console.log(error?.response);
+      console.log(error.response?.data);
+      return fetchResponse2(
+        status || anotherStatus,
+        "error",
+        errors || statusText
+      );
+    } else {
+      return fetchResponse2(
+        400,
+        "error",
+        "edit this error message from getAllInstructors() server action"
+      );
+    }
   }
 }
 
-export async function deleteSubject(id: number) {
+export async function deleteSubject(
+  id: number
+): Promise<IFetchResponse2<[]> | undefined> {
   const token = cookies().get("token")?.value;
   apiClient.defaults.headers.common["Authorization"] = `Bearer ${token}`;
   try {
     if (token) {
-      const res = await apiClient.delete(endpoints.subjects.delete + id);
-      console.log(res.data);
-      console.log(res.data.data);
+      const {
+        status,
+        statusText,
+        data: { statusCode, message },
+      } = await apiClient.delete(endpoints.subjects.delete + id);
       revalidatePath("subjects");
-      const successResponse = res.data;
-      console.log(successResponse);
-      return responseMessage(
-        successResponse.statusCode,
+      return fetchResponse2(
+        status || statusCode,
+        "success",
         "Deleted successfully"
       );
     }
   } catch (error) {
     if (axios.isAxiosError(error)) {
-      console.log(error.response);
-      console.log(error.response?.data);
-      return responseMessage(
-        error.response?.status as number,
-        error.response?.statusText
-      );
+      const {
+        status,
+        statusText,
+        data: { errors },
+      } = error?.response as AxiosResponse;
+      return fetchResponse2(status, "error", errors || statusText);
     } else {
-      console.log(error);
-      return error;
+      return fetchResponse2(
+        400,
+        "error",
+        "edit this message from deleteSubjects() server action"
+      );
     }
   }
 }

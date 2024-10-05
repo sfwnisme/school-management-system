@@ -8,9 +8,9 @@ import { handleSignIn } from "@/lib/actions";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { loginSchema } from "@/lib/validation-schema-yup";
-import { IApiResponseReturn, LoginInputTypes } from "@/definitions";
+import { IFetchResponse2, LoginInputTypes } from "@/definitions";
 import Message from "../ui/message";
-import ConditionalMessage from "../ui/conditional-message";
+import FetchMessage from "../ui/fetch-message";
 
 type Inputs = {
   username: string;
@@ -19,10 +19,10 @@ type Inputs = {
 
 export default function LoginForm() {
   const [isLogin, startLogin] = useTransition();
-  const apiResponseMessagesRef = useRef<IApiResponseReturn<undefined>>({
-    success: undefined,
-    error: undefined,
-    status: "idle",
+  const apiResponseMessagesRef = useRef<IFetchResponse2<[]>>({
+    isSuccess: false,
+    isError: false,
+    message: "",
   });
 
   const {
@@ -52,11 +52,11 @@ export default function LoginForm() {
         loginCredentials?.password as string
       );
       if (res) {
-        const { success, error, status } = res;
+        const { isSuccess, isError, message } = res;
         apiResponseMessagesRef.current = {
-          success,
-          error,
-          status,
+          isSuccess,
+          isError,
+          message,
         };
       } else {
         console.log(
@@ -124,17 +124,11 @@ export default function LoginForm() {
             size="sm"
           />
         </form>
-        <ConditionalMessage
-          success={apiResponseMessagesRef.current.success}
-          error={apiResponseMessagesRef.current.error}
-          status={apiResponseMessagesRef.current.status}
+        <FetchMessage
+          isSuccess={apiResponseMessagesRef.current.isSuccess}
+          isError={apiResponseMessagesRef.current.isError}
+          message={apiResponseMessagesRef.current.message}
         />
-        <Link
-          href={""}
-          className="text-gray-400 hover:text-gray-500 text-xs lg:text-sm flex items-center justify-center gap-1 col-span-full mt-4"
-        >
-          Create your own account
-        </Link>
       </article>
       <article className="h-[400px] w-full bg-gray-900 flex flex-col flex-wrap items-center justify-center p-8 basis-1/2">
         <h2 className="text-white text-4xl text-center font-bold mb-4">

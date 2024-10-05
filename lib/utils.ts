@@ -3,9 +3,11 @@
 import {
   FormDataObjectType,
   IApiResponseReturn,
+  IClientResponse,
   IFetchResponse,
   IFetchResponse2,
 } from "@/definitions";
+import { init } from "next/dist/compiled/webpack/webpack";
 
 export const appendToFormData = (data: FormDataObjectType<any>): FormData => {
   const FD = new FormData();
@@ -515,18 +517,21 @@ export function fetchResponse<T>(
 export function fetchResponse2<T>(
   statusCode: number,
   status: "success" | "error",
-  // isSuccess: boolean,
-  // isError: boolean,
   message: string = "",
   data?: IFetchResponse2<T>["data"]
 ): IFetchResponse2<T> {
   let initialObject: IFetchResponse2<T> = {
     data: [], // default value is array
     isEmpty: false,
-    isSuccess: Boolean(status === "success"),
-    isError: Boolean(status === "error"),
-    message: `[${statusCode}]- ` + message,
+    isSuccess: false,
+    isError: true,
+    message:
+      "this message is the default message of the response returned schema",
   };
+  initialObject.isSuccess = Boolean(status === "success");
+  initialObject.isError = Boolean(status === "error");
+  initialObject.message = message ?? initialObject.message;
+
   console.log(initialObject.isSuccess);
   console.log(initialObject.isError);
 
@@ -550,7 +555,6 @@ export function fetchResponse2<T>(
       initialObject.isEmpty = false;
     }
   }
-  console.log(message);
 
   // check if the message returned as object from the response
   if (typeof message === "object" && message !== null) {
@@ -564,6 +568,7 @@ export function fetchResponse2<T>(
     initialObject.isSuccess = false;
     initialObject.isError = true;
   }
+  console.log(initialObject);
 
   return initialObject;
 }

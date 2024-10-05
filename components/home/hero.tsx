@@ -2,10 +2,13 @@ import React from "react";
 import { ArrowRight } from "lucide-react";
 import Button from "../ui/button";
 import Link from "next/link";
+import { getCurrentUser } from "@/lib/actions";
 
 type Props = {};
 
-export default function Hero({}: Props) {
+export default async function Hero({}: Props) {
+  const user = await getCurrentUser()
+  console.log(user)
   return (
     <section className="z-0 relative overflow-hidden bg-gradient-to-b from-blue-50 via-transparent to-transparent pb-12 pt-20 sm:pb-16 sm:pt-32 lg:pb-24 xl:pb-32 xl:pt-40">
       <div className="relative ">

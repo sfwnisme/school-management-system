@@ -1,46 +1,45 @@
 "use client";
 // import { usePathname } from "next/navigation";
-import React, { useState } from "react";
+import React, { useState, useTransition } from "react";
 import Link from "next/link";
 import Badge from "../badge";
 import { userAvatarNavlinks } from "@/lib/data";
 import { usePathname } from "next/navigation";
 import Button from "../button";
-import { Loader, Loader2, LogOut } from "lucide-react";
+import { Loader, LogOut } from "lucide-react";
 import { deleteCookie } from "cookies-next";
 import { isTokenValid } from "@/lib/actions";
-import { IMUser } from "@/definitions";
+import { IClientResponse, IUser } from "@/definitions";
 
 type Props = {
   children?: React.ReactNode;
-  userDetails?: IMUser;
+  user?: IClientResponse<IUser>;
 };
 
-export default function Dropdown({ children, userDetails }: Props) {
+export default function Dropdown({ children, user }: Props) {
   const pathname = usePathname();
-  const currentUserRole = userDetails?.role || [];
+  const [isLogout, startLogout] = useTransition();
 
-  const [isLoggingout, setIsLoggingout] = useState(false);
-
-  const handleLogout = async () => {
-    setIsLoggingout(true);
-    const tokenValid = await isTokenValid();
-    console.log(tokenValid);
-    if (tokenValid === 200) {
-      deleteCookie("token");
-      deleteCookie("refresh-token");
-      window.location.href = "/login";
-    }
-    setIsLoggingout(false);
-    return null;
+  const handleLogout = () => {
+    startLogout(async () => {
+      const tokenValid = await isTokenValid();
+      console.log("toke is valie", tokenValid);
+      if (tokenValid?.isSuccess) {
+        deleteCookie("token");
+        deleteCookie("refresh-token");
+        window.location.href = "/login";
+      }
+    });
   };
 
-  const userProtectedLinks = userAvatarNavlinks.protected.filter((link) =>
-    link.roles.includes(currentUserRole[0])
-  );
+  const userProtectedLinks = userAvatarNavlinks.protected;
+  //   const userProtectedLinks = userAvatarNavlinks.protected.filter((link) =>
+  //   link.roles.includes(currentUserRole[0])
+  // );
+
+  console.log(user?.isSuccess);
   const userPublicLinks = userAvatarNavlinks.public;
-  const user = userDetails?.name;
-  const isUserLinksProtectedOrPublic = user
+  const isUserLinksProtectedOrPublic = user?.isSuccess
     ? userProtectedLinks
     : userPublicLinks;
 
@@ -56,42 +55,100 @@ export default function Dropdown({ children, userDetails }: Props) {
     ) : null
   );
 
-  const userDataContainer =
-    userDetails?.name !== undefined ? (
-      <div className="mb- flex items-start gap-1 w-full bg-gray-200 rounded p-1">
-        <div className="flex-1">
-          <p className="capitalize text-sm text-gray-600">
-            {userDetails?.name}
-          </p>
-          <p className="capitalize text-xs text-gray-600">
-            {userDetails?.username}
-          </p>
-          <Badge variant="warning">{"N/A"}</Badge>
-        </div>
-        <>
-          {userDetails?.name && (
-            <Button
-              size="xs"
-              variant="danger"
-              onClick={handleLogout}
-              disabled={isLoggingout}
-            >
-              {!isLoggingout ? (
-                <LogOut size={18} />
-              ) : (
-                <Loader size={18} className="animate-spin" />
-              )}
-            </Button>
-          )}
-        </>
+  const userDataContainer = (
+    <div className="mb- flex items-start gap-1 w-full bg-gray-200 rounded p-1">
+      <div className="flex-1">
+        <p className="capitalize text-sm text-gray-600">
+          {user?.data?.userName}
+        </p>
+        <p className="capitalize text-xs text-gray-600">
+          {user?.data?.userName}
+        </p>
+        <Badge variant="warning">{"N/A"}</Badge>
       </div>
-    ) : null;
+      <>
+        {user?.data?.userName && (
+          <Button
+            size="xs"
+            variant="danger"
+            onClick={handleLogout}
+            disabled={isLogout}
+          >
+            {!isLogout ? (
+              <LogOut size={18} />
+            ) : (
+              <Loader size={18} className="animate-spin" />
+            )}
+          </Button>
+        )}
+      </>
+    </div>
+  );
+  const userDataContainerIsEmpty = (
+    <div className="mb- flex items-start gap-1 w-full bg-gray-200 rounded p-1">
+      <div className="flex-1">
+        <p className="capitalize text-sm text-gray-600">undefined</p>
+        <p className="capitalize text-xs text-gray-600">undefined</p>
+        <Badge variant="warning">{"N/A"}</Badge>
+      </div>
+      <>
+        <Button
+          size="xs"
+          variant="danger"
+          onClick={handleLogout}
+          disabled={isLogout}
+        >
+          {!isLogout ? (
+            <LogOut size={18} />
+          ) : (
+            <Loader size={18} className="animate-spin" />
+          )}
+        </Button>
+      </>
+    </div>
+  );
 
-  const content = (
+  const userDataContainerIsError = (
+    <div className="mb- flex items-start gap-1 w-full bg-red-200 rounded p-1">
+      <div className="flex-1">
+        <p className="text-sm text-red-600">Faild to your name!</p>
+        <p className="text-xs text-red-600">Report issue</p>
+        <Badge variant="danger">N/A</Badge>
+      </div>
+      <>
+        <Button
+          size="xs"
+          variant="danger"
+          onClick={handleLogout}
+          disabled={isLogout}
+        >
+          {!isLogout ? (
+            <LogOut size={18} />
+          ) : (
+            <Loader size={18} className="animate-spin" />
+          )}
+        </Button>
+      </>
+    </div>
+  );
+
+  let content;
+  if (user?.isSuccess) {
+    content = userDataContainer;
+  }
+  if (user?.isEmpty) {
+    content = userDataContainerIsEmpty;
+  }
+  if (user?.isError) {
+    content = userDataContainerIsError;
+  }
+
+  const finalContent = (
     <div className="z-10 absolute shadow-xl shadow-gray-200 right-6 top-[calc(100%+10px)] bg-white border border-gray-300 rounded-md p-1 flex flex-col flex-wrap items-start justify-start gap-2 min-w-[150px] md:min-w-[200px]">
-      {userDataContainer}
+      {content}
       {dropDownLinks}
     </div>
   );
-  return <>{content}</>;
+
+  return <>{finalContent}</>;
 }

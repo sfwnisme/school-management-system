@@ -2,7 +2,7 @@
 import { PanelLeft, User } from "lucide-react";
 import React from "react";
 import LogoLayout from "./logo-layout";
-import { IMUser, UpdateStateType } from "@/definitions";
+import { IClientResponse, IMUser, IUser, UpdateStateType } from "@/definitions";
 import Options from "./userbox/options";
 
 /**
@@ -13,7 +13,7 @@ type Props = {
   toggleDrawer?: boolean;
   setToggleDrawer?: UpdateStateType;
   isDashboard: boolean;
-  userDetails?: IMUser;
+  user?: IClientResponse<IUser>;
 };
 
 export default function Nav(props: Props) {
@@ -40,7 +40,7 @@ export default function Nav(props: Props) {
             </li>
           ) : null}
           <li className="px-3 py-1 ml-auto">
-            <Options userDetails={props?.userDetails} />
+            <Options user={props?.user} />
           </li>
         </ul>
       </nav>
@@ -53,7 +53,7 @@ export default function Nav(props: Props) {
             <LogoLayout height={30} width={30} hasText={false} />
           </li>
           <li className="px-3 py-1 ml-auto">
-            <Options userDetails={props?.userDetails} />
+            <Options user={props?.user} />
           </li>
         </ul>
       </nav>

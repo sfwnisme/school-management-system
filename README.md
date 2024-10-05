@@ -248,7 +248,7 @@ it is hard to share the response of the catch and the try, so I should use ether
 - [x] dynamic error handling for all the endpoints(create,update, delete, and reset password for user endpoint).
 - [x] students, departments, and subjects get and delete endpoints
 
-### Mon 30/09/2024 & Thu 03/10/2024
+### Mon 30/09/2024 & Sat 05/10/2024
 
 - [x] solve the try and catch data resolves
 - [x] notfound component
@@ -257,24 +257,27 @@ it is hard to share the response of the catch and the try, so I should use ether
 - [x] I must check if the endpoints data availible then map and make logic to avoid the errors
 - [x] convert the errors object to array to display the data in the jsx and check if the error message is object or string before the process. in `fetch-message.tsx` and `utils.ts`
 - update all the api response with the new object schema
-  - [ ] `getAllUsers`
-  - [ ] `getCurrentUser`
+  - [x] `handleSignIn`
+  - [x] `refreshTokenIfExpired`
+  - [x] `isTokenValid`
+  - [x] `getAllUsers`
+  - [x] `getCurrentUser`
   - [ ] `getUserById`
   - [x] `updateUser`
   - [x] `createUser`
   - [x] `deleteUser`
-  - [x] `resetPassword`
+  - [x] `resetUserPassword`
   - [ ] `getAllRoles`
   - [ ] `getRolesByUserId`
-  - [ ] `getAllInstructors`
+  - [x] `getAllInstructors`
   - [ ] `getInstructorById`
-  - [ ] `deleteInstructor`
-  - [ ] `getAllDepartments`
-  - [ ] `deleteDepartment`
-  - [ ] `getAllStudents`
-  - [ ] `deleteStudent`
-  - [ ] `getAllSubjects`
-  - [ ] `deleteSubject`
+  - [x] `deleteInstructor`
+  - [x] `getAllDepartments`
+  - [x] `deleteDepartment`
+  - [x] `getAllStudents`
+  - [x] `deleteStudent`
+  - [x] `getAllSubjects`
+  - [x] `deleteSubject`
 
 ### Backlog
 

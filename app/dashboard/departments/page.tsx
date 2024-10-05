@@ -6,7 +6,7 @@ import { deleteDepartment, getAllDepartments } from "@/lib/actions";
 import React from "react";
 
 export default async function page() {
-  const departments = await getAllDepartments();
+  const departments = await getAllDepartments() ;
   // { deptId: 24, managerId: 10, name: 'تتت' }
 
   const departmentsKeysAndNames = [

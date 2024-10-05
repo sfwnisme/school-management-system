@@ -2,10 +2,10 @@
 import React from "react";
 import DrowerNavLinksLayout from "../ui/drawer-navlinks-layout";
 import Nav from "../ui/nav";
-import { IMUser } from "@/definitions";
+import { IClientResponse, IMUser, IUser } from "@/definitions";
 type Props = {
   children: React.ReactNode;
-  userDetails?: IMUser
+  user?: IClientResponse<IUser>;
 };
 export default function Drawer(props: Props) {
   const [toggleDrawer, setToggleDrawer] = React.useState<boolean>(false);
@@ -33,7 +33,7 @@ export default function Drawer(props: Props) {
           toggleDrawer={toggleDrawer}
           setToggleDrawer={setToggleDrawer}
           isDashboard={true}
-          userDetails={props?.userDetails}
+          user={props?.user}
         />
         <article className="container py-10 h-[calc(100vh-91px)] overflow-y-auto relative">
           {props?.children}

@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useTransition } from "react";
+import React, { Suspense, useState, useTransition } from "react";
 import Table from "./table/table";
 import Thead from "./table/thead";
 import Th from "./table/th";
@@ -8,15 +8,16 @@ import Td from "./table/td";
 import Tr from "./table/tr";
 import Button from "./button";
 import { Edit, Trash } from "lucide-react";
-import { ITableHead, IUser } from "@/definitions";
+import { IClientResponse, ITableHead, IUser } from "@/definitions";
 import Image from "next/image";
 import { toast } from "react-toastify";
+import TableSkeleton from "./skeletons/table-skeleton";
 
 type Props = {
   dataFunction: any;
   deleteFunction?: any;
   tableHeader: ITableHead[];
-  currentUser?: IUser;
+  currentUser?: IClientResponse<IUser>;
   route: string;
 };
 
@@ -25,18 +26,20 @@ export default function TableLayer(props: Props) {
   const [isDeleting, startDeleting] = useTransition();
   const [deletePopoverToggle, setDeletePopoverToggle] = useState(false);
   const [targetedUserId, setTargetedUserId] = useState(-1);
-  const { data, success, error, status } = props.dataFunction;
-  console.log(success, error, status);
+  const { data, isEmpty, isSuccess, isError, message } = props.dataFunction;
 
   // some endpoints id's names are not united, thus this
   // variable will check if it's 'id', 'instId' or whatever
   const idKey = props.tableHeader[0].key.toString();
 
+  //------------------------
+  // current user delete button logic
+  //------------------------
   // check if the targeted id is the id of the current user
-  const currentUser = props.currentUser;
+  const currentUserId = props.currentUser?.data?.id;
   function isCurrentUser(id: number) {
-    if (currentUser) {
-      if (currentUser?.id === id) {
+    if (props?.currentUser?.isSuccess && currentUserId) {
+      if (currentUserId === id) {
         return true;
       }
     }
@@ -46,7 +49,7 @@ export default function TableLayer(props: Props) {
   // this variable helps me check if the current table is for the users
   // I can use this to remove the delete button from the loggedin user's table row.
   const isUsersPage = Boolean(props?.currentUser);
-  console.log(isUsersPage);
+  //::::::::::::::
 
   const handleDeletePopoverToggle = (id: number) => {
     const userId = Number(id);
@@ -83,7 +86,7 @@ export default function TableLayer(props: Props) {
     startDeleting(async () => {
       const { isSuccess, isError, message } = await props.deleteFunction(id);
       const toastType = isSuccess ? "success" : "error";
-      toast?.[toastType](message);
+      toast[toastType](message);
     });
   }
 
@@ -180,18 +183,18 @@ export default function TableLayer(props: Props) {
     ));
 
   // table body no data
-  const tableBodyCellsNoData = (
+  const tableBodyCellsIsEmpty = (
     <Tr>
       <Td
-        className="text-center bg-gray-50 text-gray-600 font-bold"
+        className="text-center bg-yellow-50 text-yellow-600 font-semibold"
         colSpan={10}
       >
-        No data yet!
+        Error to get data!
       </Td>
     </Tr>
   );
 
-  const tableBodyCellsError = (
+  const tableBodyCellsIsError = (
     <Tr>
       <Td
         className="text-center bg-red-50 text-red-600 font-semibold"
@@ -201,26 +204,30 @@ export default function TableLayer(props: Props) {
       </Td>
     </Tr>
   );
+  console.log(isEmpty, isError, isSuccess);
 
-  if (data && data.length > 0) {
+  if (isSuccess) {
     content = tableBodyCells;
-  } else if (!data) {
-    content = tableBodyCellsError;
-  } else if (data && data.length === 0) {
-    content = tableBodyCellsNoData;
+  }
+  if (isEmpty) {
+    content = tableBodyCellsIsEmpty;
+  }
+  if (isError) {
+    content = tableBodyCellsIsError;
   }
 
-  return (
-    <Table rounded="sm">
-      <Thead>
-        <Tr>
-          {/* {content} */}
-          {tableHeaderCells}
-          <Th>Actions</Th>
-        </Tr>
-      </Thead>
-      {/* <Tbody>{tableBodyCells}</Tbody> */}
-      <Tbody>{content}</Tbody>
-    </Table>
+  let finalContent = (
+    <Suspense fallback={<TableSkeleton cols={4} rows={8} />}>
+      <Table rounded="sm">
+        <Thead>
+          <Tr>
+            {tableHeaderCells}
+            <Th>Actions</Th>
+          </Tr>
+        </Thead>
+        <Tbody>{content}</Tbody>
+      </Table>
+    </Suspense>
   );
+  return finalContent;
 }
