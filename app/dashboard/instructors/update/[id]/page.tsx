@@ -1,5 +1,5 @@
 import Button from "@/components/ui/button";
-import InstructorUpdateForm from "@/components/ui/instructors/instructor-update-form";
+// import InstructorUpdateForm from "@/components/ui/instructors/instructor-update-form";
 import Title from "@/components/ui/title";
 import { getInstructorById } from "@/lib/actions";
 import React from "react";
@@ -18,7 +18,7 @@ export default async function page(props: Props) {
       <Title title="Update Instructor">
         <Button tag="link" href="/dashboard/instructors" value="Instructors" />
       </Title>
-      <InstructorUpdateForm instructor={instructorData} />
+      {/* <InstructorUpdateForm instructor={instructorData} /> */}
     </div>
   );
 }

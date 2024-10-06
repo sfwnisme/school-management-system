@@ -77,9 +77,8 @@ export async function handleSignIn(
 export async function refreshTokenIfExpired(): Promise<
   IFetchResponse2<[]> | undefined
 > {
-  apiClient.defaults.headers.common["Authorization"] = `Bearer ${
-    cookies().get("token")?.value
-  }`;
+  apiClient.defaults.headers.common["Authorization"] = `Bearer ${cookies().get("token")?.value
+    }`;
   try {
     const FD = new FormData();
     const token = cookies().get("token")?.value;
@@ -116,9 +115,8 @@ export async function refreshTokenIfExpired(): Promise<
 }
 
 export async function isTokenValid(): Promise<IFetchResponse2<[]> | undefined> {
-  apiClient.defaults.headers.common["Authorization"] = `Bearer ${
-    cookies().get("token")?.value
-  }`;
+  apiClient.defaults.headers.common["Authorization"] = `Bearer ${cookies().get("token")?.value
+    }`;
   try {
     const token = cookies().get("token")?.value;
     if (token) {
@@ -159,17 +157,15 @@ export async function isTokenValid(): Promise<IFetchResponse2<[]> | undefined> {
 export async function getAllUsers(): Promise<
   IFetchResponse2<IUser> | undefined
 > {
-  apiClient.defaults.headers.common["Authorization"] = `Bearer ${
-    cookies().get("token")?.value
-  }`;
+  const token = cookies().get("token")?.value;
+  apiClient.defaults.headers.common["Authorization"] = `Bearer ${token}`;
   try {
-    const token = cookies().get("token")?.value;
     if (token) {
-      const {
+      const { status, statusText,
         data: { statusCode, data, message },
       } = await apiClient.get(endpoints.users.all);
       revalidatePath("/dashboard/users");
-      return fetchResponse2(statusCode, "success", message, data);
+      return fetchResponse2(status || statusCode, "success", message || statusText, data);
     } else {
       console.log(
         "the token not found in the getAllUsers function from actions.tsx"
@@ -185,7 +181,7 @@ export async function getAllUsers(): Promise<
       return fetchResponse2(
         status || statusCode,
         "error",
-        statusText || errors.id.id[0]
+        statusText || errors
       );
     } else {
       return fetchResponse2(
@@ -227,6 +223,7 @@ export async function getCurrentUser(): Promise<
         statusText,
         data: { statusCode, message },
       } = error.response as AxiosResponse;
+      revalidatePath('users')
       console.log(status, statusText, statusCode, message);
       return fetchResponse2(
         status || statusCode,
@@ -246,17 +243,21 @@ export async function getCurrentUser(): Promise<
 
 export async function getUserById(
   id: number
-): Promise<IFetchResponse<IUser | null | undefined> | undefined> {
-  apiClient.defaults.headers.common["Authorization"] = `Bearer ${
-    cookies().get("token")?.value
-  }`;
+): Promise<IFetchResponse2<IUser> | undefined> {
+  apiClient.defaults.headers.common["Authorization"] = `Bearer ${cookies().get("token")?.value
+    }`;
   try {
     const {
       status,
       statusText,
       data: { statusCode, message, data },
     } = await apiClient.get(endpoints.users.id + id);
-    return fetchResponse(status || statusCode, message || statusText, data);
+    return fetchResponse2(
+      status || statusCode,
+      "success",
+      message || statusText,
+      data
+    );
   } catch (error) {
     if (axios.isAxiosError(error)) {
       const {
@@ -264,9 +265,11 @@ export async function getUserById(
         statusText,
         data: { statusCode, message, data },
       } = error.response as AxiosResponse;
-      return fetchResponse(status || statusCode, message || statusText, data);
+      return fetchResponse2(status || statusCode, "error", message || statusText, data);
+    } else {
+
+      return fetchResponse2(400, "error", 'this error message from getUserById() server actoin');
     }
-    console.log("get user by id error", error);
   }
 }
 
@@ -326,6 +329,7 @@ export async function createUser(
       statusText,
       data: { statusCode, message },
     } = await apiClient.post(endpoints.users.create, data);
+    revalidatePath('users')
     return fetchResponse2(
       status || statusCode,
       "success",
@@ -434,11 +438,10 @@ export async function resetUserPassword(
 }
 
 export async function getAllRoles(): Promise<
-  IFetchResponse<IRole[]> | undefined
+  IFetchResponse2<IRole[]> | undefined
 > {
-  apiClient.defaults.headers.common["Authorization"] = `Bearer ${
-    cookies().get("token")?.value
-  }`;
+  apiClient.defaults.headers.common["Authorization"] = `Bearer ${cookies().get("token")?.value
+    }`;
   try {
     const {
       status,
@@ -446,7 +449,12 @@ export async function getAllRoles(): Promise<
       data: { statusCode, message, data },
     } = await apiClient.get(endpoints.authorization.roles.all);
     console.log(data);
-    return fetchResponse(status || statusCode, message, data);
+    return fetchResponse2(
+      status || statusCode,
+      'success',
+      message || statusText,
+      data
+    );
   } catch (error) {
     if (axios.isAxiosError(error)) {
       const {
@@ -454,35 +462,55 @@ export async function getAllRoles(): Promise<
         statusText,
         data: { status: anotherStatus, errors },
       } = error.response as AxiosResponse;
-      console.log(error.response?.data);
-      return fetchResponse(status || anotherStatus, JSON.stringify(errors));
+      console.log(errors);
+      return fetchResponse2(
+        status || anotherStatus,
+        'error',
+        errors || statusText
+      );
     } else {
       console.log("get roles error", error);
     }
   }
 }
 
-export async function getRolesByUserId(id: number) {
-  apiClient.defaults.headers.common["Authorization"] = `Bearer ${
-    cookies().get("token")?.value
-  }`;
+export async function getRolesByUserId(id: number): Promise<IFetchResponse2<IRole> | undefined> {
+  apiClient.defaults.headers.common["Authorization"] = `Bearer ${cookies().get("token")?.value
+    }`;
   try {
-    const res = await apiClient.get(
+    const { status, statusText, data: { statusCode, message, data }
+    } = await apiClient.get(
       endpoints.authorization.roles.getRolesByUserId + id
     );
-    console.log(res);
-    return res;
+    console.log(data)
+    return fetchResponse2(status || statusCode, 'success', message || statusText, data)
   } catch (error) {
-    console.log("get roles by user id error", error);
+    if (axios.isAxiosError(error)) {
+      console.log(error.response);
+      const {
+        data: { status, message },
+        status: anotherStatus,
+        statusText,
+      } = error?.response as AxiosResponse;
+      return fetchResponse2(
+        status || anotherStatus,
+        "error",
+        message || statusText
+      );
+    } else {
+      return fetchResponse2(
+        400,
+        "error",
+        "edit this message getRolesByUserId() server"
+      );
+    }
   }
 }
-
 export async function getAllInstructors(): Promise<
   IFetchResponse2<IInstructor> | undefined
 > {
-  apiClient.defaults.headers.common["Authorization"] = `Bearer ${
-    cookies().get("token")?.value
-  }`;
+  apiClient.defaults.headers.common["Authorization"] = `Bearer ${cookies().get("token")?.value
+    }`;
   const token = cookies().get("token")?.value;
   try {
     if (token) {
@@ -522,15 +550,40 @@ export async function getAllInstructors(): Promise<
   }
 }
 
-export async function getInstructorById(id: number) {
-  apiClient.defaults.headers.common["Authorization"] = `Bearer ${
-    cookies().get("token")?.value
-  }`;
+export async function getInstructorById(id: number): Promise<IFetchResponse2<IInstructor> | undefined> {
+  const token = cookies().get("token")?.value
+  apiClient.defaults.headers.common["Authorization"] = `Bearer ${token}`;
   try {
-    const res = await apiClient.get(endpoints.instructors.id + id);
-    return res.data.data;
+    if (token) {
+      const { status, statusText,
+        data: { statusCode, data, message },
+      } = await apiClient.get(endpoints.instructors.id + 'k' + id);
+      return fetchResponse2(
+        status || statusCode,
+        "success",
+        message || statusText, data
+      );
+    }
   } catch (error) {
-    console.log("get user by id error", error);
+    if (axios.isAxiosError(error)) {
+      const {
+        status,
+        statusText,
+        data: { statusCode, errors },
+      } = error?.response as AxiosResponse;
+      console.log(status, statusText, statusCode, errors)
+      return fetchResponse2(
+        status || statusCode,
+        "error",
+        errors || statusText
+      );
+    } else {
+      return fetchResponse2(
+        400,
+        "error",
+        "edit this error message for the getAllUsers() server action"
+      );
+    }
   }
 }
 
@@ -652,9 +705,8 @@ export async function deleteDepartment(
 export async function getAllStudents(): Promise<
   IFetchResponse2<IStudent> | undefined
 > {
-  apiClient.defaults.headers.common["Authorization"] = `Bearer ${
-    cookies().get("token")?.value
-  }`;
+  apiClient.defaults.headers.common["Authorization"] = `Bearer ${cookies().get("token")?.value
+    }`;
   const token = cookies().get("token")?.value;
   try {
     if (token) {
@@ -733,9 +785,8 @@ export async function deleteStudent(
 export async function getAllSubjects(): Promise<
   IFetchResponse2<ISubject> | undefined
 > {
-  apiClient.defaults.headers.common["Authorization"] = `Bearer ${
-    cookies().get("token")?.value
-  }`;
+  apiClient.defaults.headers.common["Authorization"] = `Bearer ${cookies().get("token")?.value
+    }`;
   const token = cookies().get("token")?.value;
   try {
     if (token) {

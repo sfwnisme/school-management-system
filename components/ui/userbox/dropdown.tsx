@@ -58,13 +58,13 @@ export default function Dropdown({ children, user }: Props) {
   const userDataContainer = (
     <div className="mb- flex items-start gap-1 w-full bg-gray-200 rounded p-1">
       <div className="flex-1">
-        <p className="capitalize text-sm text-gray-600">
-          {user?.data?.userName}
+        <p className="capitalize text-sm text-gray-600 font-semibold">
+          {user?.data?.fullName}
         </p>
         <p className="capitalize text-xs text-gray-600">
           {user?.data?.userName}
         </p>
-        <Badge variant="warning">{"N/A"}</Badge>
+        <Badge variant="warning">{user?.data?.roles?.[0] ?? "N/A"}</Badge>
       </div>
       <>
         {user?.data?.userName && (

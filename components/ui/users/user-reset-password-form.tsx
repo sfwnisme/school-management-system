@@ -2,24 +2,21 @@
 import React, { ReactNode, useRef, useState, useTransition } from "react";
 import Input from "../input";
 import {
-  IApiResponseReturn,
-  IFetchResponse,
-  IResponse,
   IFetchResponse2,
   IUser,
   YupUserResetPassword,
+  IClientResponse,
 } from "@/definitions";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { getAllUsers, resetUserPassword } from "@/lib/actions";
+import { resetUserPassword } from "@/lib/actions";
 import Button from "../button";
 import { yupUserResetPasswordSchema } from "@/lib/validation-schema-yup";
 import Message from "../message";
-import ConditionalMessage from "../conditional-message";
 import FetchMessage from "../fetch-message";
 
 type Props = {
-  user: IFetchResponse<IUser | undefined | null>;
+  user: IClientResponse<IUser>;
 };
 
 export const revalid = 1;
@@ -32,12 +29,13 @@ export default function UserResetPasswordForm(props: Props) {
     message: "",
   });
 
-  const email = props.user.data?.email ?? "";
+  const { email } = props?.user.data as IUser
+  // const email = props.user.data?.email ?? "";
 
   const {
     register,
     handleSubmit,
-    formState: { errors, isValid, disabled, isValidating },
+    formState: { errors, isValid },
   } = useForm<YupUserResetPassword>({
     resolver: yupResolver(yupUserResetPasswordSchema),
     reValidateMode: "onChange",
@@ -48,10 +46,11 @@ export default function UserResetPasswordForm(props: Props) {
   });
 
   const onSubmit: SubmitHandler<YupUserResetPassword> = (data) => {
+    const { password, confirmPassword, email } = data
     const newPassword = {
-      password: data.password,
-      confirmPassword: data.confirmPassword,
-      email: data.email,
+      password,
+      confirmPassword,
+      email
     };
     startResetPassword(async () => {
       const res = await resetUserPassword(newPassword);
@@ -70,6 +69,8 @@ export default function UserResetPasswordForm(props: Props) {
     });
   };
 
+  console.log(isResetPassword, isValid)
+
   return (
     <div className="w-full md:max-w-[700px] md:w-auto mx-auto rounded border border-gray-300 p-4">
       <h1 className="mb-4 text-lg font-medium underline">
@@ -87,8 +88,8 @@ export default function UserResetPasswordForm(props: Props) {
               errors.password?.message
                 ? "danger"
                 : isValid
-                ? "success"
-                : "initial"
+                  ? "success"
+                  : "initial"
             }
             {...register("password")}
           />
@@ -102,8 +103,8 @@ export default function UserResetPasswordForm(props: Props) {
               errors.confirmPassword?.message
                 ? "danger"
                 : isValid
-                ? "success"
-                : "initial"
+                  ? "success"
+                  : "initial"
             }
             {...register("confirmPassword")}
           />
@@ -113,7 +114,7 @@ export default function UserResetPasswordForm(props: Props) {
           variant="info"
           type="submit"
           loading={isResetPassword}
-          disabled={isResetPassword || !isValid}
+          disabled={!isValid || isResetPassword}
           loadingText="Updating..."
         >
           Update

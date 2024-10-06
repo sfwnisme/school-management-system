@@ -82,11 +82,13 @@ export default function TableLayer(props: Props) {
 
   // delete data form the database
   function deleteDataFunction(id: number) {
-    closeDeletePopover();
     startDeleting(async () => {
       const { isSuccess, isError, message } = await props.deleteFunction(id);
       const toastType = isSuccess ? "success" : "error";
-      toast[toastType](message);
+      //NOTE: the error message sometimes it returns an array
+      const messageArrayOrString = Array.isArray(message) ? message.join(' ') : message
+      toast[toastType](messageArrayOrString);
+      closeDeletePopover();
     });
   }
 
@@ -101,9 +103,9 @@ export default function TableLayer(props: Props) {
   const tableBodyCells =
     data &&
     data?.map((data: any) => (
-      <Tr key={data.idKey}>
+      <Tr key={data[idKey]}>
         {props.tableHeader?.map((head) => (
-          <Td key={data[head.name as string]} id={data[idKey]}>
+          <Td key={head.name} id={data[idKey]}>
             {head.key === "imagePath" ? (
               <Image
                 width={40}

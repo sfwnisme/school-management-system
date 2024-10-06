@@ -13,26 +13,16 @@ type UpdateStateAdvancedType<S> = (updateFn: (prev: S) => S) => void;
 type RoleTypes = "Admin" | "HR" | "User";
 type StringOrNull = string | null;
 interface IUser {
-  id?: 1;
+  id?: number;
   userName?: string;
   email?: string;
   imagePath?: string | null;
   fullName?: string;
   roles?: string[];
+  roleId?: number,
   createdAt?: string;
   lastUpdate?: string;
 }
-// data: {
-//   id: 98,
-//   userName: 'admin',
-//   email: 'admin@project.com',
-//   imagePath: null,
-//   fullName: 'schoolProject',
-//   roles: [ 'Admin' ],
-//   createdAt: '2024-09-22T11:11:22.7410524',
-//   lastUpdate: '0001-01-01T00:00:00'
-// },
-
 interface YupUserUpdateInputs {
   id?: number;
   userName: string;
@@ -43,7 +33,7 @@ interface YupUserUpdateInputs {
   // confirmPassword?: string;
 }
 interface YupUserResetPassword
-  extends Pick<YupUserCreateInputs, "password" | "confirmPassword" | "email"> {}
+  extends Pick<YupUserCreateInputs, "password" | "confirmPassword" | "email"> { }
 
 interface YupUserCreateInputs {
   userName: string;
@@ -54,7 +44,7 @@ interface YupUserCreateInputs {
   image: HTMLImageElement;
 }
 
-export interface IMUser extends IFetchResponse2<IUser> {}
+export interface IMUser extends IFetchResponse2<IUser> { }
 export interface IMUser2 {
   username: string | undefined;
   name: string | undefined;
@@ -72,7 +62,7 @@ interface IInstructor {
   deptId: number;
 }
 interface YupInstructorUpdateInputs
-  extends Pick<IInstructor, "name" | "position" | "salary"> {}
+  extends Pick<IInstructor, "name" | "position" | "salary"> { }
 
 interface IDepartment {
   deptId: number;

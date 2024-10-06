@@ -5,7 +5,7 @@ import Title from "@/components/ui/title";
 import UserResetPasswordForm from "@/components/ui/users/user-reset-password-form";
 import UserResetPassword from "@/components/ui/users/user-reset-password-form";
 import UserForm from "@/components/ui/users/user-update-form";
-import { IUser } from "@/definitions";
+import { IClientResponse, IRole, IUser } from "@/definitions";
 import { getAllRoles, getRolesByUserId, getUserById } from "@/lib/actions";
 import React from "react";
 
@@ -18,10 +18,12 @@ type Props = {
 
 export default async function page(props: Props) {
   const id = Number(props?.params.id);
-  const userById = await getUserById(id);
-  const allRoles = await getAllRoles();
+  const userById = await getUserById(id) as IClientResponse<IUser>
+  const allRoles = await getAllRoles() as IClientResponse<IRole[]>;
 
-  if (!userById?.data || userById?.status === "error") return NotFound();
+  console.log(userById)
+
+  if (!userById?.data || userById?.isError) return NotFound();
   return (
     <div>
       <Title title="Update User">

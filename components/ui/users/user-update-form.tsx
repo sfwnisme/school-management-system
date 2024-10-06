@@ -2,7 +2,7 @@
 import React, { useRef, useTransition } from "react";
 import Input from "../input";
 import {
-  IApiResponseReturn,
+  IClientResponse,
   IFetchResponse,
   IFetchResponse2,
   IRole,
@@ -15,12 +15,11 @@ import { updateUser } from "@/lib/actions";
 import Button from "../button";
 import { yupUserUpdateSchema } from "@/lib/validation-schema-yup";
 import Message from "../message";
-import ConditionalMessage from "../conditional-message";
 import FetchMessage from "../fetch-message";
 
 type Props = {
-  user: IFetchResponse<IUser | undefined | null>;
-  roles: IFetchResponse<IRole[]> | undefined;
+  user: IClientResponse<IUser>;
+  roles: IClientResponse<IRole[]> | undefined;
 };
 
 export default function UserUpdateForm(props: Props) {
@@ -31,13 +30,28 @@ export default function UserUpdateForm(props: Props) {
     message: "",
   });
 
-  const user = props?.user;
-  const roles = props?.roles;
+  // const user = props?.user;
+  // const roles = props?.roles;
+  const {
+    id: userId = -1,
+    fullName = "",
+    userName = "",
+    email = "",
+    roles = []
+  } = props?.user.data as IUser
+
+  const {
+    data: rolesData,
+    isEmpty: isEmptyRoles,
+    isSuccess: isSuccessRoles,
+    isError: isErrorRoles,
+    message: messageRoles
+  } = props?.roles as IClientResponse<IRole[]>
 
   const currentRole = () => {
-    if (roles?.status === "not_empty") {
-      const findTheCurrentRole = roles.data?.find((role) => {
-        if (role.name === user.data?.roles?.[0]) {
+    if (isSuccessRoles) {
+      const findTheCurrentRole = rolesData?.find((role) => {
+        if (role.name === roles?.[0]) {
           return role.id;
         }
       });
@@ -53,23 +67,23 @@ export default function UserUpdateForm(props: Props) {
     resolver: yupResolver(yupUserUpdateSchema),
     mode: "onChange",
     defaultValues: {
-      userName: user.data?.userName ?? "",
-      fullName: user.data?.fullName ?? "",
-      email: user.data?.email ?? "",
+      userName: userName,
+      fullName: fullName,
+      email: email,
     },
   });
 
   const onSubmit: SubmitHandler<YupUserUpdateInputs> = async (data) => {
     startUpdatingUser(async () => {
       const newUserData = {
-        id: user.data?.id,
+        id: userId,
         userName: data?.userName,
         fullName: data?.fullName,
         email: data?.email,
         roleId: Number(data.roleId),
       };
       //check if the user roles available, validation success,
-      if (isValid && roles?.status === "not_empty") {
+      if (isValid && isSuccessRoles && !isEmptyRoles) {
         console.log("function fired");
         const res = await updateUser(newUserData);
         if (res) {
@@ -84,30 +98,39 @@ export default function UserUpdateForm(props: Props) {
     });
   };
 
-  // this function helps me select the initial role "User", in this scenario I can prevent modifying this role
-  const userRolesSelectData = roles?.data?.map((role) => (
+  console.log(isValid, isSuccessRoles, isEmptyRoles)
+
+  //-----------------
+  // roles jsx options
+  //-----------------
+  const userRolesSelectDataisSuccess = rolesData?.map((role) => (
     <option id={role?.id?.toString()} value={role.id} key={role.id}>
       {role.name}
     </option>
   ));
 
-  const userRolesSelectJsxError = (
+  const userRolesSelectDataIsError = (
     <option disabled selected>
       request error😑
     </option>
   );
-  const userRolesSelectJsxNoData = (
+  const userRolesSelectDataisEmpty = (
     <option disabled selected>
       no roles😑
     </option>
   );
 
-  const userRolesSelectJsx =
-    roles?.status === "not_empty"
-      ? userRolesSelectData
-      : roles?.status === "empty"
-      ? userRolesSelectJsxNoData
-      : userRolesSelectJsxError;
+  let userRolesSelectJsx
+  if (isSuccessRoles) {
+    userRolesSelectJsx = userRolesSelectDataisSuccess
+  }
+  if (isEmptyRoles) {
+    userRolesSelectJsx = userRolesSelectDataisEmpty
+  }
+  if (isErrorRoles) {
+    userRolesSelectJsx = userRolesSelectDataIsError
+  }
+  //-----------------
 
   return (
     <div className="w-full md:max-w-[700px] md:w-auto mx-auto rounded border border-gray-300 p-4">
@@ -126,8 +149,8 @@ export default function UserUpdateForm(props: Props) {
               errors.fullName?.message
                 ? "danger"
                 : isValid
-                ? "success"
-                : "initial"
+                  ? "success"
+                  : "initial"
             }
             {...register("fullName")}
           />
@@ -141,8 +164,8 @@ export default function UserUpdateForm(props: Props) {
               errors.userName?.message
                 ? "danger"
                 : isValid
-                ? "success"
-                : "initial"
+                  ? "success"
+                  : "initial"
             }
             {...register("userName")}
           />
@@ -163,13 +186,14 @@ export default function UserUpdateForm(props: Props) {
           {...register("roleId")}
           defaultValue={currentRole()}
           className="disabled:opacity-50 disabled:cursor-not-allowed w-full h-fit border border-gray-500 rounded text-black text-sm px-4 py-2 cursor-pointer col-span-1"
-          disabled={["empty", "error"].includes(roles?.status ?? "idle")}
+          disabled={isEmptyRoles || isErrorRoles}
           title={
-            Boolean(roles?.status === "error")
-              ? "unexpected error please report"
-              : roles?.status === "empty"
-              ? "no roles yet"
-              : "select the role"
+            isErrorRoles
+              ? messageRoles.join(' ') + ' please contact the support'
+              // ? "unexpected error please report"
+              : isEmptyRoles
+                ? "no roles yet"
+                : "select the role"
           }
         >
           {userRolesSelectJsx}
@@ -181,15 +205,15 @@ export default function UserUpdateForm(props: Props) {
           disabled={
             isUpdatingUser ||
             !isValid ||
-            ["empty", "error"].includes(roles?.status ?? "idle")
+            isEmptyRoles || isErrorRoles
           }
           loadingText="Updating..."
           title={
-            Boolean(roles?.status === "error")
+            isErrorRoles
               ? "unexpected error in the roles request please report"
-              : roles?.status === "empty"
-              ? "no roles yet. you should create roles, so you can update the users"
-              : "update"
+              : isEmptyRoles
+                ? "no roles yet. you should create roles, so you can update the users"
+                : "update"
           }
         >
           Update

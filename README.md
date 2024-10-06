@@ -248,8 +248,24 @@ it is hard to share the response of the catch and the try, so I should use ether
 - [x] dynamic error handling for all the endpoints(create,update, delete, and reset password for user endpoint).
 - [x] students, departments, and subjects get and delete endpoints
 
-### Mon 30/09/2024 & Sat 05/10/2024
+### Mon 30/09/2024 & Sun 06/10/2024
 
+*Note*: why all that time in this task?
+  I found out that I should return a union object from the API server actions, thus I updated it about 4 times until I created the perfect function that will handle any type of data and return a dynamic object contains the important data.
+  what was that object contain?
+  I needed to make the client components more clear and readable, so I figured out that I should return the following object to help me controle the displayed data depends on the response status success, empty, or error.
+  the returnd response snippet
+
+  ```ts
+  const initialObject = {
+    data: {} | [],
+    isEmpty: boolean,
+    isSuccess: boolean,
+    isError: boolean,
+    message: string | {[key: string]: string}
+  }
+  ```
+  
 - [x] solve the try and catch data resolves
 - [x] notfound component
 - [x] create error message for the endpoints `conditional-message.tsx` [canceled]
@@ -262,15 +278,15 @@ it is hard to share the response of the catch and the try, so I should use ether
   - [x] `isTokenValid`
   - [x] `getAllUsers`
   - [x] `getCurrentUser`
-  - [ ] `getUserById`
+  - [x] `getUserById`
   - [x] `updateUser`
   - [x] `createUser`
   - [x] `deleteUser`
   - [x] `resetUserPassword`
-  - [ ] `getAllRoles`
-  - [ ] `getRolesByUserId`
+  - [x] `getAllRoles`
+  - [x] `getRolesByUserId`
   - [x] `getAllInstructors`
-  - [ ] `getInstructorById`
+  - [x] `getInstructorById`
   - [x] `deleteInstructor`
   - [x] `getAllDepartments`
   - [x] `deleteDepartment`
@@ -287,6 +303,7 @@ it is hard to share the response of the catch and the try, so I should use ether
 - [ ] user and the current user's profile.
 - [ ] dynamic breadcrump.
 - [ ] try and catch of the server returns into the try block of the client components
+- [ ] create Input UI Component with its message and variants, this will help you achive the Single dependency principle
 
 ## UI components
 
