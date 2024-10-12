@@ -28,7 +28,7 @@ import ConditionalMessage from "../conditional-message";
 import FetchMessage from "../fetch-message";
 
 type Props = {};
-export default function UserCreateForm({ }: Props) {
+export default function InstructorCreateForm({ }: Props) {
   const [isCreatingUser, startCreatingUser] = useTransition();
   const apiResponseMessagesRef = useRef<IFetchResponse2<[]>>({
     isSuccess: false,
@@ -199,7 +199,7 @@ export default function UserCreateForm({ }: Props) {
           <FetchMessage
             message={apiResponseMessagesRef.current.message}
             isSuccess={apiResponseMessagesRef.current.isSuccess}
-            isError={apiResponseMessagesRef.current.isError}
+          // isError={apiResponseMessagesRef.current.isError}
           />
         </div>
       </form>

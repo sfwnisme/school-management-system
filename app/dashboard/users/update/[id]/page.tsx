@@ -4,6 +4,7 @@ import Input from "@/components/ui/input";
 import Title from "@/components/ui/title";
 import UserResetPasswordForm from "@/components/ui/users/user-reset-password-form";
 import UserResetPassword from "@/components/ui/users/user-reset-password-form";
+import UserUpdateForm from "@/components/ui/users/user-update-form";
 import UserForm from "@/components/ui/users/user-update-form";
 import { IClientResponse, IRole, IUser } from "@/definitions";
 import { getAllRoles, getRolesByUserId, getUserById } from "@/lib/actions";
@@ -29,7 +30,7 @@ export default async function page(props: Props) {
       <Title title="Update User">
         <Button tag="link" href="/dashboard/users" value="Users" />
       </Title>
-      <UserForm user={userById} roles={allRoles} />
+      <UserUpdateForm user={userById} roles={allRoles} />
       <br />
       <UserResetPasswordForm user={userById} />
     </div>

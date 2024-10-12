@@ -98,9 +98,9 @@ type InternalLinkProps = {
 
 type LinkPropsType = React.ForwardRefExoticComponent<
   Omit<React.AnchorHTMLAttributes<HTMLAnchorElement>, keyof InternalLinkProps> &
-    InternalLinkProps & {
-      children?: React.ReactNode;
-    } & React.RefAttributes<HTMLAnchorElement>
+  InternalLinkProps & {
+    children?: React.ReactNode;
+  } & React.RefAttributes<HTMLAnchorElement>
 >;
 
 type ButtonTypes = DetailedHTMLProps<
@@ -194,15 +194,14 @@ export default function Button({
 
   const currentRounded = rounds[rounded];
 
-  const settings = `${
-    currentWidth +
+  const settings = `${currentWidth +
     " " +
     currentVariant +
     " " +
     currentSize +
     " " +
     currentRounded
-  }`;
+    }`;
 
   const loadingJsx = (
     <span className="relative flex h-5 w-5">

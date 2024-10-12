@@ -6,6 +6,7 @@ type Props = {
   styles?: string;
   variant?: "initial" | "success" | "danger";
   sze?: "initial" | "sm" | "lg";
+  title?: string,
   // type?: string;
 };
 type InputProps = DetailedHTMLProps<
@@ -14,7 +15,13 @@ type InputProps = DetailedHTMLProps<
 > &
   Props;
 
-const Input = React.forwardRef<HTMLInputElement, InputProps>((props, ref) => {
+const Input = React.forwardRef<HTMLInputElement, InputProps>(({
+  styles = '',
+  variant = 'initial',
+  sze = 'initial',
+  title = "",
+  ...rest
+}, ref) => {
   const variants = {
     initial:
       "border-gray-500 text-gray-800 placeholder:text-gray-400 outline-gray-200",
@@ -32,20 +39,24 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>((props, ref) => {
   };
 
   const focusVisible = "focus-visible:outline outline-[3px] outline-gray-200";
-
-  const currentStatus = variants[props?.variant || "initial"];
-  // const currentStatus = variants[variant || "initial"];
-
-  const currentSize = sizes[props?.sze || "initial"];
-  // const currentSize = sizes[sze || "initial"];
+  const currentStatus = variants[variant];
+  const currentSize = sizes[sze];
 
   return (
     <div>
+      <label className="text-sm mb-1 block">
+        {title}
+      </label>
       <input
-        {...props}
+        {...rest}
         ref={ref}
-        className={`${props.className} 
-          bg-transparent border rounded text-black col-span-full w-full ${currentSize} ${currentStatus} ${focusVisible} ${props?.styles}`}
+        className={`${rest.className} 
+          bg-transparent border rounded text-black col-span-full w-full 
+          ${currentSize} 
+          ${currentStatus} 
+          ${focusVisible} 
+          ${styles}
+          `}
       />
     </div>
   );

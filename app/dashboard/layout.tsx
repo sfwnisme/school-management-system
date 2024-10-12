@@ -10,9 +10,11 @@ export default function layout({ children }: Props) {
     <div>
       {/* <Suspense fallback={<Loading />}> */}
       <IsAuth route="protected">
-        <IsRoleAuth>
-          <DrawerContainer>{children}</DrawerContainer>
-        </IsRoleAuth>
+        <DrawerContainer>
+          <IsRoleAuth>
+            {children}
+          </IsRoleAuth>
+        </DrawerContainer>
       </IsAuth>
       {/* </Suspense> */}
     </div>

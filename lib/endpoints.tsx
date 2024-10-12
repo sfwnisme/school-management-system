@@ -43,7 +43,7 @@ export const endpoints = {
     all: "instructors/list",
     id: "instructors/",
     create: "instructors/create",
-    edit: "instructors/edit",
+    update: "instructors/update",
     delete: "instructors/delete/",
   },
   departments: {

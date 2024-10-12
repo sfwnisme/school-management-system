@@ -9,6 +9,7 @@ type Props = {
 
 export default async function DrawerContainer(props: Props) {
   const user = (await getCurrentUser()) as IClientResponse<IUser>;
+  console.log(user)
   return (
     <>
       <Drawer user={user}>{props.children}</Drawer>

@@ -3,7 +3,6 @@ import React, { useRef, useTransition } from "react";
 import Input from "../input";
 import {
   IClientResponse,
-  IFetchResponse,
   IFetchResponse2,
   IRole,
   IUser,
@@ -22,6 +21,8 @@ type Props = {
   roles: IClientResponse<IRole[]> | undefined;
 };
 
+const inputs = ["fullName", 'userName', 'email']
+
 export default function UserUpdateForm(props: Props) {
   const [isUpdatingUser, startUpdatingUser] = useTransition();
   const apiResponseMessagesRef = useRef<IFetchResponse2<undefined>>({
@@ -29,9 +30,6 @@ export default function UserUpdateForm(props: Props) {
     isError: false,
     message: "",
   });
-
-  // const user = props?.user;
-  // const roles = props?.roles;
   const {
     id: userId = -1,
     fullName = "",
@@ -103,32 +101,32 @@ export default function UserUpdateForm(props: Props) {
   //-----------------
   // roles jsx options
   //-----------------
-  const userRolesSelectDataisSuccess = rolesData?.map((role) => (
+  let userRolesOptions
+  const userRolesOptionsIsSuccess = rolesData?.map((role) => (
     <option id={role?.id?.toString()} value={role.id} key={role.id}>
       {role.name}
     </option>
   ));
 
-  const userRolesSelectDataIsError = (
+  const userRolesOptionsIsError = (
     <option disabled selected>
       request error😑
     </option>
   );
-  const userRolesSelectDataisEmpty = (
+  const userRolesOptionsIsEmpty = (
     <option disabled selected>
       no roles😑
     </option>
   );
 
-  let userRolesSelectJsx
   if (isSuccessRoles) {
-    userRolesSelectJsx = userRolesSelectDataisSuccess
+    userRolesOptions = userRolesOptionsIsSuccess
   }
   if (isEmptyRoles) {
-    userRolesSelectJsx = userRolesSelectDataisEmpty
+    userRolesOptions = userRolesOptionsIsEmpty
   }
   if (isErrorRoles) {
-    userRolesSelectJsx = userRolesSelectDataIsError
+    userRolesOptions = userRolesOptionsIsError
   }
   //-----------------
 
@@ -196,7 +194,7 @@ export default function UserUpdateForm(props: Props) {
                 : "select the role"
           }
         >
-          {userRolesSelectJsx}
+          {userRolesOptions}
         </select>
         <Button
           variant="info"

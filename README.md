@@ -8,13 +8,9 @@
 ## Add-ons tasks
 
 - [x] Admins theme *currentlly working on it*
-  - [ ] full access epic
-- [ ] HR epic
-  - [ ] Humen Resource epic: access the insturctors and lower position
-- [ ] Instructor theme
-  - [ ] Dashboard Epic
-- [ ] Public theme.
-  - [ ] overview epic
+  - [x] full access epic
+  - [x] non access epic [normal users that can not access only view]
+
 
 ## styling rules
 
@@ -295,8 +291,18 @@ it is hard to share the response of the catch and the try, so I should use ether
   - [x] `getAllSubjects`
   - [x] `deleteSubject`
 
+### Fri 11/10/2024
+
+- [x] update instructor data
+- [x] update departmen data
+- [ ] create select input UI Component
+- [ ] create new instructor
+- [ ] change the `user-update-form.tsx` file like the `instructor-update-form.tsx` file
+- [ ] display the supervisor and the manager in the tables of the departments and the instructors
+
 ### Backlog
 
+- [ ] disable the dashboard sidebar depends on the user role.
 - [ ] create a condition for every api request that invoked using the buttons to check if the requirements and the validation steps accomplished before invoking the request function ex: `updateUser(user:IUser)`
 - [ ] forget password endpoint with the code and email.
 - [ ] instructors udpate, create.
@@ -304,6 +310,8 @@ it is hard to share the response of the catch and the try, so I should use ether
 - [ ] dynamic breadcrump.
 - [ ] try and catch of the server returns into the try block of the client components
 - [ ] create Input UI Component with its message and variants, this will help you achive the Single dependency principle
+- [ ] create an object contains the inputs name of the react hook forms, to help me loop the inputs instead of write them manully every type. [this task need more search to make it more typescript friendly]
+- [ ] dynamic profile page for the all users data types insturctors, users, students and etc... . 
 
 ## UI components
 

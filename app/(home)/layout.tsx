@@ -10,6 +10,7 @@ type Props = {
 
 export default async function layout({ children }: Props) {
   const user = (await getCurrentUser()) as IClientResponse<IUser>;
+  console.log(user)
   return (
     <div>
       <Nav isDashboard={false} user={user} />

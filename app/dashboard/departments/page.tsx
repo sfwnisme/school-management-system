@@ -1,12 +1,13 @@
 import Button from "@/components/ui/button";
 import DepartmentsTable from "@/components/ui/departments/departments-table";
-import TableLayer from "@/components/ui/table-layer";
+import TableLayer from "@/components/ui/table/table-layer";
 import Title from "@/components/ui/title";
 import { deleteDepartment, getAllDepartments } from "@/lib/actions";
 import React from "react";
 
 export default async function page() {
-  const departments = await getAllDepartments() ;
+  const departments = await getAllDepartments();
+  console.log(departments)
 
   const departmentsKeysAndNames = [
     {

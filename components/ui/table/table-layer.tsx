@@ -1,17 +1,19 @@
 "use client";
 import React, { Suspense, useState, useTransition } from "react";
-import Table from "./table/table";
-import Thead from "./table/thead";
-import Th from "./table/th";
-import Tbody from "./table/tbody";
-import Td from "./table/td";
-import Tr from "./table/tr";
-import Button from "./button";
+import Table from "./table";
+import Thead from "./thead";
+import Th from "./th";
+import Tbody from "./tbody";
+import Td from "./td";
+import Tr from "./tr";
+// import Button from "./button";
 import { Edit, Trash } from "lucide-react";
 import { IClientResponse, ITableHead, IUser } from "@/definitions";
 import Image from "next/image";
 import { toast } from "react-toastify";
-import TableSkeleton from "./skeletons/table-skeleton";
+import Button from "../button";
+import TableSkeleton from "../skeletons/table-skeleton";
+// import TableSkeleton from "./skeletons/table-skeleton";
 
 type Props = {
   dataFunction: any;

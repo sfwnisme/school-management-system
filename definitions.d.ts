@@ -54,6 +54,8 @@ export interface IMUser2 {
 interface IInstructor {
   instId: number;
   name: string;
+  nameAr?: string,
+  nameEn?: string,
   address: string;
   position: string;
   imagePath: null;
@@ -61,14 +63,54 @@ interface IInstructor {
   salary: number;
   deptId: number;
 }
-interface YupInstructorUpdateInputs
-  extends Pick<IInstructor, "name" | "position" | "salary"> { }
-
-interface IDepartment {
-  deptId: number;
-  managerId: number;
-  name: string;
+interface IInstructorUpdate {
+  id?: number,
+  nameAr: string,
+  nameEn: string,
+  position: string,
+  salary: number,
+  departmentId: number
 }
+interface YupInstructorUpdateInputs {
+  id?: number,
+  nameAr: string,
+  nameEn: string,
+  position: string,
+  salary: number,
+  departmentId: number,
+}
+
+//----------------------------
+// department
+//----------------------------
+//   id: 2,
+//   name: 'Physics Department',
+//   managerName: 'Dr. Ali Mohamed',
+//   students: [],
+//   instructors: [
+//     { id: 3, name: 'Dr. Ali Mohamed' },
+//     { id: 21, name: 'Ali' },
+//     { id: 22, name: 'a' }
+//   ],
+//   subjects: [ { id: 2, name: 'Physics' } ]
+interface IDepartment {
+  id: number;
+  deptId?: number,
+  name: string,
+  managerName: string;
+  students: { id: number, name: string }[],
+  instructors: { id: number, nmae: string }[],
+  subjects: { id: number, name: string }[]
+}
+// Argument of type '{ departmentId: number | undefined; insId: number; nameAr: string; nameEn: string; }' 
+// is not assignable to parameter of type 'YupDepartmentUpdateInputs'.
+interface YupDepartmentUpdateInputs {
+  departmentId?: number,
+  insId: number,
+  nameAr: string,
+  nameEn: string,
+}
+//----------------------------
 
 interface IStudent {
   studId: number;
@@ -146,6 +188,7 @@ interface IFetchResponse2<T> {
   isEmpty?: boolean;
   isSuccess: boolean;
   isError: boolean;
+  isAuth?: boolean;
   message: string | string[] | { [key: string]: string[] } | {} | null;
 }
 // interface IFetchResponse2<T> {
@@ -159,7 +202,7 @@ interface IFetchResponse2<T> {
 interface IClientResponse<T>
   extends Pick<
     IFetchResponse2,
-    "isEmpty" | "isSuccess" | "isError" | "message"
+    "isEmpty" | "isSuccess" | "isError" | "isAuth" | "message"
   > {
   data?: T;
 }

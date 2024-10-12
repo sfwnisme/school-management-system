@@ -12,14 +12,15 @@ type Props = {
 };
 export default async function IsAuth({ children, route }: Props) {
   const checkTokenIfValid = await isTokenValid();
+  console.log(checkTokenIfValid?.isSuccess)
 
   // check if the token expired
   await refreshTokenIfExpired();
 
-  if (checkTokenIfValid === undefined && route === "protected") {
+  if (!checkTokenIfValid?.isSuccess && route === "protected") {
     revalidatePath("/login");
     redirect("/login");
-  } else if (checkTokenIfValid !== undefined && route === "public") {
+  } else if (checkTokenIfValid?.isSuccess && route === "public") {
     revalidatePath("/dashboard");
     redirect("/dashboard");
   }

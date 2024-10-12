@@ -1,6 +1,6 @@
 import Button from "@/components/ui/button";
 import StudentsTable from "@/components/ui/students/students-table";
-import TableLayer from "@/components/ui/table-layer";
+import TableLayer from "@/components/ui/table/table-layer";
 import Title from "@/components/ui/title";
 import { deleteStudent, getAllStudents } from "@/lib/actions";
 import React from "react";

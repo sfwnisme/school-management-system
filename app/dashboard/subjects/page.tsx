@@ -1,6 +1,6 @@
 import Button from "@/components/ui/button";
 import SubjectsTable from "@/components/ui/subjects/subjects-table";
-import TableLayer from "@/components/ui/table-layer";
+import TableLayer from "@/components/ui/table/table-layer";
 import Title from "@/components/ui/title";
 import { ITableHead } from "@/definitions";
 import { deleteSubject, getAllSubjects } from "@/lib/actions";
