@@ -1,82 +1,80 @@
 "use client";
-import React, { useState } from "react";
+import React, { ReactNode, useRef, useState, useTransition } from "react";
 import Input from "../input";
-import { IResponse, IUser, YupUserResetPassword } from "@/definitions";
+import {
+  IFetchResponse2,
+  IUser,
+  YupUserResetPassword,
+  IClientResponse,
+} from "@/definitions";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { getAllUsers, resetUserPassword } from "@/lib/actions";
+import { resetUserPassword } from "@/lib/actions";
 import Button from "../button";
 import { yupUserResetPasswordSchema } from "@/lib/validation-schema-yup";
 import Message from "../message";
+import FetchMessage from "../fetch-message";
 
 type Props = {
-  user: IUser;
+  user: IClientResponse<IUser>;
 };
 
-type Inputs = {
-  userName: string;
-  fullName: string;
-  email?: string;
-};
 export const revalid = 1;
 export default function UserResetPasswordForm(props: Props) {
-  const email = props?.user.email;
-  const [isPending, setIsPending] = useState(false);
-  const [responseMessage, setResponseMessage] = useState<{
-    statusCode: number;
-    success: boolean | null;
-    message: string;
-  }>({
-    statusCode: 0,
-    success: null,
+  const [isResetPassword, startResetPassword] = useTransition();
+  const apiResponseMessagesRef = useRef<IFetchResponse2<[]>>({
+    isEmpty: false,
+    isSuccess: false,
+    isError: false,
     message: "",
   });
 
-  //--------------------------------
-  // form submit
-  //--------------------------------
+  const { email } = props?.user.data as IUser
+  // const email = props.user.data?.email ?? "";
+
   const {
     register,
     handleSubmit,
     formState: { errors, isValid },
   } = useForm<YupUserResetPassword>({
     resolver: yupResolver(yupUserResetPasswordSchema),
+    reValidateMode: "onChange",
     mode: "onChange",
     defaultValues: {
       email,
     },
   });
 
-  const onSubmit: SubmitHandler<YupUserResetPassword> = async (data) => {
-    setIsPending(true);
-    try {
-      console.log(email);
-      const newPassword = {
-        password: data.password,
-        confirmPassword: data.confirmPassword,
-        email: data.email,
-      };
-      const res= await resetUserPassword(newPassword);
+  const onSubmit: SubmitHandler<YupUserResetPassword> = (data) => {
+    const { password, confirmPassword, email } = data
+    const newPassword = {
+      password,
+      confirmPassword,
+      email
+    };
+    startResetPassword(async () => {
+      const res = await resetUserPassword(newPassword);
       if (res) {
-        setResponseMessage({
-          statusCode: res.statusCode,
-          success: res.success,
-          message: res.message,
-        });
+        const { isSuccess, isError, message } = res;
+        apiResponseMessagesRef.current = {
+          isSuccess,
+          isError,
+          message,
+        };
+      } else {
+        console.log(
+          "unexpected error on the onSubmit user-reset-password-form.tsx"
+        );
       }
-      await getAllUsers();
-      // return res;
-    } catch (error) {
-      console.log("update user error", error);
-    } finally {
-      setIsPending(false);
-    }
+    });
   };
+
+  console.log(isResetPassword, isValid)
 
   return (
     <div className="w-full md:max-w-[700px] md:w-auto mx-auto rounded border border-gray-300 p-4">
       <h1 className="mb-4 text-lg font-medium underline">
-        Update user's password:
+        Update user&apos;s password:
       </h1>
       <form
         onSubmit={handleSubmit(onSubmit)}
@@ -90,8 +88,8 @@ export default function UserResetPasswordForm(props: Props) {
               errors.password?.message
                 ? "danger"
                 : isValid
-                ? "success"
-                : "initial"
+                  ? "success"
+                  : "initial"
             }
             {...register("password")}
           />
@@ -105,8 +103,8 @@ export default function UserResetPasswordForm(props: Props) {
               errors.confirmPassword?.message
                 ? "danger"
                 : isValid
-                ? "success"
-                : "initial"
+                  ? "success"
+                  : "initial"
             }
             {...register("confirmPassword")}
           />
@@ -115,19 +113,17 @@ export default function UserResetPasswordForm(props: Props) {
         <Button
           variant="info"
           type="submit"
-          loading={isPending}
-          disabled={isPending || !isValid}
+          loading={isResetPassword}
+          disabled={!isValid || isResetPassword}
           loadingText="Updating..."
         >
           Update
         </Button>
-        {responseMessage.message && (
-          <div className="col-span-full">
-            <Message variant={responseMessage.success ? "success" : "danger"}>
-              {responseMessage.message}
-            </Message>
-          </div>
-        )}
+        <FetchMessage
+          message={apiResponseMessagesRef.current.message}
+          isSuccess={apiResponseMessagesRef.current.isSuccess}
+          isError={apiResponseMessagesRef.current.isError}
+        />
       </form>
     </div>
   );

@@ -1,10 +1,6 @@
-import Loading from "@/components/ui/spin-loading";
+import Loading from "@/components/ui/loading/loading";
 import React from "react";
 
 export default function loading() {
-  return (
-    <>
-      <Loading />
-    </>
-  );
+  return <Loading />;
 }

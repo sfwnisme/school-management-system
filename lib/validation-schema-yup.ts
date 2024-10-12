@@ -1,4 +1,4 @@
-import { mixed, object, ref, string } from "yup";
+import { mixed, number, object, ref, string } from "yup";
 
 const user = {
   userName: string()
@@ -22,12 +22,13 @@ const user = {
     .matches(
       /^(?=.*[^a-zA-Z0-9])/,
       "Password must contain at least one special character, Ex: &"
-    ),
+    )
+    .matches(/[0-9]/, "Password must contain at least one number"),
   confirmPassword: string()
     .required("confirm password is required")
     .oneOf([ref("password")], "Password must match"),
   email: string().email().required(),
-  image: mixed().required(),
+  image: mixed().required("select image"),
 };
 export const loginSchema = object({
   username: user.userName,
@@ -37,8 +38,6 @@ export const yupUserUpdateSchema = object({
   userName: user.userName,
   fullName: user.fullName,
   email: user.email,
-  // password: user.password,
-  // confirmPassword: user.confirmPassword,
 });
 
 export const yupUserResetPasswordSchema = object({
@@ -56,5 +55,47 @@ export const yupUserCreateSchema = object({
   image: user.image,
 });
 
+// export const yupInstructorUpdateSchema = object({
+//   name: user.fullName,
+//   address: user.fullName,
+//   position: user.fullName,
+//   salary: user.fullName,
+// });
+
+const instructor = {
+  fullName: user.fullName,
+  nameAr: user.fullName,
+  nameEn: user.fullName,
+  position: user.fullName,
+  salary: number().required("salary is required").min(3, 'the salary should be at least 3 numbers'),
+  departmentId: number().required('department should be selected'),
+}
+
+export const yupInstructorUpdateSchema = object({
+  nameAr: instructor.nameAr,
+  nameEn: instructor.nameEn,
+  position: instructor.position,
+  salary: instructor.salary,
+  departmentId: instructor.departmentId,
+})
+
+const department = {
+  deptId: number(),
+  instructorId: number().required('instructor is required'),
+  managerId: number(),
+  name: string().required('name is required').min(3, 'name should be at least 3 characters'),
+  nameAr: string().required('name is required').min(3, 'name should be at least 3 characters'),
+  nameEn: string().required('name is required').min(3, 'name should be at least 3 characters')
+}
+
+export const yupDepartmentUpdateSchema = object({
+  // departmentId: department.deptId,
+  insId: department.instructorId,
+  nameAr: department.nameAr,
+  nameEn: department.nameEn,
+})
 //safimooo
 //pass: ff.9df42asdf4Q
+// Type
+// 'Resolver<{ position: string; salary: string; nameAr: string; nameEn: string; departmentId: string; }>'
+// is not assignable to type 'Resolver<YupInstructorUpdateInputs, any>'.

@@ -8,13 +8,9 @@
 ## Add-ons tasks
 
 - [x] Admins theme *currentlly working on it*
-  - [ ] full access epic
-- [ ] HR epic
-  - [ ] Humen Resource epic: access the insturctors and lower position
-- [ ] Instructor theme
-  - [ ] Dashboard Epic
-- [ ] Public theme.
-  - [ ] overview epic
+  - [x] full access epic
+  - [x] non access epic [normal users that can not access only view]
+
 
 ## styling rules
 
@@ -234,14 +230,88 @@ it is hard to share the response of the catch and the try, so I should use ether
 - [x] customize dynamic table for all the data, avoiding the duplication.
 - [x] error messages for all forms, login, create user, update user and reset password
 - [x] created response deffinition for the endpoints that return errors and success messages.
-- [ ] delete button of the `table-layer.tsx` disabled in all pages include the current user table row, thus I need to solve this issue the next session.
+
+### Tu 24/09/2024
+
+- [x] delete button of the `table-layer.tsx` disabled in all pages include the current user's table row, thus I need to solve this issue the next session.
+- [x] instructor delete.
+- [x] fix: all pages loading delay.
+- [x] fix: all pages error UI.
+- [x] fix: delete button visibility for current user and common ids for other tables
+
+### Sat 28/09/2024 & Sun 29/09/2024
+
+- [x] dynamic error handling for all the endpoints(create,update, delete, and reset password for user endpoint).
+- [x] students, departments, and subjects get and delete endpoints
+
+### Mon 30/09/2024 & Sun 06/10/2024
+
+*Note*: why all that time in this task?
+  I found out that I should return a union object from the API server actions, thus I updated it about 4 times until I created the perfect function that will handle any type of data and return a dynamic object contains the important data.
+  what was that object contain?
+  I needed to make the client components more clear and readable, so I figured out that I should return the following object to help me controle the displayed data depends on the response status success, empty, or error.
+  the returnd response snippet
+
+  ```ts
+  const initialObject = {
+    data: {} | [],
+    isEmpty: boolean,
+    isSuccess: boolean,
+    isError: boolean,
+    message: string | {[key: string]: string}
+  }
+  ```
+  
+- [x] solve the try and catch data resolves
+- [x] notfound component
+- [x] create error message for the endpoints `conditional-message.tsx` [canceled]
+- [x] create message component for the fetch proccess `fetch-message.tsx`
+- [x] I must check if the endpoints data availible then map and make logic to avoid the errors
+- [x] convert the errors object to array to display the data in the jsx and check if the error message is object or string before the process. in `fetch-message.tsx` and `utils.ts`
+- update all the api response with the new object schema
+  - [x] `handleSignIn`
+  - [x] `refreshTokenIfExpired`
+  - [x] `isTokenValid`
+  - [x] `getAllUsers`
+  - [x] `getCurrentUser`
+  - [x] `getUserById`
+  - [x] `updateUser`
+  - [x] `createUser`
+  - [x] `deleteUser`
+  - [x] `resetUserPassword`
+  - [x] `getAllRoles`
+  - [x] `getRolesByUserId`
+  - [x] `getAllInstructors`
+  - [x] `getInstructorById`
+  - [x] `deleteInstructor`
+  - [x] `getAllDepartments`
+  - [x] `deleteDepartment`
+  - [x] `getAllStudents`
+  - [x] `deleteStudent`
+  - [x] `getAllSubjects`
+  - [x] `deleteSubject`
+
+### Fri 11/10/2024
+
+- [x] update instructor data
+- [x] update departmen data
+- [ ] create select input UI Component
+- [ ] create new instructor
+- [ ] change the `user-update-form.tsx` file like the `instructor-update-form.tsx` file
+- [ ] display the supervisor and the manager in the tables of the departments and the instructors
 
 ### Backlog
 
+- [ ] disable the dashboard sidebar depends on the user role.
+- [ ] create a condition for every api request that invoked using the buttons to check if the requirements and the validation steps accomplished before invoking the request function ex: `updateUser(user:IUser)`
 - [ ] forget password endpoint with the code and email.
-- [ ] instructors delete, udpate, create.
+- [ ] instructors udpate, create.
 - [ ] user and the current user's profile.
 - [ ] dynamic breadcrump.
+- [ ] try and catch of the server returns into the try block of the client components
+- [ ] create Input UI Component with its message and variants, this will help you achive the Single dependency principle
+- [ ] create an object contains the inputs name of the react hook forms, to help me loop the inputs instead of write them manully every type. [this task need more search to make it more typescript friendly]
+- [ ] dynamic profile page for the all users data types insturctors, users, students and etc... . 
 
 ## UI components
 
@@ -250,3 +320,7 @@ it is hard to share the response of the catch and the try, so I should use ether
 - **nav**: dynamically displaying the data depending on the user status
 - **user avatar with a list**: displays data and links depending on its authentication data if authenticated or not
 - **logo layout**: provide some props to customize it
+
+## Common Errors
+
+- `Error: Maximum call stack size exceeded` if you mapped the `response` from the API instead of `response.data.data`

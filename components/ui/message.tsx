@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import React from "react";
 
 type Props = {
@@ -7,7 +7,11 @@ type Props = {
   variant?: "initial" | "success" | "warning" | "danger" | "info";
 };
 
-export default function Message(props: Props) {
+export default function Message({
+  children = "",
+  variant = "initial",
+  className = "",
+}: Props) {
   const variants = {
     initial: "text-gray-500",
     success: "text-green-500",
@@ -15,14 +19,15 @@ export default function Message(props: Props) {
     danger: "text-red-500",
     info: "text-blue-500",
   };
-  const variant = variants[props?.variant || "initial"];
+  // const variant = variants[variant || "initial"];
 
-  const settings = `${variant}`;
+  const settings = variants[variant];
+  // const children = props.children = ''
 
   return (
-    <small className={`${settings} ${props?.className || ""} text-xs`}>
-      {props?.children}
-      {/* <span className="invisible">this for the height</span> */}
-    </small>
+    <small
+      className={`${settings} ${className} text-xs`}
+      dangerouslySetInnerHTML={{ __html: `${children}` }}
+    ></small>
   );
 }

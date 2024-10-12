@@ -1,13 +1,22 @@
 "use client";
-import { YupUserCreateInputs } from "@/definitions";
-import { createUser, getAllUsers } from "@/lib/actions";
+// import Image from 'next'
 import {
-  yupUserCreateSchema,
-  yupUserUpdateSchema,
-} from "@/lib/validation-schema-yup";
+  // IFetIFetchResponse2,
+  IFetchResponse2,
+  YupUserCreateInputs,
+} from "@/definitions";
+import { createUser, getAllUsers } from "@/lib/actions";
+import { yupUserCreateSchema } from "@/lib/validation-schema-yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import React, { ChangeEvent, FormEventHandler, useState } from "react";
-import { SubmitHandler, useForm } from "react-hook-form";
+import React, {
+  ChangeEvent,
+  FormEventHandler,
+  ReactNode,
+  useRef,
+  useState,
+  useTransition,
+} from "react";
+import { Resolver, SubmitHandler, useForm } from "react-hook-form";
 import Button from "../button";
 import FileInput from "../file-input";
 import Message from "../message";
@@ -15,21 +24,19 @@ import Input from "../input";
 import { apiClient, endpoints } from "@/lib/endpoints";
 import { getCookie } from "cookies-next";
 import { appendToFormData } from "@/lib/utils";
+import ConditionalMessage from "../conditional-message";
+import FetchMessage from "../fetch-message";
 
 type Props = {};
-export default function UserCreateForm({}: Props) {
-  const [isPending, setIsPending] = useState(false);
-  const [profileImage, setProfileImage] = useState("");
-  const [nativeImage, setNativeImage] = useState<File>();
-  const [responseMessage, setResponseMessage] = useState<{
-    statusCode: number;
-    success: boolean | null;
-    message: string;
-  }>({
-    statusCode: 0,
-    success: null,
+export default function UserCreateForm({ }: Props) {
+  const [isCreatingUser, startCreatingUser] = useTransition();
+  const apiResponseMessagesRef = useRef<IFetchResponse2<[]>>({
+    isSuccess: false,
+    isError: false,
     message: "",
   });
+  const [profileImage, setProfileImage] = useState("");
+  const [nativeImage, setNativeImage] = useState<File>();
 
   const imagePreview = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -49,11 +56,8 @@ export default function UserCreateForm({}: Props) {
   });
 
   const onSubmit: SubmitHandler<YupUserCreateInputs> = async (data) => {
-    setIsPending(true);
-
     const { userName, fullName, email, password, confirmPassword, image } =
       data;
-
     const FD = new FormData();
     FD.append("userName", userName);
     FD.append("fullName", fullName);
@@ -62,28 +66,25 @@ export default function UserCreateForm({}: Props) {
     FD.append("confirmPassword", confirmPassword);
     FD.append("image", image[0]);
 
-    try {
-      const res = await createUser(FD);
-      console.log(res);
-      if (res) {
-        setResponseMessage({
-          statusCode: res?.statusCode,
-          success: res?.success,
-          message: res?.message,
-        });
+    startCreatingUser(async () => {
+      const { isSuccess, isError, message } = (await createUser(
+        FD
+      )) as IFetchResponse2<undefined>;
+      if (status !== "idle") {
+        apiResponseMessagesRef.current = {
+          isSuccess,
+          isError,
+          message,
+        };
       }
-      await getAllUsers();
-      return res;
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setIsPending(false);
-    }
+    });
   };
+  console.log("sfwn", apiResponseMessagesRef.current.message);
 
   return (
     <div className="w-full md:max-w-[700px] md:w-auto mx-auto rounded border border-gray-300 p-4">
       <div className="size-20 border border-gray-300 rounded mx-auto mb-8 overflow-hidden">
+        {/*  eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={
             profileImage ||
@@ -106,8 +107,8 @@ export default function UserCreateForm({}: Props) {
               errors.fullName?.message
                 ? "danger"
                 : isValid
-                ? "success"
-                : "initial"
+                  ? "success"
+                  : "initial"
             }
             {...register("fullName")}
           />
@@ -121,8 +122,8 @@ export default function UserCreateForm({}: Props) {
               errors.userName?.message
                 ? "danger"
                 : isValid
-                ? "success"
-                : "initial"
+                  ? "success"
+                  : "initial"
             }
             {...register("userName")}
           />
@@ -147,8 +148,8 @@ export default function UserCreateForm({}: Props) {
               errors.password?.message
                 ? "danger"
                 : isValid
-                ? "success"
-                : "initial"
+                  ? "success"
+                  : "initial"
             }
             {...register("password")}
           />
@@ -162,8 +163,8 @@ export default function UserCreateForm({}: Props) {
               errors.confirmPassword?.message
                 ? "danger"
                 : isValid
-                ? "success"
-                : "initial"
+                  ? "success"
+                  : "initial"
             }
             {...register("confirmPassword")}
           />
@@ -182,19 +183,25 @@ export default function UserCreateForm({}: Props) {
         <Button
           variant="info"
           type="submit"
-          loading={isPending}
-          disabled={isPending}
-          loadingText="Updating..."
+          loading={isCreatingUser}
+          disabled={isCreatingUser || !isValid}
+          loadingText="Creating..."
+          title={
+            isValid
+              ? "click the button to create the user"
+              : "fill the required blanks to create a user"
+          }
         >
-          Update
+          Create
         </Button>
-        {responseMessage.message && (
-          <div className="col-span-full">
-            <Message variant={responseMessage.success ? "success" : "danger"}>
-              {responseMessage.message}
-            </Message>
-          </div>
-        )}
+
+        <div className="col-span-full">
+          <FetchMessage
+            message={apiResponseMessagesRef.current.message}
+            isSuccess={apiResponseMessagesRef.current.isSuccess}
+            isError={apiResponseMessagesRef.current.isError}
+          />
+        </div>
       </form>
     </div>
   );

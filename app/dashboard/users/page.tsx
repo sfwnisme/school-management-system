@@ -1,7 +1,7 @@
 import Button from "@/components/ui/button";
-import TableLayer from "@/components/ui/table-layer";
+import TableLayer from "@/components/ui/table/table-layer";
 import Title from "@/components/ui/title";
-import UsersTable from "@/components/ui/users/users-table";
+import { IClientResponse, IUser } from "@/definitions";
 import { deleteUser, getAllUsers, getCurrentUser } from "@/lib/actions";
 
 export default async function page() {
@@ -41,16 +41,16 @@ export default async function page() {
     <div className="relative">
       <Title title="All Users">
         <Button tag="link" href="/dashboard/users/add">
-          Add User
+          Create
         </Button>
       </Title>
       <TableLayer
         dataFunction={users}
         deleteFunction={deleteUser}
         tableHeader={userKeysAndNames}
-        currentUser={currentUser}
+        currentUser={currentUser as IClientResponse<IUser>}
+        route={"users"}
       />
-      {/* <UsersTable users={users} currentUser={currentUser} /> */}
     </div>
   );
 }

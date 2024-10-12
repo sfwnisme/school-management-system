@@ -1,11 +1,6 @@
 import axios from "axios";
-import { getCookie } from "cookies-next";
-import { cookies } from "next/headers";
 
-// 'use client'
 export const baseURL = "http://schoolmanagmentsystem.runasp.net/api/v1/";
-// const TOKEN = getCookie("token", { cookies });
-// console.log(TOKEN);
 
 export const apiClient = axios.create({
   baseURL,
@@ -48,7 +43,8 @@ export const endpoints = {
     all: "instructors/list",
     id: "instructors/",
     create: "instructors/create",
-    edit: "instructors/delete/",
+    update: "instructors/update",
+    delete: "instructors/delete/",
   },
   departments: {
     all: "departments/list",

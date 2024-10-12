@@ -2,10 +2,10 @@
 import React from "react";
 import Avatar from "./avatar";
 import Dropdown from "./dropdown";
-import { IMUser } from "@/definitions";
+import { IClientResponse, IMUser, IUser } from "@/definitions";
 
 type Props = {
-  userDetails?:IMUser
+  user?: IClientResponse<IUser>;
 };
 
 export default function Options(props: Props) {
@@ -18,11 +18,9 @@ export default function Options(props: Props) {
   return (
     <div>
       <div onClick={handleToggleAvatarList}>
-        <Avatar userDetails={props?.userDetails} />
+        <Avatar user={props?.user} />
       </div>
-      {toggleAvatarList ? (
-          <Dropdown userDetails={props?.userDetails} />
-      ) : null}
+      {toggleAvatarList && <Dropdown user={props?.user} />}
     </div>
   );
 }

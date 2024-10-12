@@ -98,9 +98,9 @@ type InternalLinkProps = {
 
 type LinkPropsType = React.ForwardRefExoticComponent<
   Omit<React.AnchorHTMLAttributes<HTMLAnchorElement>, keyof InternalLinkProps> &
-    InternalLinkProps & {
-      children?: React.ReactNode;
-    } & React.RefAttributes<HTMLAnchorElement>
+  InternalLinkProps & {
+    children?: React.ReactNode;
+  } & React.RefAttributes<HTMLAnchorElement>
 >;
 
 type ButtonTypes = DetailedHTMLProps<
@@ -151,7 +151,7 @@ export default function Button({
     danger:
       "hover:bg-red-600 bg-red-500 text-white disabled:opacity-[0.5] disabled:cursor-not-allowed",
     info: "hover:bg-blue-600 bg-blue-500 text-white disabled:opacity-[0.5] disabled:cursor-not-allowed",
-    link: "hover:text-blue-600 text-blue-500 disabled:opacity-[0.5] disabled:cursor-not-allowed",
+    link: "hover:text-blue-600 text-blue-500 disabled:opacity-[0.5] disabled:cursor-not-allowed underlined",
   };
   const outlines = {
     initial:
@@ -163,7 +163,7 @@ export default function Button({
     danger:
       "hover:bg-red-200 bg-red-50 outline outline-red-300 text-red-500 hover:text-red-600  disabled:opacity-[0.5] disabled:cursor-not-allowed",
     info: "hover:bg-blue-200 bg-blue-50 outline outline-blue-300 text-blue-500 hover:text-blue-600 disabled:opacity-[0.5] disabled:cursor-not-allowed",
-    link: "hover:text-blue-600 text-blue-500 disabled:opacity-[0.5] disabled:cursor-not-allowed",
+    link: "hover:text-blue-600 text-blue-500 disabled:opacity-[0.5] disabled:cursor-not-allowed underlined",
   };
 
   const widths = {
@@ -194,15 +194,14 @@ export default function Button({
 
   const currentRounded = rounds[rounded];
 
-  const settings = `${
-    currentWidth +
+  const settings = `${currentWidth +
     " " +
     currentVariant +
     " " +
     currentSize +
     " " +
     currentRounded
-  }`;
+    }`;
 
   const loadingJsx = (
     <span className="relative flex h-5 w-5">

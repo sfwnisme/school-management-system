@@ -1,7 +1,5 @@
 import Drawer from "@/components/dashboard-layout/drawer";
 import IsAuth from "@/lib/is-auth";
-import Loading from "../../components/ui/spin-loading";
-import { Suspense } from "react";
 import DrawerContainer from "@/components/server-drawer/drawer-container";
 import IsRoleAuth from "@/lib/is-role-auth";
 type Props = {
@@ -10,13 +8,15 @@ type Props = {
 export default function layout({ children }: Props) {
   return (
     <div>
-      <Suspense fallback={<Loading />}>
-        <IsAuth route="protected">
+      {/* <Suspense fallback={<Loading />}> */}
+      <IsAuth route="protected">
+        <DrawerContainer>
           <IsRoleAuth>
-            <DrawerContainer>{children}</DrawerContainer>
+            {children}
           </IsRoleAuth>
-        </IsAuth>
-      </Suspense>
+        </DrawerContainer>
+      </IsAuth>
+      {/* </Suspense> */}
     </div>
   );
 }

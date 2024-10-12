@@ -2,12 +2,15 @@ import React from "react";
 import { ArrowRight } from "lucide-react";
 import Button from "../ui/button";
 import Link from "next/link";
+import { getCurrentUser } from "@/lib/actions";
 
 type Props = {};
 
-export default function Hero({}: Props) {
+export default async function Hero({}: Props) {
+  const user = await getCurrentUser()
+  console.log(user)
   return (
-    <section className="relative overflow-hidden bg-gradient-to-b from-blue-50 via-transparent to-transparent pb-12 pt-20 sm:pb-16 sm:pt-32 lg:pb-24 xl:pb-32 xl:pt-40">
+    <section className="z-0 relative overflow-hidden bg-gradient-to-b from-blue-50 via-transparent to-transparent pb-12 pt-20 sm:pb-16 sm:pt-32 lg:pb-24 xl:pb-32 xl:pt-40">
       <div className="relative ">
         <div className="absolute inset-x-0 top-1/2 -z-10 flex -translate-y-1/2 justify-center overflow-hidden [mask-image:radial-gradient(50%_45%_at_50%_55%,white,transparent)]">
           <svg
@@ -57,7 +60,7 @@ export default function Hero({}: Props) {
               value="Explore"
               variant="info"
               href={"/dashboard"}
-              tag={'link'}
+              tag={"link"}
             >
               Explore <ArrowRight strokeWidth={1} />
             </Button>

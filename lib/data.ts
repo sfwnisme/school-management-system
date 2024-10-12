@@ -162,12 +162,10 @@ export const userAvatarNavlinks = {
     {
       title: "login",
       href: "/login",
-      // roles: ["public"],
     },
     {
-      title: "register",
-      href: "/register",
-      // roles: ["public"],
+      title: "home",
+      href: "/",
     },
   ],
 };

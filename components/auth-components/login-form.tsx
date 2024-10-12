@@ -1,15 +1,16 @@
 "use client";
-import React, { FormEvent, useEffect } from "react";
+import React, { useRef, useTransition } from "react";
 import Input from "../ui/input";
 import Button from "../ui/button";
-import { HelpCircle, User } from "lucide-react";
+import { User } from "lucide-react";
 import Link from "next/link";
 import { handleSignIn } from "@/lib/actions";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { loginSchema } from "@/lib/validation-schema-yup";
-import { IResponse, LoginInputTypes } from "@/definitions";
+import { IFetchResponse2, LoginInputTypes } from "@/definitions";
 import Message from "../ui/message";
+import FetchMessage from "../ui/fetch-message";
 
 type Inputs = {
   username: string;
@@ -17,20 +18,13 @@ type Inputs = {
 };
 
 export default function LoginForm() {
-  const [loading, setLoading] = React.useState(false);
-  const [serverMessage, setServerMessage] = React.useState("");
-  const [responseMessage, setResponseMessage] = React.useState<{
-    statusCode: number;
-    success: boolean | null;
-    message: string;
-  }>({
-    statusCode: 0,
-    success: null,
+  const [isLogin, startLogin] = useTransition();
+  const apiResponseMessagesRef = useRef<IFetchResponse2<[]>>({
+    isSuccess: false,
+    isError: false,
     message: "",
   });
 
-  console.log(serverMessage);
-  //-------------
   const {
     register,
     handleSubmit,
@@ -42,15 +36,13 @@ export default function LoginForm() {
   });
 
   const errorMessage = (value: keyof LoginInputTypes) => {
-    let message = errors[`${value}`]?.message;
+    let message = errors[value]?.message;
     if (message !== undefined) return message;
-    return null;
+    return "";
   };
-  console.log(errorMessage("password"));
 
-  const onSubmit: SubmitHandler<Inputs> = async (data) => {
-    setLoading(true);
-    try {
+  const onSubmit: SubmitHandler<Inputs> = (data) => {
+    startLogin(async () => {
       const loginCredentials = {
         username: data?.username,
         password: data?.password,
@@ -60,17 +52,18 @@ export default function LoginForm() {
         loginCredentials?.password as string
       );
       if (res) {
-        setResponseMessage({
-          statusCode: res.statusCode,
-          success: res.success,
-          message: res.message,
-        });
+        const { isSuccess, isError, message } = res;
+        apiResponseMessagesRef.current = {
+          isSuccess,
+          isError,
+          message,
+        };
+      } else {
+        console.log(
+          "unexpected error from onSubmit function of login-form.tsx"
+        );
       }
-    } catch (error) {
-      console.error("error from login-form.tsx", error);
-    } finally {
-      setLoading(false);
-    }
+    });
   };
 
   return (
@@ -126,24 +119,16 @@ export default function LoginForm() {
           <Button
             type="submit"
             value={"login"}
-            disabled={!isValid || loading ? true : false}
-            loading={loading}
+            disabled={!isValid || isLogin ? true : false}
+            loading={isLogin}
             size="sm"
           />
         </form>
-        {responseMessage.message && (
-          <div className="col-span-full">
-            <Message variant={responseMessage.success ? "success" : "danger"}>
-              {responseMessage.message}
-            </Message>
-          </div>
-        )}
-        <Link
-          href={""}
-          className="text-gray-400 hover:text-gray-500 text-xs lg:text-sm flex items-center justify-center gap-1 col-span-full mt-4"
-        >
-          Create your own account
-        </Link>
+        <FetchMessage
+          isSuccess={apiResponseMessagesRef.current.isSuccess}
+          isError={apiResponseMessagesRef.current.isError}
+          message={apiResponseMessagesRef.current.message}
+        />
       </article>
       <article className="h-[400px] w-full bg-gray-900 flex flex-col flex-wrap items-center justify-center p-8 basis-1/2">
         <h2 className="text-white text-4xl text-center font-bold mb-4">

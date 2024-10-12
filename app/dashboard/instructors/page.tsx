@@ -1,22 +1,22 @@
 import Button from "@/components/ui/button";
-import InstructorsTable from "@/components/ui/instructors/instructors-table";
-import TableLayer from "@/components/ui/table-layer";
-import Title from "@/components/ui/title";
-import { getAllInstructors } from "@/lib/actions";
+// import InstructorsTable from "@/components/ui/instructors/instructors-table";
+import TableLayer from "@/components/ui/table/table-layer";
+// import Title from "@/components/ui/title";
+import { deleteInstructor, getAllInstructors } from "@/lib/actions";
 import React from "react";
+import Title from "../../../components/ui/title";
 
 export default async function page() {
   const instructors = await getAllInstructors();
-  console.log(instructors);
-  //   instId: 3,
-  //   name: 'Dr. Sarah Khaled',
-  //   address: '345 Professor St',
-  //   position: 'Assistant Professor',
+  // {
+  //   instId: 1,
+  //   name: 'Eng. Safwan Mohamed',
+  //   address: '123 Professor St',
+  //   position: 'Professor',
   //   imagePath: null,
   //   supervisorId: null,
-  //   salary: 60000,
-  //   deptId: 2
-  // },
+  //   salary: 70000,
+  //   deptId: 3
   const instructorsKeysAndNames = [
     {
       key: "instId",
@@ -35,19 +35,19 @@ export default async function page() {
       name: "salary",
     },
   ];
-
   return (
     <div>
       <Title title="All Instructors">
         <Button tag="link" href="/dashboard/instructors/create">
-          Add Instructor
+          Create
         </Button>
       </Title>
       <TableLayer
         dataFunction={instructors}
+        deleteFunction={deleteInstructor}
         tableHeader={instructorsKeysAndNames}
+        route="instructors"
       />
-      {/* <InstructorsTable /> */}
     </div>
   );
 }

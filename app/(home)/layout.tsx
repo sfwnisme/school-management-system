@@ -1,5 +1,5 @@
 import Nav from "@/components/ui/nav";
-import { IMUser, IRole } from "@/definitions";
+import { IClientResponse, IMUser, IRole, IUser } from "@/definitions";
 import { getCurrentUser } from "@/lib/actions";
 import IsRoleAuth from "@/lib/is-role-auth";
 import React from "react";
@@ -9,18 +9,11 @@ type Props = {
 };
 
 export default async function layout({ children }: Props) {
-  const user = await getCurrentUser();
-  const userDetails: IMUser = {
-    username: user?.userName,
-    name: user?.fullName,
-    image: user?.imagePath,
-    role: user?.roles || [],
-  };
-
-  console.log(userDetails.role);
+  const user = (await getCurrentUser()) as IClientResponse<IUser>;
+  console.log(user)
   return (
     <div>
-      <Nav isDashboard={false} userDetails={userDetails} />
+      <Nav isDashboard={false} user={user} />
       {/* <IsRoleAuth> */}
       <div className="container mx-auto">{children}</div>
       {/* </IsRoleAuth> */}
