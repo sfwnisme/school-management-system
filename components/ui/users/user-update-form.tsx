@@ -1,9 +1,8 @@
 "use client";
-import React, { useRef, useTransition } from "react";
+import React, { useTransition } from "react";
 import Input from "../input";
 import {
   IClientResponse,
-  IFetchResponse2,
   IRole,
   IUser,
   YupUserUpdateInputs,
@@ -15,47 +14,33 @@ import Button from "../button";
 import { yupUserUpdateSchema } from "@/lib/validation-schema-yup";
 import Message from "../message";
 import FetchMessage from "../fetch-message";
+import useFetchResponse from "@/hooks/use-fetch-response";
+import { useRolessOptions } from "@/hooks/use-roles-options";
 
 type Props = {
   user: IClientResponse<IUser>;
-  roles: IClientResponse<IRole[]> | undefined;
+  roles: IClientResponse<IRole[]>;
 };
 
-const inputs = ["fullName", 'userName', 'email']
 
 export default function UserUpdateForm(props: Props) {
-  const [isUpdatingUser, startUpdatingUser] = useTransition();
-  const apiResponseMessagesRef = useRef<IFetchResponse2<undefined>>({
-    isSuccess: false,
-    isError: false,
-    message: "",
-  });
-  const {
-    id: userId = -1,
-    fullName = "",
-    userName = "",
-    email = "",
-    roles = []
-  } = props?.user.data as IUser
+  const [isUpdating, startUpdatingUser] = useTransition();
+  const { responseRef, updateResponse } = useFetchResponse()
 
   const {
-    data: rolesData,
-    isEmpty: isEmptyRoles,
-    isSuccess: isSuccessRoles,
-    isError: isErrorRoles,
-    message: messageRoles
-  } = props?.roles as IClientResponse<IRole[]>
+    id: userId,
+    fullName,
+    userName,
+    email,
+    roles
+  } = props?.user.data || {}
 
-  const currentRole = () => {
-    if (isSuccessRoles) {
-      const findTheCurrentRole = rolesData?.find((role) => {
-        if (role.name === roles?.[0]) {
-          return role.id;
-        }
-      });
-      return findTheCurrentRole?.id;
-    }
-  };
+  const {
+    options,
+    selectNotAllowed,
+    message
+  } = useRolessOptions(props?.roles)
+  const findRoleId = props?.roles?.data?.find((role) => role.name === roles?.[0])?.name ?? -1
 
   const {
     register,
@@ -71,6 +56,8 @@ export default function UserUpdateForm(props: Props) {
     },
   });
 
+  const isUpdatingValid = isValid && !selectNotAllowed
+  const isButtonValid = isUpdating || !isUpdatingValid
   const onSubmit: SubmitHandler<YupUserUpdateInputs> = async (data) => {
     startUpdatingUser(async () => {
       const newUserData = {
@@ -78,57 +65,16 @@ export default function UserUpdateForm(props: Props) {
         userName: data?.userName,
         fullName: data?.fullName,
         email: data?.email,
-        roleId: Number(data.roleId),
+        roleId: Number(data?.roleId),
       };
-      //check if the user roles available, validation success,
-      if (isValid && isSuccessRoles && !isEmptyRoles) {
-        console.log("function fired");
+      if (isUpdatingValid) {
         const res = await updateUser(newUserData);
         if (res) {
-          const { isSuccess, isError, message } = res;
-          apiResponseMessagesRef.current = {
-            isSuccess,
-            isError,
-            message,
-          };
+          updateResponse(res)
         }
       }
     });
   };
-
-  console.log(isValid, isSuccessRoles, isEmptyRoles)
-
-  //-----------------
-  // roles jsx options
-  //-----------------
-  let userRolesOptions
-  const userRolesOptionsIsSuccess = rolesData?.map((role) => (
-    <option id={role?.id?.toString()} value={role.id} key={role.id}>
-      {role.name}
-    </option>
-  ));
-
-  const userRolesOptionsIsError = (
-    <option disabled selected>
-      request error😑
-    </option>
-  );
-  const userRolesOptionsIsEmpty = (
-    <option disabled selected>
-      no roles😑
-    </option>
-  );
-
-  if (isSuccessRoles) {
-    userRolesOptions = userRolesOptionsIsSuccess
-  }
-  if (isEmptyRoles) {
-    userRolesOptions = userRolesOptionsIsEmpty
-  }
-  if (isErrorRoles) {
-    userRolesOptions = userRolesOptionsIsError
-  }
-  //-----------------
 
   return (
     <div className="w-full md:max-w-[700px] md:w-auto mx-auto rounded border border-gray-300 p-4">
@@ -182,44 +128,32 @@ export default function UserUpdateForm(props: Props) {
         </div>
         <select
           {...register("roleId")}
-          defaultValue={currentRole()}
+          defaultValue={findRoleId}
           className="disabled:opacity-50 disabled:cursor-not-allowed w-full h-fit border border-gray-500 rounded text-black text-sm px-4 py-2 cursor-pointer col-span-1"
-          disabled={isEmptyRoles || isErrorRoles}
+          disabled={selectNotAllowed}
           title={
-            isErrorRoles
-              ? messageRoles.join(' ') + ' please contact the support'
-              // ? "unexpected error please report"
-              : isEmptyRoles
-                ? "no roles yet"
-                : "select the role"
+            selectNotAllowed
+              ? message + ' please contact the support'
+              : "select the role"
           }
         >
-          {userRolesOptions}
+          {options}
         </select>
         <Button
           variant="info"
           type="submit"
-          loading={isUpdatingUser}
+          loading={isUpdating}
           disabled={
-            isUpdatingUser ||
-            !isValid ||
-            isEmptyRoles || isErrorRoles
+            isButtonValid
           }
           loadingText="Updating..."
-          title={
-            isErrorRoles
-              ? "unexpected error in the roles request please report"
-              : isEmptyRoles
-                ? "no roles yet. you should create roles, so you can update the users"
-                : "update"
-          }
         >
           Update
         </Button>
         <FetchMessage
-          message={apiResponseMessagesRef.current.message}
-          isSuccess={apiResponseMessagesRef.current.isSuccess}
-          isError={apiResponseMessagesRef.current.isError}
+          message={responseRef.current.message}
+          isSuccess={responseRef.current.isSuccess}
+          isError={responseRef.current.isError}
         />
       </form>
     </div>

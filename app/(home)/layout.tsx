@@ -1,5 +1,5 @@
 import Nav from "@/components/ui/nav";
-import { IClientResponse, IMUser, IRole, IUser } from "@/definitions";
+import { IClientResponse,  IUser } from "@/definitions";
 import { getCurrentUser } from "@/lib/actions";
 import IsRoleAuth from "@/lib/is-role-auth";
 import React from "react";

@@ -70,7 +70,7 @@ export const endpoints = {
     paginated: "subjects/pagination",
     id: "subjects/",
     create: "subjects/create",
-    edit: "subjects/edit",
+    update: "subjects/update",
     delete: "subjects/delete/",
     addSubjectToDepartment: "subjects/add-to-department",
     addInstructorToSubject: "subjects/add-instructor",

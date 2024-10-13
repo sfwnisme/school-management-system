@@ -12,13 +12,6 @@ import {
   Users,
 } from "lucide-react";
 
-// import SchoolIcon from "@mui/icons-material/School";
-// import HomeIcon from "@mui/icons-material/Home";
-// import PersonIcon from "@mui/icons-material/Person";
-// import PersonAddIcon from "@mui/icons-material/PersonAdd";
-// import DoorBackIcon from "@mui/icons-material/DoorBack";
-// import AddBoxIcon from "@mui/icons-material/AddBox";
-// import MenuBookIcon from "@mui/icons-material/MenuBook";
 type NavlinksType = {
   title: string;
   href: string;
@@ -79,68 +72,6 @@ export const navLinks: NavlinksType[] = [
   {
     title: "add subject",
     href: "/dashboard/subjects/add",
-    icon: BookPlus,
-  },
-  {
-    title: "test overflow only",
-    href: "/wer/swerubjects/add",
-    icon: BookPlus,
-  },
-  {
-    title: "test overflow only",
-    href: "/dashbroawerewrd/subjects/add",
-    icon: BookPlus,
-  },
-
-  {
-    title: "test overflow only",
-    href: "/dashboarde/rsubjects/add",
-    icon: BookPlus,
-  },
-  {
-    title: "test overflow only",
-    href: "/drashboard/subjectseeeeer/add",
-    icon: BookPlus,
-  },
-  {
-    title: "test overflow only",
-    href: "/dashboarered/subjewects/add",
-    icon: BookPlus,
-  },
-  {
-    title: "test overflow only",
-    href: "/dashboardr/subjects/eradd",
-    icon: BookPlus,
-  },
-
-  {
-    title: "test overflow only",
-    href: "/dashwrboard/subjects/add",
-    icon: BookPlus,
-  },
-  {
-    title: "test overflow only",
-    href: "/dashboard/subjrewects/add",
-    icon: BookPlus,
-  },
-  {
-    title: "test overflow only",
-    href: "/dashboreard/subjects/add",
-    icon: BookPlus,
-  },
-  {
-    title: "test overflow only",
-    href: "/dashboard/srubjects/add",
-    icon: BookPlus,
-  },
-  {
-    title: "test overflow only",
-    href: "/dashboasdfard/subjects/add",
-    icon: BookPlus,
-  },
-  {
-    title: "last overflow only",
-    href: "/dashboard/sfubjects/add",
     icon: BookPlus,
   },
 ];

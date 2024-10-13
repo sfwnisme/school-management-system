@@ -2,7 +2,7 @@
 import React from "react";
 import DrowerNavLinksLayout from "../ui/drawer-navlinks-layout";
 import Nav from "../ui/nav";
-import { IClientResponse, IMUser, IUser } from "@/definitions";
+import { IClientResponse, IUser } from "@/definitions";
 type Props = {
   children: React.ReactNode;
   user?: IClientResponse<IUser>;
@@ -23,11 +23,10 @@ export default function Drawer(props: Props) {
         </div>
       ) : null}
       <div
-        className={`${
-          toggleDrawer
+        className={`${toggleDrawer
             ? "col-span-20 sm:col-span-20 md:col-span-20 lg:col-span-15 xl:col-span-16 2xl:col-span-17"
             : "col-span-full"
-        } h-full w-full`}
+          } h-full w-full`}
       >
         <Nav
           toggleDrawer={toggleDrawer}

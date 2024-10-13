@@ -1,44 +1,25 @@
 "use client";
-import React, { ChangeEvent, Fragment, useState, useTransition, useRef } from "react";
-import Input from "../input";
-import {
-  IClientResponse,
-  IDepartment,
-  IFetchResponse2,
-  IInstructor,
-  IResponse,
-  IUser,
-  YupInstructorUpdateInputs,
-  YupUserUpdateInputs,
-} from "@/definitions";
+import { IClientResponse, IDepartment, IInstructor, YupInstructorUpdateInputs } from "@/definitions";
+import React, { useTransition } from "react";
+import { useDepartmentsOptions } from "../../../../hooks/use-departments-options";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
-import { getAllUsers, resetUserPassword, updateInstructor } from "@/lib/actions";
-import Button from "../button";
 import { yupInstructorUpdateSchema } from "@/lib/validation-schema-yup";
-import Message from "../message";
-import FetchMessage from "../fetch-message";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { updateInstructor } from "@/lib/actions";
+import Input from "@/components/ui/input";
+import Message from "@/components/ui/message";
+import Button from "@/components/ui/button";
+import FetchMessage from "@/components/ui/fetch-message";
+import useFetchResponse from "@/hooks/use-fetch-response";
 
 type Props = {
   instructor: IClientResponse<IInstructor>;
   departments: IClientResponse<IDepartment[]>;
 };
 
-type Inputs = {
-  userName: string;
-  fullName: string;
-  email?: string;
-};
-export const revalid = 1;
 export default function InstructorUpdateForm(props: Props) {
   const [isUpdating, startUpdating] = useTransition()
-  const apiResponseMessageRef = useRef<IFetchResponse2<undefined>>({
-    isSuccess: false,
-    isError: false,
-    message: "",
-  })
-
-  console.log(props)
+  const { responseRef, updateResponse } = useFetchResponse()
 
   const {
     instId: instructorId,
@@ -46,51 +27,14 @@ export default function InstructorUpdateForm(props: Props) {
     position: instructorPosition,
     salary: instructorSalary,
     deptId: instructorDeptId
-  } = props?.instructor?.data as IInstructor
+  } = props?.instructor?.data || {}
 
-  console.log(props?.departments)
   const {
-    data: departmentsData,
-    isSuccess: isSuccessDepartments,
-    isEmpty: isEmptyDepartments,
-    isError: isErrorDepartments,
-    message: messageDepartment
-  } = props?.departments
+    options,
+    selectNotAllowed,
+    message
+  } = useDepartmentsOptions(props?.departments)
 
-  const selectNotAllowed = isEmptyDepartments || isErrorDepartments
-  console.log(selectNotAllowed)
-  //--------------------------------
-  // departments
-  //--------------------------------
-  let departmentsOptions
-  const departmentsOptionsIsSuccess = departmentsData?.map((dep) => (
-    <option id={dep?.deptId?.toString()} value={dep.deptId} key={dep.deptId}>
-      {dep.name}
-    </option>
-  ))
-
-  const departmentsOptionsIsEmpty = <option disabled value={instructorDeptId} className="cursor-not-allowed">
-    no departments😑
-  </option>
-
-  const departmentsOptionsIsError = <option disabled value={instructorDeptId} className="cursor-not-allowed">
-    request error😑
-  </option>
-  console.log(isEmptyDepartments)
-  if (isSuccessDepartments) {
-    departmentsOptions = departmentsOptionsIsSuccess
-  }
-  if (isEmptyDepartments) {
-    departmentsOptions = departmentsOptionsIsEmpty
-  }
-  if (isErrorDepartments) {
-    departmentsOptions = departmentsOptionsIsError
-  }
-  //--------------------------------
-
-  //--------------------------------
-  // form submition
-  //--------------------------------
   const {
     register,
     handleSubmit,
@@ -107,7 +51,7 @@ export default function InstructorUpdateForm(props: Props) {
     },
   });
 
-  const isUpdatingValid = isValid && !isEmptyDepartments && !isErrorDepartments
+  const isUpdatingValid = isValid && !selectNotAllowed
   const isButtonValid = isUpdating || !isUpdatingValid
   const onSubmit: SubmitHandler<YupInstructorUpdateInputs> = (data) => {
     const { nameAr, nameEn, position, salary, departmentId } = data
@@ -120,14 +64,12 @@ export default function InstructorUpdateForm(props: Props) {
         const res = await updateInstructor(updateData);
         console.log(res);
         if (res) {
-          const { isSuccess, isError, message } = res
-          apiResponseMessageRef.current = { isSuccess, isError, message }
+          updateResponse(res)
         }
       }
     })
   };
 
-  //--------------------------------
   return (
     <div className="w-full md:max-w-[700px] md:w-auto mx-auto rounded border border-gray-300 p-4">
       <h1 className="mb-4 text-lg font-medium underline">
@@ -142,6 +84,7 @@ export default function InstructorUpdateForm(props: Props) {
             type="text"
             title="arabic name"
             placeholder="Your full arabic name"
+            defaultValue={instructorName}
             variant={
               errors.nameAr?.message
                 ? "danger"
@@ -210,14 +153,12 @@ export default function InstructorUpdateForm(props: Props) {
               w-full h-fit border border-gray-500 rounded text-black text-sm px-4 py-2
               `}
             title={
-              isErrorDepartments
-                ? messageDepartment.join(' ') + ' please contact the support'
-                : isEmptyDepartments
-                  ? "no departments yet"
-                  : "select the a department"
+              selectNotAllowed
+                ? message + ', please contact the support'
+                : "select the a department"
             }
           >
-            {departmentsOptions}
+            {options}
           </select>
         </div>
         <Button
@@ -230,9 +171,9 @@ export default function InstructorUpdateForm(props: Props) {
           Update
         </Button>
         <FetchMessage
-          isSuccess={apiResponseMessageRef.current.isSuccess}
-          isError={apiResponseMessageRef.current.isError}
-          message={apiResponseMessageRef.current.message}
+          isSuccess={responseRef.current.isSuccess}
+          isError={responseRef.current.isError}
+          message={responseRef.current.message}
         />
       </form>
     </div>

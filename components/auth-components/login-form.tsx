@@ -8,7 +8,7 @@ import { handleSignIn } from "@/lib/actions";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { loginSchema } from "@/lib/validation-schema-yup";
-import { IFetchResponse2, LoginInputTypes } from "@/definitions";
+import { IFetchResponse, LoginInputTypes } from "@/definitions";
 import Message from "../ui/message";
 import FetchMessage from "../ui/fetch-message";
 
@@ -19,7 +19,7 @@ type Inputs = {
 
 export default function LoginForm() {
   const [isLogin, startLogin] = useTransition();
-  const apiResponseMessagesRef = useRef<IFetchResponse2<[]>>({
+  const apiResponseMessagesRef = useRef<IFetchResponse<[]>>({
     isSuccess: false,
     isError: false,
     message: "",

@@ -39,6 +39,11 @@ const subjectsKeysAndNames: ITableHead[] = [
       },
     ],
   },
+  {
+    key: "period",
+    name: "period",
+    arr: [],
+  },
 ];
 export default async function page() {
   const subjects = await getAllSubjects();

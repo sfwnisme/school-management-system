@@ -1,85 +1,46 @@
 "use client";
-import React, { useTransition, useRef } from "react";
+import React, { useTransition } from "react";
 import {
   IClientResponse,
   IDepartment,
-  IFetchResponse2,
   IInstructor,
   YupDepartmentUpdateInputs,
-  YupInstructorUpdateInputs,
 } from "@/definitions";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { updateDepartment, updateInstructor } from "@/lib/actions";
-import { yupDepartmentUpdateSchema, yupInstructorUpdateSchema } from "@/lib/validation-schema-yup";
+import { updateDepartment } from "@/lib/actions";
+import { yupDepartmentUpdateSchema } from "@/lib/validation-schema-yup";
 import Input from "@/components/ui/input";
 import Message from "@/components/ui/message";
 import Button from "@/components/ui/button";
 import FetchMessage from "@/components/ui/fetch-message";
+import { useInstructorsOptions } from "../../../../hooks/use-instructors-options";
+import useFetchResponse from "@/hooks/use-fetch-response";
 
 type Props = {
   department: IClientResponse<IDepartment>;
   instructors: IClientResponse<IInstructor[]>;
 };
 
-export const revalid = 1;
 export default function DepartmentUpdateForm(props: Props) {
   const [isUpdating, startUpdating] = useTransition()
-  const apiResponseMessageRef = useRef<IFetchResponse2<undefined>>({
-    isSuccess: false,
-    isError: false,
-    message: "",
-  })
+  const { responseRef, updateResponse } = useFetchResponse()
 
   const {
     id: departmentId,
     managerName: departmentManagerName,
     name: departmentName
-  } = props?.department?.data as IDepartment
+  } = props?.department?.data || {}
 
-  console.log(props?.department)
   const {
-    data: instructorsData,
-    isSuccess: isSuccessInstructors,
-    isEmpty: isEmptyInstructors,
-    isError: isErrorInstructors,
-    message: messageInstructors
-  } = props?.instructors
+    options,
+    selectNotAllowed,
+    message
+  } = useInstructorsOptions(props?.instructors)
+  const findInsctructorId = props?.instructors.data?.find((instructor) =>
+    instructor?.name === departmentManagerName
+  )?.instId
 
-  const selectNotAllowed = isEmptyInstructors || isErrorInstructors
-  //--------------------------------
-  // departments
-  //--------------------------------
-  const findInsctructorId = instructorsData?.find(instructor => instructor?.name === departmentManagerName)?.instId
-  let instructorsOptions
-  const instructorsOptionsIsSuccess = instructorsData?.map((dep) => (
-    <option id={dep.instId?.toString()} value={dep.instId} key={dep.instId}>
-      {dep.name}
-    </option>
-  ))
-
-  const instructorsOptionsIsEmpty = <option disabled value={findInsctructorId} className="cursor-not-allowed">
-    no departments😑
-  </option>
-
-  const instructorsOptionsIsError = <option disabled value={findInsctructorId} className="cursor-not-allowed">
-    request error😑
-  </option>
-  console.log(isEmptyInstructors)
-  if (isSuccessInstructors) {
-    instructorsOptions = instructorsOptionsIsSuccess
-  }
-  if (isEmptyInstructors) {
-    instructorsOptions = instructorsOptionsIsEmpty
-  }
-  if (isErrorInstructors) {
-    instructorsOptions = instructorsOptionsIsError
-  }
-  //--------------------------------
-
-  //--------------------------------
-  // form submition
-  //--------------------------------
   const {
     register,
     handleSubmit,
@@ -88,17 +49,13 @@ export default function DepartmentUpdateForm(props: Props) {
     resolver: yupResolver(yupDepartmentUpdateSchema),
     mode: "onChange",
     defaultValues: {
-      // departmentId: Number(departmentId),
       insId: findInsctructorId,
       nameAr: departmentName,
       nameEn: departmentName
     },
   });
 
-  console.log(props.department.data)
-  console.log(departmentId)
-
-  const isUpdatingValid = isValid && !isEmptyInstructors && !isErrorInstructors
+  const isUpdatingValid = isValid && !selectNotAllowed
   const isButtonValid = isUpdating || !isUpdatingValid
   const onSubmit: SubmitHandler<YupDepartmentUpdateInputs> = (data) => {
     const { insId, nameAr, nameEn } = data
@@ -111,16 +68,13 @@ export default function DepartmentUpdateForm(props: Props) {
       };
       if (isUpdatingValid) {
         const res = await updateDepartment(updateData);
-        console.log(res);
         if (res) {
-          const { isSuccess, isError, message } = res
-          apiResponseMessageRef.current = { isSuccess, isError, message }
+          updateResponse(res)
         }
       }
     })
   };
 
-  //--------------------------------
   return (
     <div className="w-full md:max-w-[700px] md:w-auto mx-auto rounded border border-gray-300 p-4">
       <h1 className="mb-4 text-lg font-medium underline">
@@ -175,14 +129,12 @@ export default function DepartmentUpdateForm(props: Props) {
               w-full h-fit border border-gray-500 rounded text-black text-sm px-4 py-2
               `}
             title={
-              isErrorInstructors
-                ? messageInstructors.join(' ') + ' please contact the support'
-                : isEmptyInstructors
-                  ? "no departments yet"
-                  : "select the a department"
+              selectNotAllowed
+                ? message + ' please contact the support'
+                : "select the a department"
             }
           >
-            {instructorsOptions}
+            {options}
           </select>
         </div>
         <Button
@@ -195,9 +147,9 @@ export default function DepartmentUpdateForm(props: Props) {
           Update
         </Button>
         <FetchMessage
-          isSuccess={apiResponseMessageRef.current.isSuccess}
-          isError={apiResponseMessageRef.current.isError}
-          message={apiResponseMessageRef.current.message}
+          isSuccess={responseRef.current.isSuccess}
+          isError={responseRef.current.isError}
+          message={responseRef.current.message}
         />
       </form>
     </div>

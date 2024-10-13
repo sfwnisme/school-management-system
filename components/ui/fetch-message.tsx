@@ -1,13 +1,13 @@
 import {
   IApiResponseReturn,
   IFetchResponse,
-  IFetchResponse2,
+  IFetchResponse,
 } from "@/definitions";
 import React from "react";
 import Message from "./message";
 import { array } from "yup";
 
-type Props = IFetchResponse2<[]>;
+type Props = IFetchResponse<[]>;
 export default function FetchMessage({ isSuccess, isError, message }: Props) {
   let arrayMessage: string[] = [];
   let stringMessage = "";

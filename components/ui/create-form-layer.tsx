@@ -1,8 +1,7 @@
 "use client";
 // import Image from 'next'
 import {
-    // IFetIFetchResponse2,
-    IFetchResponse2,
+    IFetchResponse,
     YupUserCreateInputs,
 } from "@/definitions";
 import {createUser, getAllUsers} from "@/lib/actions";
@@ -30,7 +29,7 @@ import FetchMessage from "../fetch-message";
 type Props = {};
 export default function CreateFormLayer({}: Props) {
     const [isCreating, startCreating] = useTransition();
-    const apiResponseMessagesRef = useRef<IFetchResponse2<[]>>({
+    const apiResponseMessagesRef = useRef<IFetchResponse<[]>>({
         isSuccess: false,
         isError: false,
         message: "",
@@ -69,7 +68,7 @@ export default function CreateFormLayer({}: Props) {
         startCreating(async () => {
             const {isSuccess, isError, message} = (await createUser(
                 FD
-            )) as IFetchResponse2<undefined>;
+            )) as IFetchResponse<undefined>;
             if (status !== "idle") {
                 apiResponseMessagesRef.current = {
                     isSuccess,

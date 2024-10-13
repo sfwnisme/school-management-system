@@ -4,7 +4,6 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { getCurrentUser, isTokenValid, refreshTokenIfExpired } from "./actions";
 import { Fragment } from "react";
-import { IFetchResponse2 } from "@/definitions";
 
 type Props = {
   children: React.ReactNode;
