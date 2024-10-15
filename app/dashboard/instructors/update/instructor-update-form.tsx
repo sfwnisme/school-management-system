@@ -158,6 +158,7 @@ export default function InstructorUpdateForm(props: Props) {
                 : "select the a department"
             }
           >
+            <option selected={!instructorDeptId} disabled>select instructor</option>
             {options}
           </select>
         </div>

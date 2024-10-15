@@ -1,73 +1,57 @@
 "use client";
+import { IClientResponse, IDepartment, YupInstructorCreateInputs } from "@/definitions";
 import React, { useTransition } from "react";
-import {
-  IClientResponse,
-  IDepartment,
-  IInstructor,
-  YupDepartmentUpdateInputs,
-} from "@/definitions";
+import { useDepartmentsOptions } from "../../../../hooks/use-departments-options";
 import { SubmitHandler, useForm } from "react-hook-form";
+import { yupInstructorCreateSchema } from "@/lib/validation-schema-yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { updateDepartment } from "@/lib/actions";
-import { yupDepartmentUpdateSchema } from "@/lib/validation-schema-yup";
+import { createInstructor } from "@/lib/actions";
 import Input from "@/components/ui/input";
 import Message from "@/components/ui/message";
 import Button from "@/components/ui/button";
 import FetchMessage from "@/components/ui/fetch-message";
-import { useInstructorsOptions } from "../../../../hooks/use-instructors-options";
 import useFetchResponse from "@/hooks/use-fetch-response";
 
 type Props = {
-  department: IClientResponse<IDepartment>;
-  instructors: IClientResponse<IInstructor[]>;
+  departments: IClientResponse<IDepartment[]>;
 };
 
-export default function DepartmentUpdateForm(props: Props) {
+export default function InstructorCreateForm(props: Props) {
   const [isUpdating, startUpdating] = useTransition()
   const { responseRef, updateResponse } = useFetchResponse()
 
-  const {
-    id: departmentId,
-    managerName: departmentManagerName,
-    name: departmentName
-  } = props?.department?.data || {}
 
   const {
     options,
     selectNotAllowed,
     message
-  } = useInstructorsOptions(props?.instructors)
-  const findInsctructorId = props?.instructors.data?.find((instructor) =>
-    instructor?.name === departmentManagerName
-  )?.instId
+  } = useDepartmentsOptions(props?.departments)
 
   const {
     register,
     handleSubmit,
     formState: { errors, isValid },
-  } = useForm<YupDepartmentUpdateInputs>({
-    resolver: yupResolver(yupDepartmentUpdateSchema),
+    watch
+  } = useForm<YupInstructorCreateInputs>({
+    resolver: yupResolver(yupInstructorCreateSchema),
     mode: "onChange",
-    defaultValues: {
-      insId: findInsctructorId,
-      nameAr: departmentName,
-      nameEn: departmentName
-    },
   });
-
+  console.log(watch())
   const isUpdatingValid = isValid && !selectNotAllowed
   const isButtonValid = isUpdating || !isUpdatingValid
-  const onSubmit: SubmitHandler<YupDepartmentUpdateInputs> = (data) => {
-    const { insId, nameAr, nameEn } = data
+  const onSubmit: SubmitHandler<YupInstructorCreateInputs> = (data) => {
+    const { nameAr, nameEn, position, salary, departmentId } = data
     startUpdating(async () => {
-      const updateData = {
-        departmentId,
-        insId: insId,
+      const createData = {
         nameAr,
-        nameEn
+        nameEn,
+        position,
+        salary,
+        departmentId
       };
       if (isUpdatingValid) {
-        const res = await updateDepartment(updateData);
+        const res = await createInstructor(createData);
+        console.log(res);
         if (res) {
           updateResponse(res)
         }
@@ -116,13 +100,40 @@ export default function DepartmentUpdateForm(props: Props) {
           />
           <Message variant="danger">{errors.nameEn?.message}</Message>
         </div>
+        <div className="col-span-full md:col-span-2">
+          <Input
+            type="text"
+            title="position"
+            placeholder="Your position"
+            variant={
+              errors.position?.message ? "danger" : isValid ? "success" : "initial"
+            }
+            {...register("position")}
+          />
+          <Message variant="danger">{errors.position?.message}</Message>
+        </div>
+        <div className="col-span-full md:col-span-1">
+          <Input
+            type="text"
+            title="salary"
+            placeholder="Your user salary"
+            variant={
+              errors.salary?.message
+                ? "danger"
+                : isValid
+                  ? "success"
+                  : "initial"
+            }
+            {...register("salary")}
+          />
+          <Message variant="danger">{errors.salary?.message}</Message>
+        </div>
         <div className="col-span-full md:col-span-1">
           <label className="text-sm mb-1 block">
-            instructor
+            department
           </label>
           <select
-            {...register("insId")}
-            defaultValue={findInsctructorId}
+            {...register("departmentId")}
             disabled={selectNotAllowed}
             className={`
               disabled:opacity-50 disabled:cursor-not-allowed
@@ -130,11 +141,11 @@ export default function DepartmentUpdateForm(props: Props) {
               `}
             title={
               selectNotAllowed
-                ? message + ' please contact the support'
+                ? message + ', please contact the support'
                 : "select the a department"
             }
           >
-            <option selected={!findInsctructorId} disabled>select instructor</option>
+            <option selected disabled>select instructor</option>
             {options}
           </select>
         </div>

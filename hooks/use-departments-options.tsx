@@ -10,7 +10,7 @@ export function useDepartmentsOptions(departments: IClientResponse<IDepartment[]
     message,
   } = departments;
   console.log(departments)
-  
+
 
   let options = useMemo(() => {
     if (isSuccess) {

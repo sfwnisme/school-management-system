@@ -22,25 +22,23 @@ type Props = {
   roles: IClientResponse<IRole[]>;
 };
 
-
 export default function UserUpdateForm(props: Props) {
   const [isUpdating, startUpdatingUser] = useTransition();
-  const { responseRef, updateResponse } = useFetchResponse()
+  const { responseRef, updateResponse } = useFetchResponse();
 
   const {
     id: userId,
     fullName,
     userName,
     email,
-    roles
-  } = props?.user.data || {}
+    roles,
+  } = props?.user.data || {};
 
-  const {
-    options,
-    selectNotAllowed,
-    message
-  } = useRolessOptions(props?.roles)
-  const findRoleId = props?.roles?.data?.find((role) => role.name === roles?.[0])?.name ?? -1
+  console.log('sfwn is me', props?.roles.data)
+
+  const { options, selectNotAllowed, message } = useRolessOptions(props?.roles);
+  const findRoleId =
+    props?.roles?.data?.find((role) => role.name === roles?.[0])?.name
 
   const {
     register,
@@ -56,8 +54,8 @@ export default function UserUpdateForm(props: Props) {
     },
   });
 
-  const isUpdatingValid = isValid && !selectNotAllowed
-  const isButtonValid = isUpdating || !isUpdatingValid
+  const isUpdatingValid = isValid && !selectNotAllowed;
+  const isButtonValid = isUpdating || !isUpdatingValid;
   const onSubmit: SubmitHandler<YupUserUpdateInputs> = async (data) => {
     startUpdatingUser(async () => {
       const newUserData = {
@@ -70,7 +68,7 @@ export default function UserUpdateForm(props: Props) {
       if (isUpdatingValid) {
         const res = await updateUser(newUserData);
         if (res) {
-          updateResponse(res)
+          updateResponse(res);
         }
       }
     });
@@ -133,19 +131,18 @@ export default function UserUpdateForm(props: Props) {
           disabled={selectNotAllowed}
           title={
             selectNotAllowed
-              ? message + ' please contact the support'
+              ? message + " please contact the support"
               : "select the role"
           }
         >
+          <option selected={!findRoleId} disabled>select role</option>
           {options}
         </select>
         <Button
           variant="info"
           type="submit"
           loading={isUpdating}
-          disabled={
-            isButtonValid
-          }
+          disabled={isButtonValid}
           loadingText="Updating..."
         >
           Update

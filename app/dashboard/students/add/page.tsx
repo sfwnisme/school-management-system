@@ -1,7 +1,21 @@
+import Button from '@/components/ui/button'
+import Title from '@/components/ui/title'
+import { IClientResponse, IDepartment } from '@/definitions'
+import { getAllDepartments } from '@/lib/actions'
 import React from 'react'
+import StudentCreateForm from './student-create-form'
 
-export default function page() {
+export default async function page() {
+  const departments = await getAllDepartments() as IClientResponse<IDepartment[]>
+
   return (
-    <div>page</div>
+    <div>
+      <Title title="Add student">
+        <Button tag="link" href="/dashboard/students">
+          students
+        </Button>
+      </Title>
+      <StudentCreateForm departments={departments} />
+    </div>
   )
 }

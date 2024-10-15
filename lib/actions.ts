@@ -442,15 +442,16 @@ export async function resetUserPassword(
 export async function getAllRoles(): Promise<
   IFetchResponse<IRole[]> | undefined
 > {
-  apiClient.defaults.headers.common["Authorization"] = `Bearer ${cookies().get("token")?.value
-    }`;
+  const token = cookies().get("token")?.value
+  apiClient.defaults.headers.common["Authorization"] = `Bearer ${token}`;
   try {
+    const res = await apiClient.get(endpoints.authorization.roles.all);
     const {
       status,
       statusText,
       data: { statusCode, message, data },
-    } = await apiClient.get(endpoints.authorization.roles.all);
-    console.log(data);
+    } = res
+    console.log('data of the roles', res.data);
     return fetchResponse(
       status || statusCode,
       'success',
@@ -464,6 +465,7 @@ export async function getAllRoles(): Promise<
         statusText,
         data: { status: anotherStatus, errors },
       } = error.response as AxiosResponse;
+      console.log('data of the roles', error.response);
       console.log(errors);
       return fetchResponse(
         status || anotherStatus,
@@ -601,7 +603,7 @@ export async function updateInstructor(data: YupInstructorUpdateInputs): Promise
       return fetchResponse(
         status || statusCode,
         "success",
-        'instructor updated successfully' || statusText
+        statusText || 'instructor updated successfully'
       );
     }
   } catch (error) {
@@ -622,6 +624,50 @@ export async function updateInstructor(data: YupInstructorUpdateInputs): Promise
         400,
         "error",
         "edit this message from updateInstructors server action"
+      );
+    }
+  }
+}
+
+export async function createInstructor(
+  data: YupInstructorUpdateInputs
+): Promise<IFetchResponse<undefined> | undefined> {
+  const token = cookies().get("token")?.value;
+  apiClient.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+
+  const FD = new FormData()
+  FD.append('nameAr', data?.nameAr)
+  FD.append('nameEn', data?.nameEn)
+  FD.append('position', data?.position)
+  FD.append('salary', String(data?.salary))
+  FD.append('departmentId', String(data?.departmentId))
+
+  try {
+    const {
+      status,
+      statusText,
+      data: { statusCode, message },
+    } = await apiClient.post(endpoints.instructors.create, FD);
+    revalidatePath('instructors')
+    return fetchResponse(
+      status || statusCode,
+      "success",
+      "instructor created successfully"
+    );
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      console.log(error.response?.data.errors);
+      const {
+        status,
+        statusText,
+        data: { statusCode, message, errors },
+      } = error.response as AxiosResponse;
+      return fetchResponse(status, "error", errors || message);
+    } else {
+      return fetchResponse(
+        400,
+        "error",
+        "edit this message from updateInstructor function action"
       );
     }
   }
@@ -755,7 +801,7 @@ export async function updateDepartment(data: YupDepartmentUpdateInputs): Promise
       return fetchResponse(
         status || statusCode,
         "success",
-        'Department updated successfully' || statusText
+        'Department updated successfully'
       );
     }
   } catch (error) {
@@ -776,6 +822,43 @@ export async function updateDepartment(data: YupDepartmentUpdateInputs): Promise
         400,
         "error",
         "edit this message from updateDepartments server action"
+      );
+    }
+  }
+}
+
+export async function createDepartment(
+  data: YupDepartmentUpdateInputs
+): Promise<IFetchResponse<undefined> | undefined> {
+  const token = cookies().get("token")?.value;
+  apiClient.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+
+  try {
+    const {
+      status,
+      statusText,
+      data: { statusCode, message },
+    } = await apiClient.post(endpoints.departments.create, data);
+    revalidatePath('departments')
+    return fetchResponse(
+      status || statusCode,
+      "success",
+      "department created successfully"
+    );
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      console.log(error.response?.data.errors);
+      const {
+        status,
+        statusText,
+        data: { statusCode, message, errors },
+      } = error.response as AxiosResponse;
+      return fetchResponse(status, "error", errors || message);
+    } else {
+      return fetchResponse(
+        400,
+        "error",
+        "edit this message from updateDepartment function action"
       );
     }
   }
@@ -912,7 +995,7 @@ export async function updateStudent(data: YupStudentUpdateInputs): Promise<IFetc
       return fetchResponse(
         status || statusCode,
         "success",
-        'Department updated successfully' || statusText
+        'Department updated successfully'
       );
     }
   } catch (error) {
@@ -936,6 +1019,49 @@ export async function updateStudent(data: YupStudentUpdateInputs): Promise<IFetc
         400,
         "error",
         "edit this message from updateStudent() server action"
+      );
+    }
+  }
+}
+
+export async function createStudent(
+  data: YupStudentUpdateInputs
+): Promise<IFetchResponse<undefined> | undefined> {
+  const token = cookies().get("token")?.value;
+  apiClient.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+
+  const FD = new FormData()
+  FD.append('nameAr', data?.nameAr)
+  FD.append('nameEn', data?.nameEn)
+  FD.append('address', data?.address)
+  FD.append('departmentId', String(data?.departmentId))
+
+  try {
+    const {
+      status,
+      statusText,
+      data: { statusCode, message },
+    } = await apiClient.post(endpoints.students.create, FD);
+    revalidatePath('students')
+    return fetchResponse(
+      status || statusCode,
+      "success",
+      "student created successfully"
+    );
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      console.log(error.response?.data.errors);
+      const {
+        status,
+        statusText,
+        data: { statusCode, message, errors },
+      } = error.response as AxiosResponse;
+      return fetchResponse(status, "error", errors || message);
+    } else {
+      return fetchResponse(
+        400,
+        "error",
+        "edit this message from updateStudent function action"
       );
     }
   }
@@ -1071,7 +1197,7 @@ export async function updateSubject(data: YupSubjectUpdateInputs): Promise<IFetc
       return fetchResponse(
         status || statusCode,
         "success",
-        'Subject updated successfully' || statusText
+        'Subject updated successfully'
       );
     }
   } catch (error) {
@@ -1092,6 +1218,48 @@ export async function updateSubject(data: YupSubjectUpdateInputs): Promise<IFetc
         400,
         "error",
         "edit this message from updateSubjects server action"
+      );
+    }
+  }
+}
+
+export async function createSubject(
+  data: YupSubjectUpdateInputs
+): Promise<IFetchResponse<undefined> | undefined> {
+  const token = cookies().get("token")?.value;
+  apiClient.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+
+  const FD = new FormData()
+  FD.append('subjectNameAr', data?.subjectNameAr)
+  FD.append('subjectNameEn', data?.subjectNameEn)
+  FD.append('period', data?.period)
+
+  try {
+    const {
+      status,
+      statusText,
+      data: { statusCode, message },
+    } = await apiClient.post(endpoints.subjects.create, data);
+    revalidatePath('subjects')
+    return fetchResponse(
+      status || statusCode,
+      "success",
+      "subject created successfully"
+    );
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      console.log(error.response?.data.errors);
+      const {
+        status,
+        statusText,
+        data: { statusCode, message, errors },
+      } = error.response as AxiosResponse;
+      return fetchResponse(status, "error", errors || message);
+    } else {
+      return fetchResponse(
+        400,
+        "error",
+        "edit this message from updateSubject function action"
       );
     }
   }

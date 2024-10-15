@@ -1,5 +1,8 @@
 "use client";
-import React, { useTransition, useRef } from "react";
+import Button from "@/components/ui/button";
+import FetchMessage from "@/components/ui/fetch-message";
+import Input from "@/components/ui/input";
+import Message from "@/components/ui/message";
 import {
   IClientResponse,
   IDepartment,
@@ -7,16 +10,12 @@ import {
   IStudent,
   YupStudentUpdateInputs,
 } from "@/definitions";
-import { SubmitHandler, useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
 import { updateStudent } from "@/lib/actions";
 import { yupStudentUpdateSchema } from "@/lib/validation-schema-yup";
-import Input from "@/components/ui/input";
-import Message from "@/components/ui/message";
-import Button from "@/components/ui/button";
-import FetchMessage from "@/components/ui/fetch-message";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { useRef, useTransition } from "react";
+import { SubmitHandler, useForm } from "react-hook-form";
 import { useDepartmentsOptions } from "../../../../hooks/use-departments-options";
-import { InferType } from "yup";
 
 type Props = {
   departments: IClientResponse<IDepartment[]>;
@@ -31,15 +30,15 @@ export default function StudentUpdateForm(props: Props) {
     isError: false,
     message: "",
   })
-
   const {
     studId: studentId,
     name: stuedentName,
     address: studentAddress,
     departmentName
   } = props?.student?.data || {}
-  console.log(studentId, stuedentName, studentAddress, departmentName)
 
+  const findDepartmentId = props?.departments.data?.find((department: IDepartment) =>
+    department?.name === (departmentName)?.toString())?.deptId
 
   const {
     options,
@@ -47,26 +46,19 @@ export default function StudentUpdateForm(props: Props) {
     message
   } = useDepartmentsOptions(props?.departments)
 
-  const findDepartmentId = props?.departments.data?.find((department: IDepartment) =>
-    department?.name === (departmentName)?.toString()
-  )?.deptId
-  console.log(findDepartmentId)
-  console.log(props.departments.data)
-  console.log(props.student.data)
+  console.log('departmentId', findDepartmentId)
+  //--------------------------------
+  //form submition 
+  //-------------------------------- 
 
-  //--------------------------------
-  // form submition
-  //--------------------------------
   const {
     register,
     handleSubmit,
     formState: { errors, isValid },
   } = useForm<YupStudentUpdateInputs>({
     resolver: yupResolver(yupStudentUpdateSchema),
-    mode: "onChange",
+    mode: 'onChange',
     defaultValues: {
-      id: studentId,
-      departmentId: findDepartmentId,
       nameAr: stuedentName,
       nameEn: stuedentName,
       address: studentAddress,
@@ -171,7 +163,7 @@ export default function StudentUpdateForm(props: Props) {
                 : "select the a department"
             }
           >
-            <option defaultValue={''} disabled>select department</option>
+            <option selected={!findDepartmentId} disabled>select department</option>
             {options}
           </select>
         </div>

@@ -7,13 +7,7 @@ import { deleteSubject, getAllSubjects } from "@/lib/actions";
 import { Plus } from "lucide-react";
 import React from "react";
 
-// {
-//   subjectId: 2,
-//   subjectName: 'Physics',
-//   departments: [
-//     { departmentId: 2, departmentName: 'Physics Department' }
-//   ]
-// },
+
 const subjectsKeysAndNames: ITableHead[] = [
   {
     key: "subjectId",
@@ -50,8 +44,8 @@ export default async function page() {
   return (
     <div>
       <Title title="All Subjects">
-        <Button tag="link" href="/dashboard/subjects/create">
-          <Plus />
+        <Button tag="link" href="/dashboard/subjects/add">
+          create
         </Button>
       </Title>
       <TableLayer

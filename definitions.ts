@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
 import { InferType } from "yup";
-import { yupDepartmentUpdateSchema, yupInstructorUpdateSchema, yupStudentUpdateSchema, yupSubjectUpdateSchema, yupUserCreateSchema, yupUserResetPasswordSchema, yupUserUpdateSchema } from "./lib/validation-schema-yup";
+import { yupDepartmentCreateSchema, yupDepartmentUpdateSchema, yupInstructorCreateSchema, yupInstructorUpdateSchema, yupStudentCreateSchema, yupStudentUpdateSchema, yupSubjectCreateSchema, yupSubjectUpdateSchema, yupUserCreateSchema, yupUserResetPasswordSchema, yupUserUpdateSchema } from "./lib/validation-schema-yup";
 
 // this type handle the setState function when using prev
 // Ex: setState((prev)=> !prev) as UpdateStateType
@@ -57,6 +57,7 @@ export interface IInstructorUpdate {
   departmentId: number
 }
 export type YupInstructorUpdateInputs = InferType<typeof yupInstructorUpdateSchema>
+export type YupInstructorCreateInputs = InferType<typeof yupInstructorCreateSchema>
 
 export interface IDepartment {
   id: number;
@@ -69,6 +70,7 @@ export interface IDepartment {
 }
 
 export type YupDepartmentUpdateInputs = InferType<typeof yupDepartmentUpdateSchema>
+export type YupDepartmentCreateInputs = InferType<typeof yupDepartmentCreateSchema>
 //----------------------------
 
 export interface IStudent {
@@ -80,6 +82,7 @@ export interface IStudent {
 }
 
 export type YupStudentUpdateInputs = InferType<typeof yupStudentUpdateSchema>
+export type YupStudentCreateInputs = InferType<typeof yupStudentCreateSchema>
 
 export interface ISubject {
   id: number;
@@ -99,6 +102,7 @@ export interface ISubjectUpdate {
   period: string
 }
 export type YupSubjectUpdateInputs = InferType<typeof yupSubjectUpdateSchema>
+export type YupSubjectCreateInputs = InferType<typeof yupSubjectCreateSchema>
 
 export interface IRole {
   id?: number;

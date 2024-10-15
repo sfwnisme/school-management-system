@@ -80,6 +80,13 @@ export const yupInstructorUpdateSchema = object({
   salary: instructor.salary,
   departmentId: instructor.departmentId,
 })
+export const yupInstructorCreateSchema = object({
+  nameAr: instructor.nameAr,
+  nameEn: instructor.nameEn,
+  position: instructor.position,
+  salary: instructor.salary,
+  departmentId: instructor.departmentId,
+})
 
 const department = {
   deptId: number(),
@@ -91,17 +98,17 @@ const department = {
 }
 
 export const yupDepartmentUpdateSchema = object({
-  // departmentId: department.deptId,
   insId: department.instructorId,
   nameAr: department.nameAr,
   nameEn: department.nameEn,
 })
-// {
-//   studId: 1,
-//   name: 'Ahmed Mohamed',
-//   address: '123 Street',
-//   departmentName: null
-// },
+
+export const yupDepartmentCreateSchema = object({
+  insId: department.instructorId,
+  nameAr: department.nameAr,
+  nameEn: department.nameEn,
+})
+
 const student = {
   name: string().required('name is required'),
   nameAr: string().required('arabic name is required'),
@@ -120,6 +127,13 @@ export const yupStudentUpdateSchema = object({
   address: student.address
 })
 
+export const yupStudentCreateSchema = object({
+  nameAr: student.nameAr,
+  nameEn: student.nameEn,
+  address: student.address,
+  departmentId: student.departmentId,
+})
+
 const subject = {
   subjectId: number().optional(),
   subjectName: string().required('subject name is required'),
@@ -128,6 +142,12 @@ const subject = {
 }
 export const yupSubjectUpdateSchema = object({
   subjectId: subject.subjectId,
+  subjectNameAr: subject.subjectName,
+  subjectNameEn: subject.subjectName,
+  period: subject.period,
+})
+
+export const yupSubjectCreateSchema = object({
   subjectNameAr: subject.subjectName,
   subjectNameEn: subject.subjectName,
   period: subject.period,

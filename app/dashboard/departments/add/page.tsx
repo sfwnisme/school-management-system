@@ -1,16 +1,22 @@
-import Button from "@/components/ui/button";
-import Title from "@/components/ui/title";
-import React from "react";
+import Button from '@/components/ui/button'
+// import DepartmentCreateForm from '@/components/ui/departments/department-create-form'
+import Title from '@/components/ui/title'
+import React from 'react'
+import DepartmentCreateForm from './department-create-form'
+import { getAllInstructors } from '@/lib/actions'
+import { IClientResponse, IInstructor } from '@/definitions'
 
-export default function page() {
+export default async function page() {
+  const instructors = await getAllInstructors() as IClientResponse<IInstructor[]>
+
   return (
     <div>
-      <Title title="Create Department">
+      <Title title="Add department">
         <Button tag="link" href="/dashboard/departments">
-          Departements
+          departments
         </Button>
       </Title>
-      page
+      <DepartmentCreateForm instructors={instructors} />
     </div>
-  );
+  )
 }
