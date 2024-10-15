@@ -29,6 +29,7 @@ const user = {
     .oneOf([ref("password")], "Password must match"),
   email: string().email().required(),
   image: mixed().required("select image"),
+  roleId: number().nullable().optional()
 };
 export const loginSchema = object({
   username: user.userName,
@@ -38,6 +39,7 @@ export const yupUserUpdateSchema = object({
   userName: user.userName,
   fullName: user.fullName,
   email: user.email,
+  roleId: user.roleId
 });
 
 export const yupUserResetPasswordSchema = object({
@@ -94,6 +96,49 @@ export const yupDepartmentUpdateSchema = object({
   nameAr: department.nameAr,
   nameEn: department.nameEn,
 })
+// {
+//   studId: 1,
+//   name: 'Ahmed Mohamed',
+//   address: '123 Street',
+//   departmentName: null
+// },
+const student = {
+  name: string().required('name is required'),
+  nameAr: string().required('arabic name is required'),
+  nameEn: string().required('english name is required'),
+  address: string().required('address is required'),
+  departmentName: string().required('department name is required'),
+  departmentId: number().required('department id is required'),
+
+}
+export const yupStudentUpdateSchema = object({
+  // departmentId: department.deptId,
+  id: number().optional(),
+  departmentId: student.departmentId,
+  nameAr: student.nameAr,
+  nameEn: student.nameEn,
+  address: student.address
+})
+
+const subject = {
+  subjectId: number().optional(),
+  subjectName: string().required('subject name is required'),
+  departmentId: number().required('department id is required'),
+  period: string().required('period is required')
+}
+export const yupSubjectUpdateSchema = object({
+  subjectId: subject.subjectId,
+  subjectNameAr: subject.subjectName,
+  subjectNameEn: subject.subjectName,
+  period: subject.period,
+})
+// export const yupInstructorUpdateSchema = object({
+//   nameAr: instructor.nameAr,
+//   nameEn: instructor.nameEn,
+//   position: instructor.position,
+//   salary: instructor.salary,
+//   departmentId: instructor.departmentId,
+// })
 //safimooo
 //pass: ff.9df42asdf4Q
 // Type

@@ -3,7 +3,7 @@ import Title from '@/components/ui/title'
 import { IClientResponse, IDepartment, IInstructor } from '@/definitions'
 import { getAllInstructors, getDepartmentById, getInstructorById } from '@/lib/actions'
 import React from 'react'
-import DepartmentUpdateForm from './department-update-form'
+import DepartmentUpdateForm from '../department-update-form'
 // import { DepartmentUpdateForm } from './department-update-form'
 
 type Props = {

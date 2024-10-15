@@ -7,12 +7,6 @@ import React from "react";
 
 export default async function page() {
   const students = await getAllStudents();
-  // {
-  //   studId: 1,
-  //   name: 'Ahmed Mohamed',
-  //   address: '123 Street',
-  //   departmentName: null
-  // },
   const studentsKeysAndNames = [
     {
       key: "studId",
@@ -39,7 +33,6 @@ export default async function page() {
           Create
         </Button>
       </Title>
-      {/* <StudentsTable /> */}
       <TableLayer
         dataFunction={students}
         deleteFunction={deleteStudent}

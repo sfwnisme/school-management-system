@@ -1,5 +1,5 @@
 "use client";
-import { IClientResponse, IFetchResponse2, IMUser, IUser } from "@/definitions";
+import { IClientResponse, IUser } from "@/definitions";
 import { User } from "lucide-react";
 import Image from "next/image";
 import React from "react";

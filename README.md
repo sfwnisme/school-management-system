@@ -5,12 +5,16 @@
 - I will work on the UI and UI components from scratch using tailwindcss
 - I will work on the SEO and SGC "static generated components" on the end of the project to save more time meanwhile.
 
+## members: 
+
+- backend: project [link](https://github.com/yousef132/School-Managament-System) by [@yousef132](https://github.com/yousef132)
+- frontend: absolutly by me [@sfwnisme](https://github.com/sfwnisme)
+
 ## Add-ons tasks
 
 - [x] Admins theme *currentlly working on it*
   - [x] full access epic
   - [x] non access epic [normal users that can not access only view]
-
 
 ## styling rules
 
@@ -291,14 +295,37 @@ it is hard to share the response of the catch and the try, so I should use ether
   - [x] `getAllSubjects`
   - [x] `deleteSubject`
 
-### Fri 11/10/2024
+### Fri 11/10/2024 & Sun 13/10/2024
 
-- [x] update instructor data
-- [x] update departmen data
+- [x] update instructor
+- [x] update departmen
+- [x] update department
+- [x] update student
+- [x] update subject
+- [ ] create instructor
+- [ ] create departmen
+- [ ] create department
+- [ ] create student
+- [ ] create subject
 - [ ] create select input UI Component
 - [ ] create new instructor
-- [ ] change the `user-update-form.tsx` file like the `instructor-update-form.tsx` file
+- [x] change the `user-update-form.tsx` and `user-reset-password.tsx` file like the `instructor-update-form.tsx` file
 - [ ] display the supervisor and the manager in the tables of the departments and the instructors
+- [x] change the typescript types file `definitions.d.ts` to `definitions.ts` as it documentation recommeded
+- update the following components to the new, clea and a little single-resonsibitlity approach
+  - [x] `user-update-form.tsx`
+  - [x] `user-reset-password-form.tsx`
+  - [x] `instructor-update-form.tsx`
+  - [x] `department-update-form.tsx`
+  - [x] `subject-update-form.tsx`
+- [x] create a new reusable hook for the response message that I return from the API requests, thus I can use it with any place that need to return the response with a clear and readable code.  *you can find the hook named `hooks/use-fetch-response.tsx`*
+- create a hook that return the API data as a options for the `<select>` element to make the form component readable and more single-responsibility for the following endpoints.
+  - [x] instructors
+  - [x] departments
+  - [x] roles
+- backend issue should be solve
+  - [ ] union the subject schema and adding the peirod columnt to its Get request
+  - [ ] the student udpate return `403 forbidden` it seems the backend logic block udating this for the super admin.
 
 ### Backlog
 
@@ -311,7 +338,11 @@ it is hard to share the response of the catch and the try, so I should use ether
 - [ ] try and catch of the server returns into the try block of the client components
 - [ ] create Input UI Component with its message and variants, this will help you achive the Single dependency principle
 - [ ] create an object contains the inputs name of the react hook forms, to help me loop the inputs instead of write them manully every type. [this task need more search to make it more typescript friendly]
-- [ ] dynamic profile page for the all users data types insturctors, users, students and etc... . 
+- [ ] dynamic profile page for the all users data types insturctors, users, students and etc....
+- [ ] use `useMemo, memo, and useCallback` to maximize the performance.
+- [ ] create multible select input UI Component.
+- [ ] create array of the endpoints
+- [ ] I should create sperated interfaces and types for every CRUD request, in purpose adopting more type-safe.
 
 ## UI components
 

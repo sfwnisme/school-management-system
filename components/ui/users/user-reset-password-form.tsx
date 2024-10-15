@@ -2,7 +2,7 @@
 import React, { ReactNode, useRef, useState, useTransition } from "react";
 import Input from "../input";
 import {
-  IFetchResponse2,
+  IFetchResponse,
   IUser,
   YupUserResetPassword,
   IClientResponse,
@@ -14,6 +14,7 @@ import Button from "../button";
 import { yupUserResetPasswordSchema } from "@/lib/validation-schema-yup";
 import Message from "../message";
 import FetchMessage from "../fetch-message";
+import useFetchResponse from "@/hooks/use-fetch-response";
 
 type Props = {
   user: IClientResponse<IUser>;
@@ -21,16 +22,10 @@ type Props = {
 
 export const revalid = 1;
 export default function UserResetPasswordForm(props: Props) {
-  const [isResetPassword, startResetPassword] = useTransition();
-  const apiResponseMessagesRef = useRef<IFetchResponse2<[]>>({
-    isEmpty: false,
-    isSuccess: false,
-    isError: false,
-    message: "",
-  });
+  const [isUpdating, startUpdating] = useTransition();
+  const { responseRef, updateResponse } = useFetchResponse()
 
-  const { email } = props?.user.data as IUser
-  // const email = props.user.data?.email ?? "";
+  const { email } = props?.user.data || {}
 
   const {
     register,
@@ -45,6 +40,8 @@ export default function UserResetPasswordForm(props: Props) {
     },
   });
 
+  const isUpdatingValid = isValid
+  const isButtonValid = isUpdating || !isUpdatingValid
   const onSubmit: SubmitHandler<YupUserResetPassword> = (data) => {
     const { password, confirmPassword, email } = data
     const newPassword = {
@@ -52,24 +49,15 @@ export default function UserResetPasswordForm(props: Props) {
       confirmPassword,
       email
     };
-    startResetPassword(async () => {
-      const res = await resetUserPassword(newPassword);
-      if (res) {
-        const { isSuccess, isError, message } = res;
-        apiResponseMessagesRef.current = {
-          isSuccess,
-          isError,
-          message,
-        };
-      } else {
-        console.log(
-          "unexpected error on the onSubmit user-reset-password-form.tsx"
-        );
+    startUpdating(async () => {
+      if (isUpdatingValid) {
+        const res = await resetUserPassword(newPassword);
+        if (res) {
+          updateResponse(res)
+        }
       }
     });
   };
-
-  console.log(isResetPassword, isValid)
 
   return (
     <div className="w-full md:max-w-[700px] md:w-auto mx-auto rounded border border-gray-300 p-4">
@@ -113,16 +101,16 @@ export default function UserResetPasswordForm(props: Props) {
         <Button
           variant="info"
           type="submit"
-          loading={isResetPassword}
-          disabled={!isValid || isResetPassword}
+          loading={isUpdating}
+          disabled={!isValid || isUpdating}
           loadingText="Updating..."
         >
           Update
         </Button>
         <FetchMessage
-          message={apiResponseMessagesRef.current.message}
-          isSuccess={apiResponseMessagesRef.current.isSuccess}
-          isError={apiResponseMessagesRef.current.isError}
+          message={responseRef.current.message}
+          isSuccess={responseRef.current.isSuccess}
+          isError={responseRef.current.isError}
         />
       </form>
     </div>

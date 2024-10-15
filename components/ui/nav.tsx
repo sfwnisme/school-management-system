@@ -2,7 +2,7 @@
 import { PanelLeft, User } from "lucide-react";
 import React from "react";
 import LogoLayout from "./logo-layout";
-import { IClientResponse, IMUser, IUser, UpdateStateType } from "@/definitions";
+import { IClientResponse, IUser, UpdateStateType } from "@/definitions";
 import Options from "./userbox/options";
 
 /**

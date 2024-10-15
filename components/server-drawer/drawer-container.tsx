@@ -1,7 +1,7 @@
 import { getCurrentUser } from "@/lib/actions";
 import React from "react";
 import Drawer from "../dashboard-layout/drawer";
-import { IClientResponse, IMUser, IUser } from "@/definitions";
+import { IClientResponse, IUser } from "@/definitions";
 
 type Props = {
   children: React.ReactNode;

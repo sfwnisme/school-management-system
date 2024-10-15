@@ -2,7 +2,7 @@
 import React from "react";
 import Avatar from "./avatar";
 import Dropdown from "./dropdown";
-import { IClientResponse, IMUser, IUser } from "@/definitions";
+import { IClientResponse, IUser } from "@/definitions";
 
 type Props = {
   user?: IClientResponse<IUser>;

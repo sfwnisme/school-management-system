@@ -2,7 +2,7 @@
 
 import {
   FormDataObjectType,
-  IFetchResponse2,
+  IFetchResponse,
 } from "@/definitions";
 
 export const appendToFormData = (data: FormDataObjectType<any>): FormData => {
@@ -40,13 +40,13 @@ export const appendToFormData = (data: FormDataObjectType<any>): FormData => {
  * @param data
  * @returns
  */
-export function fetchResponse2<T>(
+export function fetchResponse<T>(
   statusCode: number,
   status: "success" | "error",
   message: string = "",
-  data?: IFetchResponse2<T>["data"]
-): IFetchResponse2<T> {
-  let initialObject: IFetchResponse2<T> = {
+  data?: IFetchResponse<T>["data"]
+): IFetchResponse<T> {
+  let initialObject: IFetchResponse<T> = {
     data: [], // default value is array
     isEmpty: false,
     isSuccess: false,
