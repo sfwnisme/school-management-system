@@ -37,7 +37,9 @@ export default function StudentUpdateForm(props: Props) {
     name: stuedentName,
     address: studentAddress,
     departmentName
-  } = props?.student?.data as IStudent
+  } = props?.student?.data || {}
+  console.log(studentId, stuedentName, studentAddress, departmentName)
+
 
   const {
     options,
@@ -47,7 +49,7 @@ export default function StudentUpdateForm(props: Props) {
 
   const findDepartmentId = props?.departments.data?.find((department: IDepartment) =>
     department?.name === (departmentName)?.toString()
-  )?.deptId ?? -1
+  )?.deptId
   console.log(findDepartmentId)
   console.log(props.departments.data)
   console.log(props.student.data)
@@ -63,6 +65,7 @@ export default function StudentUpdateForm(props: Props) {
     resolver: yupResolver(yupStudentUpdateSchema),
     mode: "onChange",
     defaultValues: {
+      id: studentId,
       departmentId: findDepartmentId,
       nameAr: stuedentName,
       nameEn: stuedentName,
@@ -168,6 +171,7 @@ export default function StudentUpdateForm(props: Props) {
                 : "select the a department"
             }
           >
+            <option defaultValue={''} disabled>select department</option>
             {options}
           </select>
         </div>

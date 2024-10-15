@@ -54,6 +54,7 @@ export default function CreateFormLayer({}: Props) {
         mode: "onChange",
     });
     console.log('kjalsdfj')
+    console.l
     const onSubmit: SubmitHandler<YupUserCreateInputs> = async (data) => {
         const {userName, fullName, email, password, confirmPassword, image} =
             data;

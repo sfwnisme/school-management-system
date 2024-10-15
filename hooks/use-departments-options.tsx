@@ -9,6 +9,8 @@ export function useDepartmentsOptions(departments: IClientResponse<IDepartment[]
     isError,
     message,
   } = departments;
+  console.log(departments)
+  
 
   let options = useMemo(() => {
     if (isSuccess) {

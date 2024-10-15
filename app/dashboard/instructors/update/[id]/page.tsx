@@ -8,6 +8,7 @@ import React from "react";
 type Props = {
   params: { id: number };
 };
+
 export default async function page(props: Props) {
   const id = Number(props.params.id)
   const instructorById = await getInstructorById(id) as IClientResponse<IInstructor>;
