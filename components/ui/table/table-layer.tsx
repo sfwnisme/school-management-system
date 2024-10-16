@@ -88,7 +88,9 @@ export default function TableLayer(props: Props) {
       const { isSuccess, isError, message } = await props.deleteFunction(id);
       const toastType = isSuccess ? "success" : "error";
       //NOTE: the error message sometimes it returns an array
-      const messageArrayOrString = Array.isArray(message) ? message.join(' ') : message
+      const messageArrayOrString = Array.isArray(message)
+        ? message.join(" ")
+        : message;
       toast[toastType](messageArrayOrString);
       closeDeletePopover();
     });
@@ -122,8 +124,9 @@ export default function TableLayer(props: Props) {
             ) : Array.isArray(data[head.key as string]) ? (
               data[head.key as string].map((nestedArrayItem: ITableHead) =>
                 (head.arr as ITableHead[])?.map(
-                  (ar: ITableHead) => `${[nestedArrayItem[ar.key as string]]}, `
-                )
+                  (ar: ITableHead) =>
+                    `${[nestedArrayItem[ar.key as string]]}, `,
+                ),
               )
             ) : (
               data[head.key as string]
@@ -168,6 +171,7 @@ export default function TableLayer(props: Props) {
                   variant="danger"
                   size="xs"
                   onClick={() => deleteDataFunction(Number(data[idKey]))}
+                  disabled={isDeleting}
                 >
                   {!isDeleting ? "Delete" : "Deleting..."}
                 </Button>
@@ -176,6 +180,7 @@ export default function TableLayer(props: Props) {
                   outline
                   size="xs"
                   onClick={closeDeletePopover}
+                  disabled={isDeleting}
                 >
                   Cancel
                 </Button>

@@ -1,5 +1,4 @@
 "use client";
-// import Image from 'next'
 import {
   IFetchResponse,
   YupUserCreateInputs,

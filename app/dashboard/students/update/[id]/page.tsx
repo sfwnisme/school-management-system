@@ -7,6 +7,7 @@ import StudentUpdateForm from "../student-update-form";
 type Props = {
   params: { id: number };
 };
+
 export default async function page(props: Props) {
   const id = Number(props.params.id);
   const student = (await getStudentById(id)) as IClientResponse<IStudent>;
@@ -16,7 +17,9 @@ export default async function page(props: Props) {
   return (
     <div>
       <Title title="Update Students">
-        <Button>Students</Button>
+        <Button tag="link" href="/dashboard/students">
+          Students
+        </Button>
       </Title>
       <StudentUpdateForm departments={departments} student={student} />
     </div>

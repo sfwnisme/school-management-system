@@ -1,10 +1,9 @@
 import axios from "axios";
-
 export const baseURL = "http://schoolmanagmentsystem.runasp.net/api/v1/";
-
 export const apiClient = axios.create({
   baseURL,
 });
+
 export const endpoints = {
   authentication: {
     signin: "authentication/sign-in",

@@ -136,7 +136,7 @@ Unhandled Runtime Error
 Error: Objects are not valid as a React child (found: object with keys {street, city, state, zipCode, country}). If you meant to render a collection of children, use an array instead.
 ```
 
-it is hard to share the response of the catch and the try, so I should use ether RTK or React Query
+It is hard to share the response of the catch and the try, so I should use ether RTK or React Query
 
 - [x] return the error message from the API request for the login form.
 - [x] update the api schema by the database changes
@@ -295,7 +295,7 @@ const initialObject = {
   - [x] `getAllSubjects`
   - [x] `deleteSubject`
 
-### Fri 11/10/2024 & Tu 15/10/2024
+### Fri 11/10/2024 & Wed 16/10/2024
 
 - [x] update instructor
 - [x] update department
@@ -323,28 +323,27 @@ const initialObject = {
 - backend issue should be solve
   - [ ] union the subject schema and adding the period columns to its Get request
   - [x] the student update return `403 forbidden` it seems the backend logic block updating this for the super admin.
-  - [ ] the student update return this error message from the endpoint `NameEn: This Value Exists` even if I changed anothe inputs like address, anyway I notified the backend developer to debug this setuation
-  - [x] use `import { InferType } from 'yup'` helped me rid of duplicated interfaces. *check the `definitions.ts` file to understand more about this or you can use the following [reference](https://yup-docs.vercel.app/docs/Api/types)* 
-  - Note: creating reusable components helped me create all create reqeusts forms within an hour.
+  - [ ] the student update return this error message from the endpoint `NameEn: This Value Exists` even if I changed another inputs like address, anyway I notified the backend developer to debug this situation
+  - [x] use `import { InferType } from 'yup'` helped me rid of duplicated interfaces. _check the `definitions.ts` file to understand more about this or you can use the following [reference](https://yup-docs.vercel.app/docs/Api/types)_
+  - Note: creating reusable components helped me create all create requests forms within an hour.
 
 ### Backlog
 
 - [ ] disable the dashboard sidebar depends on the user role.
 - [ ] create a condition for every api request that invoked using the buttons to check if the requirements and the validation steps accomplished before invoking the request function ex: `updateUser(user:IUser)`
 - [ ] forget password endpoint with the code and email.
-- [ ] instructors udpate, create.
+- [ ] instructors update, create.
 - [ ] user and the current user's profile.
 - [ ] dynamic breadcrump.
 - [ ] try and catch of the server returns into the try block of the client components
 - [ ] create Input UI Component with its message and variants, this will help you achieve the Single dependency principle
-- [ ] create an object contains the inputs name of the react hook forms, to help me loop the inputs instead of write them manully every type. [this task need more search to make it more typescript friendly]
-- [ ] dynamic profile page for the all users data types insturctors, users, students and etc....
+- [ ] create an object contains the inputs name of the react hook forms, to help me loop the inputs instead of write them manually every type. [this task need more search to make it more typescript friendly]
+- [ ] dynamic profile page for the all users data types instructors, users, students and etc....
 - [ ] use `useMemo, memo, and useCallback` to maximize the performance.
-- [ ] create multible select input UI Component.
+- [ ] create multiple select input UI Component.
 - [ ] create array of the endpoints
-- [ ] I should create sperated interfaces and types for every CRUD request, in purpose adopting more type-safe.
-- [ ] create multiable select UI Components to handle the multi values for some endpoints like departments and students, etc...
-
+- [ ] I should create separated interfaces and types for every CRUD request, in purpose adopting more type-safe.
+- [ ] create multiple select UI Components to handle the multi values for some endpoints like departments and students, etc...
 
 ## UI components
 

@@ -19,37 +19,37 @@ import { useDepartmentsOptions } from "../../../../hooks/use-departments-options
 
 type Props = {
   departments: IClientResponse<IDepartment[]>;
-  student: IClientResponse<IStudent>
+  student: IClientResponse<IStudent>;
 };
 
 export const revalid = 1;
 export default function StudentUpdateForm(props: Props) {
-  const [isUpdating, startUpdating] = useTransition()
+  const [isUpdating, startUpdating] = useTransition();
   const apiResponseMessageRef = useRef<IFetchResponse<undefined>>({
     isSuccess: false,
     isError: false,
     message: "",
-  })
+  });
   const {
     studId: studentId,
     name: stuedentName,
     address: studentAddress,
-    departmentName
-  } = props?.student?.data || {}
+    departmentName,
+  } = props?.student?.data || {};
 
-  const findDepartmentId = props?.departments.data?.find((department: IDepartment) =>
-    department?.name === (departmentName)?.toString())?.deptId
+  const findDepartmentId = props?.departments.data?.find(
+    (department: IDepartment) =>
+      department?.name === departmentName?.toString(),
+  )?.deptId;
 
-  const {
-    options,
-    selectNotAllowed,
-    message
-  } = useDepartmentsOptions(props?.departments)
+  const { options, selectNotAllowed, message } = useDepartmentsOptions(
+    props?.departments,
+  );
 
-  console.log('departmentId', findDepartmentId)
+  console.log("departmentId", findDepartmentId);
   //--------------------------------
-  //form submition 
-  //-------------------------------- 
+  //form submition
+  //--------------------------------
 
   const {
     register,
@@ -57,41 +57,39 @@ export default function StudentUpdateForm(props: Props) {
     formState: { errors, isValid },
   } = useForm<YupStudentUpdateInputs>({
     resolver: yupResolver(yupStudentUpdateSchema),
-    mode: 'onChange',
+    mode: "onChange",
     defaultValues: {
       nameAr: stuedentName,
       nameEn: stuedentName,
       address: studentAddress,
     },
   });
-  const isUpdatingValid = isValid && !selectNotAllowed
-  const isButtonValid = isUpdating || !isUpdatingValid
+  const isUpdatingValid = isValid && !selectNotAllowed;
+  const isButtonValid = isUpdating || !isUpdatingValid;
   const onSubmit: SubmitHandler<YupStudentUpdateInputs> = (data) => {
-    const { departmentId, nameAr, nameEn, address } = data
+    const { departmentId, nameAr, nameEn, address } = data;
     startUpdating(async () => {
       const updateData = {
         departmentId,
         address,
         nameAr,
-        nameEn
+        nameEn,
       };
       if (isUpdatingValid) {
         const res = await updateStudent(updateData);
         console.log(res);
         if (res) {
-          const { isSuccess, isError, message } = res
-          apiResponseMessageRef.current = { isSuccess, isError, message }
+          const { isSuccess, isError, message } = res;
+          apiResponseMessageRef.current = { isSuccess, isError, message };
         }
       }
-    })
+    });
   };
   //--------------------------------
 
   return (
     <div className="w-full md:max-w-[700px] md:w-auto mx-auto rounded border border-gray-300 p-4">
-      <h1 className="mb-4 text-lg font-medium underline">
-        Update users info:
-      </h1>
+      <h1 className="mb-4 text-lg font-medium underline">Update users info:</h1>
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="grid grid-cols-4 gap-2"
@@ -145,9 +143,7 @@ export default function StudentUpdateForm(props: Props) {
           <Message variant="danger">{errors.address?.message}</Message>
         </div>
         <div className="col-span-full md:col-span-1">
-          <label className="text-sm mb-1 block">
-            department
-          </label>
+          <label className="text-sm mb-1 block">department</label>
           <select
             {...register("departmentId")}
             defaultValue={findDepartmentId}
@@ -159,11 +155,13 @@ export default function StudentUpdateForm(props: Props) {
               `}
             title={
               selectNotAllowed
-                ? message + ' please contact the support'
+                ? message + " please contact the support"
                 : "select the a department"
             }
           >
-            <option selected={!findDepartmentId} disabled>select department</option>
+            <option selected={!findDepartmentId} disabled>
+              select department
+            </option>
             {options}
           </select>
         </div>
