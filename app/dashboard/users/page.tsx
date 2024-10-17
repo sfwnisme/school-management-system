@@ -40,7 +40,7 @@ export default async function page() {
   return (
     <div className="relative">
       <Title title="All Users">
-        <Button tag="link" href="/dashboard/users/add">
+        <Button href="/dashboard/users/add">
           Create
         </Button>
       </Title>

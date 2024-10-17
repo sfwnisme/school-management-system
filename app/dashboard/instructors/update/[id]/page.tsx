@@ -16,7 +16,7 @@ export default async function page(props: Props) {
   return (
     <div>
       <Title title="Update Instructor">
-        <Button tag="link" href="/dashboard/instructors" value="Instructors" />
+        <Button href="/dashboard/instructors" value="Instructors" />
       </Title>
       <InstructorUpdateForm instructor={instructorById} departments={departments} />
     </div>

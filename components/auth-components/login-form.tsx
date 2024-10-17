@@ -7,15 +7,19 @@ import Link from "next/link";
 import { handleSignIn } from "@/lib/actions";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { loginSchema } from "@/lib/validation-schema-yup";
-import { IFetchResponse, LoginInputTypes } from "@/definitions";
+import { IFetchResponse } from "@/definitions";
 import Message from "../ui/message";
 import FetchMessage from "../ui/fetch-message";
+import { yupLoginSchema } from "@/lib/validation-schema-yup";
 
 type Inputs = {
   username: string;
   password: string;
 };
+interface ILogin {
+  username: string;
+  password: string;
+}
 
 export default function LoginForm() {
   const [isLogin, startLogin] = useTransition();
@@ -25,21 +29,22 @@ export default function LoginForm() {
     message: "",
   });
 
+  console.log("test");
+
   const {
     register,
     handleSubmit,
-    watch,
     formState: { errors, isValid },
-  } = useForm<LoginInputTypes>({
-    resolver: yupResolver(loginSchema),
+  } = useForm<ILogin>({
+    resolver: yupResolver(yupLoginSchema),
     mode: "onChange",
   });
 
-  const errorMessage = (value: keyof LoginInputTypes) => {
-    let message = errors[value]?.message;
-    if (message !== undefined) return message;
-    return "";
-  };
+  // const errorMessage = (value: keyof LoginInputTypes) => {
+  //   let message = errors[value]?.message;
+  //   if (message !== undefined) return message;
+  //   return "";
+  // };
 
   const onSubmit: SubmitHandler<Inputs> = (data) => {
     startLogin(async () => {
@@ -49,7 +54,7 @@ export default function LoginForm() {
       };
       const res = await handleSignIn(
         loginCredentials?.username as string,
-        loginCredentials?.password as string
+        loginCredentials?.password as string,
       );
       if (res) {
         const { isSuccess, isError, message } = res;
@@ -60,7 +65,7 @@ export default function LoginForm() {
         };
       } else {
         console.log(
-          "unexpected error from onSubmit function of login-form.tsx"
+          "unexpected error from onSubmit function of login-form.tsx",
         );
       }
     });
@@ -88,8 +93,8 @@ export default function LoginForm() {
                 errors.username?.message
                   ? "danger"
                   : isValid
-                  ? "success"
-                  : "initial"
+                    ? "success"
+                    : "initial"
               }
               {...register("username")}
             />
@@ -103,8 +108,8 @@ export default function LoginForm() {
                 errors.password?.message
                   ? "danger"
                   : isValid
-                  ? "success"
-                  : "initial"
+                    ? "success"
+                    : "initial"
               }
               {...register("password")}
             />
@@ -116,13 +121,16 @@ export default function LoginForm() {
           >
             help reset my password
           </Link>
-          <Button
-            type="submit"
-            value={"login"}
-            disabled={!isValid || isLogin ? true : false}
-            loading={isLogin}
-            size="sm"
-          />
+          <div className="col-span-full">
+            <Button
+              type="submit"
+              value={"login"}
+              width="full"
+              disabled={!isValid || isLogin ? true : false}
+              loading={isLogin}
+              size="sm"
+            />
+          </div>
         </form>
         <FetchMessage
           isSuccess={apiResponseMessagesRef.current.isSuccess}

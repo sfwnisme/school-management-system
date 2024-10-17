@@ -1,12 +1,10 @@
 import Button from "@/components/ui/button";
-import SubjectsTable from "@/components/ui/subjects/subjects-table";
 import TableLayer from "@/components/ui/table/table-layer";
 import Title from "@/components/ui/title";
 import { ITableHead } from "@/definitions";
 import { deleteSubject, getAllSubjects } from "@/lib/actions";
 import { Plus } from "lucide-react";
 import React from "react";
-
 
 const subjectsKeysAndNames: ITableHead[] = [
   {
@@ -44,9 +42,7 @@ export default async function page() {
   return (
     <div>
       <Title title="All Subjects">
-        <Button tag="link" href="/dashboard/subjects/add">
-          create
-        </Button>
+        <Button href="/dashboard/subjects/add">create</Button>
       </Title>
       <TableLayer
         dataFunction={subjects}

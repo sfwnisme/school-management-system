@@ -1,32 +1,41 @@
 "use client";
-import {
-  IFetchResponse,
-  YupUserCreateInputs,
-} from "@/definitions";
-import { createUser, getAllUsers } from "@/lib/actions";
+
+import { ChangeEvent, useRef, useState, useTransition } from "react";
+import { createUser } from "@/lib/actions";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { IFetchResponse, YupUserCreateInputs } from "@/definitions";
 import { yupUserCreateSchema } from "@/lib/validation-schema-yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import React, {
-  ChangeEvent,
-  FormEventHandler,
-  ReactNode,
-  useRef,
-  useState,
-  useTransition,
-} from "react";
-import { Resolver, SubmitHandler, useForm } from "react-hook-form";
-import Button from "../button";
-import FileInput from "../file-input";
-import Message from "../message";
-import Input from "../input";
-import { apiClient, endpoints } from "@/lib/endpoints";
-import { getCookie } from "cookies-next";
-import { appendToFormData } from "@/lib/utils";
-import ConditionalMessage from "../conditional-message";
-import FetchMessage from "../fetch-message";
+
+import Button from "@/components/ui/button";
+import FileInput from "@/components/ui/file-input";
+import Message from "@/components/ui/message";
+import Input from "@/components/ui/input";
+import FetchMessage from "@/components/ui/fetch-message";
+import { mixed, object, ref, string } from "yup";
+
+interface CreateInputs {
+  userName: string;
+  fullName: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
+  image: FileList;
+}
+
+// const yupUserCreateSchema = object({
+//   userName: string().required("Username is required"),
+//   fullName: string().required("Full name is required"),
+//   email: string().email("Invalid email").required("Email is required"),
+//   password: string().required("Password is required"),
+//   confirmPassword: string()
+//     .oneOf([ref("password")], "Passwords must match")
+//     .required("Confirm password is required"),
+//   image: mixed().required("Image is required"),
+// });
 
 type Props = {};
-export default function UserCreateForm({ }: Props) {
+export default function UserCreateForm({}: Props) {
   const [isCreatingUser, startCreatingUser] = useTransition();
   const apiResponseMessagesRef = useRef<IFetchResponse<[]>>({
     isSuccess: false,
@@ -35,9 +44,11 @@ export default function UserCreateForm({ }: Props) {
   });
   const [profileImage, setProfileImage] = useState("");
   const [nativeImage, setNativeImage] = useState<File>();
+  const [singleImage, setSingleImage] = useState<File | undefined>();
 
   const imagePreview = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
+    setSingleImage(file);
     setNativeImage(file);
     if (file) {
       setProfileImage(URL.createObjectURL(file));
@@ -63,10 +74,11 @@ export default function UserCreateForm({ }: Props) {
     FD.append("password", password);
     FD.append("confirmPassword", confirmPassword);
     FD.append("image", image[0]);
+    // FD.append("image", singleImage);
 
     startCreatingUser(async () => {
       const { isSuccess, isError, message } = (await createUser(
-        FD
+        FD,
       )) as IFetchResponse<undefined>;
       if (status !== "idle") {
         apiResponseMessagesRef.current = {
@@ -178,21 +190,23 @@ export default function UserCreateForm({ }: Props) {
             accept="image/*"
           />
         </div>
-        <Button
-          variant="info"
-          type="submit"
-          loading={isCreatingUser}
-          disabled={isCreatingUser || !isValid}
-          loadingText="Creating..."
-          title={
-            isValid
-              ? "click the button to create the user"
-              : "fill the required blanks to create a user"
-          }
-        >
-          Create
-        </Button>
-
+        <div className="col-span-full">
+          <Button
+            variant="info"
+            type="submit"
+            width="full"
+            loading={isCreatingUser}
+            disabled={isCreatingUser || !isValid}
+            loadingText="Creating..."
+            title={
+              isValid
+                ? "click the button to create the user"
+                : "fill the required blanks to create a user"
+            }
+          >
+            Create
+          </Button>
+        </div>
         <div className="col-span-full">
           <FetchMessage
             message={apiResponseMessagesRef.current.message}

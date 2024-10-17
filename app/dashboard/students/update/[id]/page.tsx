@@ -17,7 +17,7 @@ export default async function page(props: Props) {
   return (
     <div>
       <Title title="Update Students">
-        <Button tag="link" href="/dashboard/students">
+        <Button href="/dashboard/students">
           Students
         </Button>
       </Title>

@@ -20,16 +20,12 @@ type Props = {
 };
 
 export default function SubjectUpdateForm(props: Props) {
-  const [isUpdating, startUpdating] = useTransition()
-  const { responseRef, updateResponse } = useFetchResponse()
+  const [isUpdating, startUpdating] = useTransition();
+  const { responseRef, updateResponse } = useFetchResponse();
 
-  const {
-    id,
-    name,
-    period
-  } = props?.subject?.data || {}
+  const { id, name, period } = props?.subject?.data || {};
 
-  console.log(props?.subject.data)
+  console.log(props?.subject.data);
 
   const {
     register,
@@ -42,36 +38,36 @@ export default function SubjectUpdateForm(props: Props) {
     defaultValues: {
       subjectNameAr: name,
       subjectNameEn: name,
-      period: (period)?.split('T')[0]
+      period: period?.split("T")[0],
     },
   });
 
-  console.log(watch())
+  console.log(watch());
 
-  const isUpdatingValid = isValid
-  const isButtonValid = isUpdating || !isUpdatingValid
+  const isUpdatingValid = isValid;
+  const isButtonValid = isUpdating || !isUpdatingValid;
   const onSubmit: SubmitHandler<YupSubjectUpdateInputs> = (data) => {
-    const { subjectNameAr, subjectNameEn, period } = data
+    const { subjectNameAr, subjectNameEn, period } = data;
     startUpdating(async () => {
       const updateData = {
         subjectId: id,
         subjectNameAr,
         subjectNameEn,
-        period
+        period,
       };
       if (isUpdatingValid) {
         const res = await updateSubject(updateData);
         if (res) {
-          updateResponse(res)
+          updateResponse(res);
         }
       }
-    })
+    });
   };
 
   return (
     <div className="w-full md:max-w-[700px] md:w-auto mx-auto rounded border border-gray-300 p-4">
       <h1 className="mb-4 text-lg font-medium underline">
-        Update subject's info:
+        Update subject&apos;s info:
       </h1>
       <form
         onSubmit={handleSubmit(onSubmit)}
@@ -109,7 +105,7 @@ export default function SubjectUpdateForm(props: Props) {
           />
           <Message variant="danger">{errors.subjectNameEn?.message}</Message>
         </div>
-        <div className="col-span-full md:col-span-2">
+        <div className="col-span-full">
           <Input
             type="date"
             title="english name"
@@ -125,15 +121,18 @@ export default function SubjectUpdateForm(props: Props) {
           />
           <Message variant="danger">{errors.period?.message}</Message>
         </div>
-        <Button
-          variant="info"
-          type="submit"
-          loading={isUpdating}
-          disabled={isButtonValid}
-          loadingText="Updating..."
-        >
-          Update
-        </Button>
+        <div className="col-span-full">
+          <Button
+            variant="info"
+            type="submit"
+            width="full"
+            loading={isUpdating}
+            disabled={isButtonValid}
+            loadingText="Updating..."
+          >
+            Update
+          </Button>
+        </div>
         <FetchMessage
           isSuccess={responseRef.current.isSuccess}
           isError={responseRef.current.isError}

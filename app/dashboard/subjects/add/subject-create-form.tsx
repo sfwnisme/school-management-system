@@ -1,5 +1,9 @@
 "use client";
-import { IClientResponse, IDepartment, YupSubjectCreateInputs } from "@/definitions";
+import {
+  IClientResponse,
+  IDepartment,
+  YupSubjectCreateInputs,
+} from "@/definitions";
 import React, { useTransition } from "react";
 import { useDepartmentsOptions } from "../../../../hooks/use-departments-options";
 import { SubmitHandler, useForm } from "react-hook-form";
@@ -12,25 +16,24 @@ import Button from "@/components/ui/button";
 import FetchMessage from "@/components/ui/fetch-message";
 import useFetchResponse from "@/hooks/use-fetch-response";
 
-
 export default function SubjectCreateForm() {
-  const [isCreating, startCreating] = useTransition()
-  const { responseRef, updateResponse } = useFetchResponse()
+  const [isCreating, startCreating] = useTransition();
+  const { responseRef, updateResponse } = useFetchResponse();
 
   const {
     register,
     handleSubmit,
     formState: { errors, isValid },
-    watch
+    watch,
   } = useForm<YupSubjectCreateInputs>({
     resolver: yupResolver(yupSubjectCreateSchema),
     mode: "onChange",
   });
-  console.log(watch())
-  const isCreatingValid = isValid
-  const isButtonValid = isCreating || !isCreatingValid
+  console.log(watch());
+  const isCreatingValid = isValid;
+  const isButtonValid = isCreating || !isCreatingValid;
   const onSubmit: SubmitHandler<YupSubjectCreateInputs> = (data) => {
-    const { subjectNameAr, subjectNameEn, period } = data
+    const { subjectNameAr, subjectNameEn, period } = data;
     startCreating(async () => {
       const createData = {
         subjectNameAr,
@@ -41,17 +44,15 @@ export default function SubjectCreateForm() {
         const res = await createSubject(createData);
         console.log(res);
         if (res) {
-          updateResponse(res)
+          updateResponse(res);
         }
       }
-    })
+    });
   };
 
   return (
     <div className="w-full md:max-w-[700px] md:w-auto mx-auto rounded border border-gray-300 p-4">
-      <h1 className="mb-4 text-lg font-medium underline">
-        Create users info:
-      </h1>
+      <h1 className="mb-4 text-lg font-medium underline">Create users info:</h1>
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="grid grid-cols-4 gap-2"
@@ -104,15 +105,18 @@ export default function SubjectCreateForm() {
           />
           <Message variant="danger">{errors.period?.message}</Message>
         </div>
-        <Button
-          variant="info"
-          type="submit"
-          loading={isCreating}
-          disabled={isButtonValid}
-          loadingText="Creating..."
-        >
-          Create
-        </Button>
+        <div className="col-span-full">
+          <Button
+            variant="info"
+            type="submit"
+            width="full"
+            loading={isCreating}
+            disabled={isButtonValid}
+            loadingText="Creating..."
+          >
+            Create
+          </Button>
+        </div>
         <FetchMessage
           isSuccess={responseRef.current.isSuccess}
           isError={responseRef.current.isError}

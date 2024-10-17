@@ -9,7 +9,7 @@ export default function NotFound() {
         Oops!
       </h1>
       <p className="text-gray-400">you are not authorized to access this page</p>
-      <Button tag="link" href="/dashboard" variant="link">
+      <Button href="/dashboard" variant="link">
         Go back
       </Button>
     </div>

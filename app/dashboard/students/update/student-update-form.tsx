@@ -165,15 +165,18 @@ export default function StudentUpdateForm(props: Props) {
             {options}
           </select>
         </div>
-        <Button
-          variant="info"
-          type="submit"
-          loading={isUpdating}
-          disabled={isButtonValid}
-          loadingText="Updating..."
-        >
-          Update
-        </Button>
+        <div className="col-span-full">
+          <Button
+            variant="info"
+            type="submit"
+            width="full"
+            loading={isUpdating}
+            disabled={isButtonValid}
+            loadingText="Updating..."
+          >
+            Update
+          </Button>
+        </div>
         <FetchMessage
           isSuccess={apiResponseMessageRef.current.isSuccess}
           isError={apiResponseMessageRef.current.isError}

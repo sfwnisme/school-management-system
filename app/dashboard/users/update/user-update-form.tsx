@@ -1,6 +1,6 @@
 "use client";
 import React, { useTransition } from "react";
-import Input from "../input";
+import Input from "@/components/ui/input";
 import {
   IClientResponse,
   IRole,
@@ -10,10 +10,10 @@ import {
 import { SubmitHandler, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { updateUser } from "@/lib/actions";
-import Button from "../button";
+import Button from "@/components/ui/button";
 import { yupUserUpdateSchema } from "@/lib/validation-schema-yup";
-import Message from "../message";
-import FetchMessage from "../fetch-message";
+import Message from "@/components/ui/message";
+import FetchMessage from "@/components/ui/fetch-message";
 import useFetchResponse from "@/hooks/use-fetch-response";
 import { useRolessOptions } from "@/hooks/use-roles-options";
 
@@ -34,11 +34,12 @@ export default function UserUpdateForm(props: Props) {
     roles,
   } = props?.user.data || {};
 
-  console.log('sfwn is me', props?.roles.data)
+  console.log("sfwn is me", props?.roles.data);
 
   const { options, selectNotAllowed, message } = useRolessOptions(props?.roles);
-  const findRoleId =
-    props?.roles?.data?.find((role) => role.name === roles?.[0])?.name
+  const findRoleId = props?.roles?.data?.find(
+    (role) => role.name === roles?.[0],
+  )?.name;
 
   const {
     register,
@@ -135,18 +136,23 @@ export default function UserUpdateForm(props: Props) {
               : "select the role"
           }
         >
-          <option selected={!findRoleId} disabled>select role</option>
+          <option selected={!findRoleId} disabled>
+            select role
+          </option>
           {options}
         </select>
-        <Button
-          variant="info"
-          type="submit"
-          loading={isUpdating}
-          disabled={isButtonValid}
-          loadingText="Updating..."
-        >
-          Update
-        </Button>
+        <div className="col-span-full">
+          <Button
+            variant="info"
+            type="submit"
+            width="full"
+            loading={isUpdating}
+            disabled={isButtonValid}
+            loadingText="Updating..."
+          >
+            Update
+          </Button>
+        </div>
         <FetchMessage
           message={responseRef.current.message}
           isSuccess={responseRef.current.isSuccess}

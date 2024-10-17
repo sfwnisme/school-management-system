@@ -22,7 +22,7 @@ export default async function page(props: Props) {
   return (
     <div>
       <Title title="Update Subject">
-        <Button tag="link" href="/dashboard/subjects" value="Subjects" />
+        <Button href="/dashboard/subjects" value="Subjects" />
       </Title>
       <SubjectUpdateForm subject={subjectById} />
     </div>

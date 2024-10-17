@@ -141,7 +141,6 @@ export default function TableLayer(props: Props) {
               variant="info"
               width="full"
               href={`${props.route}/update/${data[idKey]}`}
-              tag="link"
               id={data[idKey]}
             >
               <Edit size={15} />

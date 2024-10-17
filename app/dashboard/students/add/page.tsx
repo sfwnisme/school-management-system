@@ -11,7 +11,7 @@ export default async function page() {
   return (
     <div>
       <Title title="Add student">
-        <Button tag="link" href="/dashboard/students">
+        <Button href="/dashboard/students">
           students
         </Button>
       </Title>

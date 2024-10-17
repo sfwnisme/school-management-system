@@ -1,5 +1,9 @@
 "use client";
-import { IClientResponse, IInstructor, YupDepartmentCreateInputs } from "@/definitions";
+import {
+  IClientResponse,
+  IInstructor,
+  YupDepartmentCreateInputs,
+} from "@/definitions";
 import React, { useTransition } from "react";
 import { useInstructorsOptions } from "../../../../hooks/use-instructors-options";
 import { SubmitHandler, useForm } from "react-hook-form";
@@ -17,30 +21,27 @@ type Props = {
 };
 
 export default function DepartmentCreateForm(props: Props) {
-  const [isCreating, startCreating] = useTransition()
-  const { responseRef, updateResponse } = useFetchResponse()
+  const [isCreating, startCreating] = useTransition();
+  const { responseRef, updateResponse } = useFetchResponse();
 
-
-  const {
-    options,
-    selectNotAllowed,
-    message
-  } = useInstructorsOptions(props?.instructors)
+  const { options, selectNotAllowed, message } = useInstructorsOptions(
+    props?.instructors,
+  );
 
   const {
     register,
     handleSubmit,
     formState: { errors, isValid },
-    watch
+    watch,
   } = useForm<YupDepartmentCreateInputs>({
     resolver: yupResolver(yupDepartmentCreateSchema),
     mode: "onChange",
   });
-  console.log(watch())
-  const isCreatingValid = isValid && !selectNotAllowed
-  const isButtonValid = isCreating || !isCreatingValid
+  console.log(watch());
+  const isCreatingValid = isValid && !selectNotAllowed;
+  const isButtonValid = isCreating || !isCreatingValid;
   const onSubmit: SubmitHandler<YupDepartmentCreateInputs> = (data) => {
-    const { insId, nameAr, nameEn } = data
+    const { insId, nameAr, nameEn } = data;
     startCreating(async () => {
       const createData = {
         insId,
@@ -51,17 +52,15 @@ export default function DepartmentCreateForm(props: Props) {
         const res = await createDepartment(createData);
         console.log(res);
         if (res) {
-          updateResponse(res)
+          updateResponse(res);
         }
       }
-    })
+    });
   };
 
   return (
     <div className="w-full md:max-w-[700px] md:w-auto mx-auto rounded border border-gray-300 p-4">
-      <h1 className="mb-4 text-lg font-medium underline">
-        Update users info:
-      </h1>
+      <h1 className="mb-4 text-lg font-medium underline">Update users info:</h1>
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="grid grid-cols-4 gap-2"
@@ -99,9 +98,7 @@ export default function DepartmentCreateForm(props: Props) {
           <Message variant="danger">{errors.nameEn?.message}</Message>
         </div>
         <div className="col-span-full md:col-span-full">
-          <label className="text-sm mb-1 block">
-            instructor
-          </label>
+          <label className="text-sm mb-1 block">instructor</label>
           <select
             {...register("insId")}
             disabled={selectNotAllowed}
@@ -111,23 +108,28 @@ export default function DepartmentCreateForm(props: Props) {
               `}
             title={
               selectNotAllowed
-                ? message + ', please contact the support'
+                ? message + ", please contact the support"
                 : "select the a instructor"
             }
           >
-            <option selected disabled>select department</option>
+            <option selected disabled>
+              select department
+            </option>
             {options}
           </select>
         </div>
-        <Button
-          variant="info"
-          type="submit"
-          loading={isCreating}
-          disabled={isButtonValid}
-          loadingText="Creating..."
-        >
-          Update
-        </Button>
+        <div className="col-span-full">
+          <Button
+            variant="info"
+            type="submit"
+            width="full"
+            loading={isCreating}
+            disabled={isButtonValid}
+            loadingText="Creating..."
+          >
+            Update
+          </Button>
+        </div>
         <FetchMessage
           isSuccess={responseRef.current.isSuccess}
           isError={responseRef.current.isError}

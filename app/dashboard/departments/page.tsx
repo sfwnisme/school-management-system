@@ -1,5 +1,4 @@
 import Button from "@/components/ui/button";
-import DepartmentsTable from "@/components/ui/departments/departments-table";
 import TableLayer from "@/components/ui/table/table-layer";
 import Title from "@/components/ui/title";
 import { deleteDepartment, getAllDepartments } from "@/lib/actions";
@@ -7,7 +6,7 @@ import React from "react";
 
 export default async function page() {
   const departments = await getAllDepartments();
-  console.log(departments)
+  console.log(departments);
 
   const departmentsKeysAndNames = [
     {
@@ -22,11 +21,8 @@ export default async function page() {
   return (
     <div>
       <Title title="All Departments">
-        <Button tag="link" href="/dashboard/departments/create">
-          Create
-        </Button>
+        <Button href="/dashboard/departments/add">Create</Button>
       </Title>
-      {/* <DepartmentsTable /> */}
       <TableLayer
         dataFunction={departments}
         deleteFunction={deleteDepartment}

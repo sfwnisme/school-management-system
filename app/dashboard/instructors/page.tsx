@@ -1,7 +1,5 @@
 import Button from "@/components/ui/button";
-// import InstructorsTable from "@/components/ui/instructors/instructors-table";
 import TableLayer from "@/components/ui/table/table-layer";
-// import Title from "@/components/ui/title";
 import { deleteInstructor, getAllInstructors } from "@/lib/actions";
 import React from "react";
 import Title from "../../../components/ui/title";
@@ -29,9 +27,7 @@ export default async function page() {
   return (
     <div>
       <Title title="All Instructors">
-        <Button tag="link" href="/dashboard/instructors/add">
-          Create
-        </Button>
+        <Button href="/dashboard/instructors/add">Create</Button>
       </Title>
       <TableLayer
         dataFunction={instructors}

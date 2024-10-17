@@ -2,7 +2,7 @@
 import axios, { AxiosError, AxiosResponse } from "axios";
 import { apiClient, endpoints } from "./endpoints";
 import { cookies } from "next/headers";
-import { revalidatePath, revalidateTag } from "next/cache";
+import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { isRedirectError } from "next/dist/client/components/redirect";
 import {
@@ -49,6 +49,7 @@ export async function handleSignIn(
       throw error;
     }
     if (axios.isAxiosError(error)) {
+      console.log('error sfwn login', error)
       if (error.response) {
         const {
           data: { statusCode, message },
@@ -62,6 +63,7 @@ export async function handleSignIn(
         );
       }
     } else {
+      console.log('error sfwn login', error)
       return fetchResponse(
         400,
         "error",
@@ -74,9 +76,8 @@ export async function handleSignIn(
 export async function refreshTokenIfExpired(): Promise<
   IFetchResponse<[]> | undefined
 > {
-  apiClient.defaults.headers.common["Authorization"] = `Bearer ${
-    cookies().get("token")?.value
-  }`;
+  apiClient.defaults.headers.common["Authorization"] = `Bearer ${cookies().get("token")?.value
+    }`;
   try {
     const FD = new FormData();
     const token = cookies().get("token")?.value;
@@ -114,9 +115,8 @@ export async function refreshTokenIfExpired(): Promise<
 }
 
 export async function isTokenValid(): Promise<IFetchResponse<[]> | undefined> {
-  apiClient.defaults.headers.common["Authorization"] = `Bearer ${
-    cookies().get("token")?.value
-  }`;
+  apiClient.defaults.headers.common["Authorization"] = `Bearer ${cookies().get("token")?.value
+    }`;
   try {
     const token = cookies().get("token")?.value;
     if (token) {
@@ -249,9 +249,8 @@ export async function getCurrentUser(): Promise<
 export async function getUserById(
   id: number,
 ): Promise<IFetchResponse<IUser> | undefined> {
-  apiClient.defaults.headers.common["Authorization"] = `Bearer ${
-    cookies().get("token")?.value
-  }`;
+  apiClient.defaults.headers.common["Authorization"] = `Bearer ${cookies().get("token")?.value
+    }`;
   try {
     const {
       status,
@@ -488,9 +487,8 @@ export async function getAllRoles(): Promise<
 export async function getRolesByUserId(
   id: number,
 ): Promise<IFetchResponse<IRole> | undefined> {
-  apiClient.defaults.headers.common["Authorization"] = `Bearer ${
-    cookies().get("token")?.value
-  }`;
+  apiClient.defaults.headers.common["Authorization"] = `Bearer ${cookies().get("token")?.value
+    }`;
   try {
     const {
       status,
@@ -531,9 +529,8 @@ export async function getRolesByUserId(
 export async function getAllInstructors(): Promise<
   IFetchResponse<IInstructor> | undefined
 > {
-  apiClient.defaults.headers.common["Authorization"] = `Bearer ${
-    cookies().get("token")?.value
-  }`;
+  apiClient.defaults.headers.common["Authorization"] = `Bearer ${cookies().get("token")?.value
+    }`;
   const token = cookies().get("token")?.value;
   try {
     if (token) {
@@ -931,9 +928,8 @@ export async function deleteDepartment(
 export async function getAllStudents(): Promise<
   IFetchResponse<IStudent> | undefined
 > {
-  apiClient.defaults.headers.common["Authorization"] = `Bearer ${
-    cookies().get("token")?.value
-  }`;
+  apiClient.defaults.headers.common["Authorization"] = `Bearer ${cookies().get("token")?.value
+    }`;
   const token = cookies().get("token")?.value;
   try {
     if (token) {
@@ -1141,9 +1137,8 @@ export async function deleteStudent(
 export async function getAllSubjects(): Promise<
   IFetchResponse<ISubject> | undefined
 > {
-  apiClient.defaults.headers.common["Authorization"] = `Bearer ${
-    cookies().get("token")?.value
-  }`;
+  apiClient.defaults.headers.common["Authorization"] = `Bearer ${cookies().get("token")?.value
+    }`;
   const token = cookies().get("token")?.value;
   try {
     if (token) {

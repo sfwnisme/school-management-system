@@ -9,11 +9,15 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@eslint/config-array": "^0.18.0",
+    "@eslint/object-schema": "^2.1.4",
     "@hookform/resolvers": "^3.9.0",
     "@types/js-cookie": "^3.0.6",
     "axios": "^1.7.4",
     "cookies-next": "^4.2.1",
+    "glob": "^11.0.0",
     "js-cookie": "^3.0.5",
+    "lru-cache": "^11.0.1",
     "lucide": "^0.428.0",
     "lucide-react": "^0.428.0",
     "next": "14.2.15",
@@ -21,7 +25,7 @@
     "react-dom": "^18",
     "react-hook-form": "^7.53.0",
     "react-toastify": "^10.0.5",
-    "universal-cookie": "^7.2.0",
+    "rimraf": "^6.0.1",
     "url-parse": "^1.5.10",
     "yup": "^1.4.0"
   },
@@ -33,6 +37,6 @@
     "eslint-config-next": "^14.2.8",
     "postcss": "^8",
     "tailwindcss": "^3.4.1",
-    "typescript": "^5.5.2"
+    "typescript": "^5"
   }
 }

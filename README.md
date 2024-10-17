@@ -295,7 +295,7 @@ const initialObject = {
   - [x] `getAllSubjects`
   - [x] `deleteSubject`
 
-### Fri 11/10/2024 & Wed 16/10/2024
+### Fri 11/10/2024 & Th 17/10/2024
 
 - [x] update instructor
 - [x] update department
@@ -308,8 +308,8 @@ const initialObject = {
 - [ ] create select input UI Component
 - [x] change the `user-update-form.tsx` and `user-reset-password.tsx` file like the `instructor-update-form.tsx` file
 - [ ] display the supervisor and the manager in the tables of the departments and the instructors
-- [x] change the typescript types file `definitions.d.ts` to `definitions.ts` as it documentation recommeded
-- update the following components to the new, clea and a little single-resonsibitlity approach
+- [x] change the typescript types file `definitions.d.ts` to `definitions.ts` as it documentation recommended
+- update the following components to the new, clean and a little single-responsibility approach
   - [x] `user-update-form.tsx`
   - [x] `user-reset-password-form.tsx`
   - [x] `instructor-update-form.tsx`
@@ -326,6 +326,7 @@ const initialObject = {
   - [ ] the student update return this error message from the endpoint `NameEn: This Value Exists` even if I changed another inputs like address, anyway I notified the backend developer to debug this situation
   - [x] use `import { InferType } from 'yup'` helped me rid of duplicated interfaces. _check the `definitions.ts` file to understand more about this or you can use the following [reference](https://yup-docs.vercel.app/docs/Api/types)_
   - Note: creating reusable components helped me create all create requests forms within an hour.
+  - [x] fix all the typescript errors to finalize the project and upload it.
 
 ### Backlog
 

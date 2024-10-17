@@ -7,7 +7,7 @@ export default function page() {
   return (
     <div>
       <Title title="Add subject">
-        <Button tag="link" href="/dashboard/subjects">
+        <Button href="/dashboard/subjects">
           subjects
         </Button>
       </Title>
