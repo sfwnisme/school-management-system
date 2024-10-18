@@ -2,15 +2,14 @@
 import {
   IClientResponse,
   IDepartment,
-  IInstructor,
-  YupInstructorUpdateInputs,
+  YupStudentCreateInputs,
 } from "@/definitions";
 import React, { useTransition } from "react";
 import { useDepartmentsOptions } from "../../../../hooks/use-departments-options";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { yupInstructorUpdateSchema } from "@/lib/validation-schema-yup";
+import { yupStudentCreateSchema } from "@/lib/validation-schema-yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { updateInstructor } from "@/lib/actions";
+import { createStudent } from "@/lib/actions";
 import Input from "@/components/ui/input";
 import Message from "@/components/ui/message";
 import Button from "@/components/ui/button";
@@ -18,21 +17,12 @@ import FetchMessage from "@/components/ui/fetch-message";
 import useFetchResponse from "@/hooks/use-fetch-response";
 
 type Props = {
-  instructor: IClientResponse<IInstructor>;
   departments: IClientResponse<IDepartment[]>;
 };
 
-export default function InstructorUpdateForm(props: Props) {
-  const [isUpdating, startUpdating] = useTransition();
+export default function StudentCreateForm(props: Props) {
+  const [isCreating, startCreating] = useTransition();
   const { responseRef, updateResponse } = useFetchResponse();
-
-  const {
-    instId: instructorId,
-    name: instructorName,
-    position: instructorPosition,
-    salary: instructorSalary,
-    deptId: instructorDeptId,
-  } = props?.instructor?.data || {};
 
   const { options, selectNotAllowed, message } = useDepartmentsOptions(
     props?.departments,
@@ -42,33 +32,25 @@ export default function InstructorUpdateForm(props: Props) {
     register,
     handleSubmit,
     formState: { errors, isValid },
-  } = useForm<YupInstructorUpdateInputs>({
-    resolver: yupResolver(yupInstructorUpdateSchema),
+    watch,
+  } = useForm<YupStudentCreateInputs>({
+    resolver: yupResolver(yupStudentCreateSchema),
     mode: "onChange",
-    defaultValues: {
-      nameAr: instructorName,
-      nameEn: instructorName,
-      position: instructorPosition,
-      salary: instructorSalary,
-      departmentId: instructorDeptId,
-    },
   });
-
-  const isUpdatingValid = isValid && !selectNotAllowed;
-  const isButtonValid = isUpdating || !isUpdatingValid;
-  const onSubmit: SubmitHandler<YupInstructorUpdateInputs> = (data) => {
-    const { nameAr, nameEn, position, salary, departmentId } = data;
-    startUpdating(async () => {
-      const updateData = {
-        id: instructorId,
+  console.log(watch());
+  const isCreatingValid = isValid && !selectNotAllowed;
+  const isButtonValid = isCreating || !isCreatingValid;
+  const onSubmit: SubmitHandler<YupStudentCreateInputs> = (data) => {
+    const { nameAr, nameEn, address, departmentId } = data;
+    startCreating(async () => {
+      const createData = {
         nameAr,
         nameEn,
-        position,
-        salary,
+        address,
         departmentId,
       };
-      if (isUpdatingValid) {
-        const res = await updateInstructor(updateData);
+      if (isCreatingValid) {
+        const res = await createStudent(createData);
         console.log(res);
         if (res) {
           updateResponse(res);
@@ -79,7 +61,7 @@ export default function InstructorUpdateForm(props: Props) {
 
   return (
     <div className="w-full md:max-w-[700px] md:w-auto mx-auto rounded border border-gray-300 p-4">
-      <h1 className="mb-4 text-lg font-medium underline">Update users info:</h1>
+      <h1 className="mb-4 text-lg font-medium underline">Create users info:</h1>
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="grid grid-cols-4 gap-2"
@@ -89,7 +71,6 @@ export default function InstructorUpdateForm(props: Props) {
             type="text"
             title="arabic name"
             placeholder="Your full arabic name"
-            defaultValue={instructorName}
             variant={
               errors.nameAr?.message
                 ? "danger"
@@ -117,43 +98,26 @@ export default function InstructorUpdateForm(props: Props) {
           />
           <Message variant="danger">{errors.nameEn?.message}</Message>
         </div>
-        <div className="col-span-full md:col-span-2">
+        <div className="col-span-full md:col-span-3">
           <Input
             type="text"
-            title="position"
-            placeholder="Your position"
+            title="address"
+            placeholder="Your user address"
             variant={
-              errors.position?.message
+              errors.address?.message
                 ? "danger"
                 : isValid
                   ? "success"
                   : "initial"
             }
-            {...register("position")}
+            {...register("address")}
           />
-          <Message variant="danger">{errors.position?.message}</Message>
-        </div>
-        <div className="col-span-full md:col-span-1">
-          <Input
-            type="text"
-            title="salary"
-            placeholder="Your user salary"
-            variant={
-              errors.salary?.message
-                ? "danger"
-                : isValid
-                  ? "success"
-                  : "initial"
-            }
-            {...register("salary")}
-          />
-          <Message variant="danger">{errors.salary?.message}</Message>
+          <Message variant="danger">{errors.address?.message}</Message>
         </div>
         <div className="col-span-full md:col-span-1">
           <label className="text-sm mb-1 block">department</label>
           <select
             {...register("departmentId")}
-            defaultValue={instructorDeptId}
             disabled={selectNotAllowed}
             className={`
               disabled:opacity-50 disabled:cursor-not-allowed
@@ -165,8 +129,8 @@ export default function InstructorUpdateForm(props: Props) {
                 : "select the a department"
             }
           >
-            <option selected={!instructorDeptId} disabled>
-              select instructor
+            <option selected disabled>
+              select student
             </option>
             {options}
           </select>
@@ -176,11 +140,11 @@ export default function InstructorUpdateForm(props: Props) {
             variant="info"
             type="submit"
             width="full"
-            loading={isUpdating}
+            loading={isCreating}
             disabled={isButtonValid}
-            loadingText="Updating..."
+            loadingText="Creating..."
           >
-            Update
+            Create
           </Button>
         </div>
         <FetchMessage

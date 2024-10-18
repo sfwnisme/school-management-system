@@ -6,7 +6,7 @@ import { getCurrentUser } from "@/lib/actions";
 
 type Props = {};
 
-export default async function Hero({}: Props) {
+export default async function Hero({ }: Props) {
   const user = await getCurrentUser()
   console.log(user)
   return (
@@ -60,9 +60,8 @@ export default async function Hero({}: Props) {
               value="Explore"
               variant="info"
               href={"/dashboard"}
-              tag={"link"}
             >
-              Explore <ArrowRight strokeWidth={1} />
+              Explore
             </Button>
           </div>
         </div>

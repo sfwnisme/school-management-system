@@ -23,23 +23,21 @@ type Props = {
 };
 
 export default function DepartmentUpdateForm(props: Props) {
-  const [isUpdating, startUpdating] = useTransition()
-  const { responseRef, updateResponse } = useFetchResponse()
+  const [isUpdating, startUpdating] = useTransition();
+  const { responseRef, updateResponse } = useFetchResponse();
 
   const {
     id: departmentId,
     managerName: departmentManagerName,
-    name: departmentName
-  } = props?.department?.data || {}
+    name: departmentName,
+  } = props?.department?.data || {};
 
-  const {
-    options,
-    selectNotAllowed,
-    message
-  } = useInstructorsOptions(props?.instructors)
-  const findInsctructorId = props?.instructors.data?.find((instructor) =>
-    instructor?.name === departmentManagerName
-  )?.instId
+  const { options, selectNotAllowed, message } = useInstructorsOptions(
+    props?.instructors,
+  );
+  const findInsctructorId = props?.instructors.data?.find(
+    (instructor) => instructor?.name === departmentManagerName,
+  )?.instId;
 
   const {
     register,
@@ -51,35 +49,33 @@ export default function DepartmentUpdateForm(props: Props) {
     defaultValues: {
       insId: findInsctructorId,
       nameAr: departmentName,
-      nameEn: departmentName
+      nameEn: departmentName,
     },
   });
 
-  const isUpdatingValid = isValid && !selectNotAllowed
-  const isButtonValid = isUpdating || !isUpdatingValid
+  const isUpdatingValid = isValid && !selectNotAllowed;
+  const isButtonValid = isUpdating || !isUpdatingValid;
   const onSubmit: SubmitHandler<YupDepartmentUpdateInputs> = (data) => {
-    const { insId, nameAr, nameEn } = data
+    const { insId, nameAr, nameEn } = data;
     startUpdating(async () => {
       const updateData = {
         departmentId,
         insId: insId,
         nameAr,
-        nameEn
+        nameEn,
       };
       if (isUpdatingValid) {
         const res = await updateDepartment(updateData);
         if (res) {
-          updateResponse(res)
+          updateResponse(res);
         }
       }
-    })
+    });
   };
 
   return (
     <div className="w-full md:max-w-[700px] md:w-auto mx-auto rounded border border-gray-300 p-4">
-      <h1 className="mb-4 text-lg font-medium underline">
-        Update users info:
-      </h1>
+      <h1 className="mb-4 text-lg font-medium underline">Update users info:</h1>
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="grid grid-cols-4 gap-2"
@@ -116,10 +112,8 @@ export default function DepartmentUpdateForm(props: Props) {
           />
           <Message variant="danger">{errors.nameEn?.message}</Message>
         </div>
-        <div className="col-span-full md:col-span-1">
-          <label className="text-sm mb-1 block">
-            instructor
-          </label>
+        <div className="col-span-full">
+          <label className="text-sm mb-1 block">instructor</label>
           <select
             {...register("insId")}
             defaultValue={findInsctructorId}
@@ -130,22 +124,28 @@ export default function DepartmentUpdateForm(props: Props) {
               `}
             title={
               selectNotAllowed
-                ? message + ' please contact the support'
+                ? message + " please contact the support"
                 : "select the a department"
             }
           >
+            <option selected={!findInsctructorId} disabled>
+              select instructor
+            </option>
             {options}
           </select>
         </div>
-        <Button
-          variant="info"
-          type="submit"
-          loading={isUpdating}
-          disabled={isButtonValid}
-          loadingText="Updating..."
-        >
-          Update
-        </Button>
+        <div className="col-span-full">
+          <Button
+            variant="info"
+            type="submit"
+            width="full"
+            loading={isUpdating}
+            disabled={isButtonValid}
+            loadingText="Updating..."
+          >
+            Update
+          </Button>
+        </div>
         <FetchMessage
           isSuccess={responseRef.current.isSuccess}
           isError={responseRef.current.isError}

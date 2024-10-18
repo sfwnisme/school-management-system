@@ -9,7 +9,7 @@ export default function NotFound() {
         Not Small Oops It&apos;s Absolutly a Big Oops!
       </h1>
       <p className="text-gray-400">this page is not found</p>
-      <Button tag="link" href="/dashboard" variant="link">
+      <Button href="/dashboard" variant="link">
         Go back
       </Button>
     </div>

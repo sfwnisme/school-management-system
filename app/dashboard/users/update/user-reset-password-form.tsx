@@ -1,40 +1,36 @@
 "use client";
-import React, { useRef, useState, useTransition } from "react";
-import Input from "../input";
+import React, { ReactNode, useRef, useState, useTransition } from "react";
+import Input from "@/components/ui/input";
 import {
-  IApiResponseReturn,
   IFetchResponse,
-  IResponse,
   IUser,
   YupUserResetPassword,
+  IClientResponse,
 } from "@/definitions";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { getAllUsers, resetUserPassword } from "@/lib/actions";
-import Button from "../button";
+import { resetUserPassword } from "@/lib/actions";
+import Button from "@/components/ui/button";
 import { yupUserResetPasswordSchema } from "@/lib/validation-schema-yup";
-import Message from "../message";
-import ConditionalMessage from "../conditional-message";
-import FetchMessage from "../fetch-message";
+import Message from "@/components/ui/message";
+import FetchMessage from "@/components/ui/fetch-message";
+import useFetchResponse from "@/hooks/use-fetch-response";
 
 type Props = {
-  user: IFetchResponse<IUser | undefined | null>;
+  user: IClientResponse<IUser>;
 };
 
 export const revalid = 1;
 export default function UserResetPasswordForm(props: Props) {
-  const [isResetPassword, startResetPassword] = useTransition();
-  const apiResponseMessagesRef = useRef<IFetchResponse<undefined>>({
-    message: undefined,
-    status: "idle",
-  });
+  const [isUpdating, startUpdating] = useTransition();
+  const { responseRef, updateResponse } = useFetchResponse();
 
-  const email = props.user.data?.email ?? "";
+  const { email } = props?.user.data || {};
 
   const {
     register,
     handleSubmit,
-    formState: { errors, isValid, disabled, isValidating },
+    formState: { errors, isValid },
   } = useForm<YupUserResetPassword>({
     resolver: yupResolver(yupUserResetPasswordSchema),
     reValidateMode: "onChange",
@@ -44,24 +40,21 @@ export default function UserResetPasswordForm(props: Props) {
     },
   });
 
+  const isUpdatingValid = isValid;
+  const isButtonValid = isUpdating || !isUpdatingValid;
   const onSubmit: SubmitHandler<YupUserResetPassword> = (data) => {
+    const { password, confirmPassword, email } = data;
     const newPassword = {
-      password: data.password,
-      confirmPassword: data.confirmPassword,
-      email: data.email,
+      password,
+      confirmPassword,
+      email,
     };
-    startResetPassword(async () => {
-      const res = await resetUserPassword(newPassword);
-      if (res) {
-        const { message, status } = res;
-        apiResponseMessagesRef.current = {
-          message,
-          status,
-        };
-      } else {
-        console.log(
-          "unexpected error on the onSubmit user-reset-password-form.tsx"
-        );
+    startUpdating(async () => {
+      if (isUpdatingValid) {
+        const res = await resetUserPassword(newPassword);
+        if (res) {
+          updateResponse(res);
+        }
       }
     });
   };
@@ -83,8 +76,8 @@ export default function UserResetPasswordForm(props: Props) {
               errors.password?.message
                 ? "danger"
                 : isValid
-                ? "success"
-                : "initial"
+                  ? "success"
+                  : "initial"
             }
             {...register("password")}
           />
@@ -98,25 +91,29 @@ export default function UserResetPasswordForm(props: Props) {
               errors.confirmPassword?.message
                 ? "danger"
                 : isValid
-                ? "success"
-                : "initial"
+                  ? "success"
+                  : "initial"
             }
             {...register("confirmPassword")}
           />
           <Message variant="danger">{errors.confirmPassword?.message}</Message>
         </div>
-        <Button
-          variant="info"
-          type="submit"
-          loading={isResetPassword}
-          disabled={isResetPassword || !isValid}
-          loadingText="Updating..."
-        >
-          Update
-        </Button>
+        <div className="col-span-full">
+          <Button
+            variant="info"
+            type="submit"
+            loading={isUpdating}
+            disabled={!isValid || isUpdating}
+            loadingText="Updating..."
+            width="full"
+          >
+            Update
+          </Button>
+        </div>
         <FetchMessage
-          message={apiResponseMessagesRef.current.message}
-          status={apiResponseMessagesRef.current.status}
+          message={responseRef.current.message}
+          isSuccess={responseRef.current.isSuccess}
+          isError={responseRef.current.isError}
         />
       </form>
     </div>

@@ -1,17 +1,32 @@
 import { ReactNode } from "react";
 import { InferType } from "yup";
-import { yupDepartmentUpdateSchema, yupInstructorUpdateSchema, yupStudentUpdateSchema, yupSubjectUpdateSchema, yupUserCreateSchema, yupUserResetPasswordSchema, yupUserUpdateSchema } from "./lib/validation-schema-yup";
+import {
+  yupDepartmentCreateSchema,
+  yupDepartmentUpdateSchema,
+  yupInstructorCreateSchema,
+  yupInstructorUpdateSchema,
+  yupLoginSchema,
+  yupStudentCreateSchema,
+  yupStudentUpdateSchema,
+  yupSubjectCreateSchema,
+  yupSubjectUpdateSchema,
+  yupUserCreateSchema,
+  yupUserResetPasswordSchema,
+  yupUserUpdateSchema,
+} from "./lib/validation-schema-yup";
 
 // this type handle the setState function when using prev
 // Ex: setState((prev)=> !prev) as UpdateStateType
 export type UpdateStateType = (
-  updateFn: (prev: boolean) => boolean
+  updateFn: (prev: boolean) => boolean,
 ) => void | undefined;
 export type UpdateStateAdvancedType<S> = (updateFn: (prev: S) => S) => void;
 
 //---------------------------------
 // database types
 //---------------------------------
+export type ILogin = InferType<typeof yupLoginSchema>;
+
 export type RoleTypes = "Admin" | "HR" | "User";
 export type StringOrNull = string | null;
 export interface IUser {
@@ -21,26 +36,27 @@ export interface IUser {
   imagePath?: string | null;
   fullName?: string;
   roles?: string[];
-  roleId?: number,
+  roleId?: number;
   createdAt?: string;
   lastUpdate?: string;
 }
-export type YupUserUpdateInputs = InferType<typeof yupUserUpdateSchema>
-export type YupUserResetPassword = InferType<typeof yupUserResetPasswordSchema>
+export type YupUserUpdateInputs = InferType<typeof yupUserUpdateSchema>;
+export type YupUserResetPassword = InferType<typeof yupUserResetPasswordSchema>;
 
-export interface YupUserCreateInputs {
-  userName: string;
-  fullName: string;
-  email: string;
-  password: string;
-  confirmPassword: string;
-  image: HTMLImageElement;
-}
+// export interface YupUserCreateInputs {
+//   userName: string;
+//   fullName: string;
+//   email: string;
+//   password: string;
+//   confirmPassword: string;
+//   image: File;
+// }
+export type YupUserCreateInputs = InferType<typeof yupUserCreateSchema>;
 export interface IInstructor {
   instId: number;
   name: string;
-  nameAr?: string,
-  nameEn?: string,
+  nameAr?: string;
+  nameEn?: string;
   address: string;
   position: string;
   imagePath: null;
@@ -49,56 +65,68 @@ export interface IInstructor {
   deptId: number;
 }
 export interface IInstructorUpdate {
-  id?: number,
-  nameAr: string,
-  nameEn: string,
-  position: string,
-  salary: number,
-  departmentId: number
+  id?: number;
+  nameAr: string;
+  nameEn: string;
+  position: string;
+  salary: number;
+  departmentId: number;
 }
-export type YupInstructorUpdateInputs = InferType<typeof yupInstructorUpdateSchema>
+export type YupInstructorUpdateInputs = InferType<
+  typeof yupInstructorUpdateSchema
+>;
+export type YupInstructorCreateInputs = InferType<
+  typeof yupInstructorCreateSchema
+>;
 
 export interface IDepartment {
   id: number;
-  deptId?: number,
-  name: string,
+  deptId?: number;
+  name: string;
   managerName: string;
-  students: { id: number, name: string }[],
-  instructors: { id: number, nmae: string }[],
-  subjects: { id: number, name: string }[]
+  students: { id: number; name: string }[];
+  instructors: { id: number; nmae: string }[];
+  subjects: { id: number; name: string }[];
 }
 
-export type YupDepartmentUpdateInputs = InferType<typeof yupDepartmentUpdateSchema>
+export type YupDepartmentUpdateInputs = InferType<
+  typeof yupDepartmentUpdateSchema
+>;
+export type YupDepartmentCreateInputs = InferType<
+  typeof yupDepartmentCreateSchema
+>;
 //----------------------------
 
 export interface IStudent {
-  id?: number,
+  id?: number;
   studId: number;
   name: string;
   address: string;
   departmentName: string[] | null;
 }
 
-export type YupStudentUpdateInputs = InferType<typeof yupStudentUpdateSchema>
+export type YupStudentUpdateInputs = InferType<typeof yupStudentUpdateSchema>;
+export type YupStudentCreateInputs = InferType<typeof yupStudentCreateSchema>;
 
 export interface ISubject {
   id: number;
   subjectName?: string;
-  name?: string,
+  name?: string;
   departments?: {
     departmentId: number;
     departmentName: string;
   }[];
-  period?: string,
+  period?: string;
 }
 
 export interface ISubjectUpdate {
-  subjectId: number,
-  subjectNameAr: string,
-  subjectNameen: string,
-  period: string
+  subjectId: number;
+  subjectNameAr: string;
+  subjectNameen: string;
+  period: string;
 }
-export type YupSubjectUpdateInputs = InferType<typeof yupSubjectUpdateSchema>
+export type YupSubjectUpdateInputs = InferType<typeof yupSubjectUpdateSchema>;
+export type YupSubjectCreateInputs = InferType<typeof yupSubjectCreateSchema>;
 
 export interface IRole {
   id?: number;

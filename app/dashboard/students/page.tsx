@@ -1,5 +1,4 @@
 import Button from "@/components/ui/button";
-import StudentsTable from "@/components/ui/students/students-table";
 import TableLayer from "@/components/ui/table/table-layer";
 import Title from "@/components/ui/title";
 import { deleteStudent, getAllStudents } from "@/lib/actions";
@@ -29,9 +28,7 @@ export default async function page() {
   return (
     <div>
       <Title title="All Students">
-        <Button tag="link" href="/dashboard/students/create">
-          Create
-        </Button>
+        <Button href="/dashboard/students/add">Create</Button>
       </Title>
       <TableLayer
         dataFunction={students}

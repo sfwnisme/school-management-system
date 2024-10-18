@@ -1,6 +1,6 @@
 "use client";
 import React, { useTransition } from "react";
-import Input from "../input";
+import Input from "@/components/ui/input";
 import {
   IClientResponse,
   IRole,
@@ -10,10 +10,10 @@ import {
 import { SubmitHandler, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { updateUser } from "@/lib/actions";
-import Button from "../button";
+import Button from "@/components/ui/button";
 import { yupUserUpdateSchema } from "@/lib/validation-schema-yup";
-import Message from "../message";
-import FetchMessage from "../fetch-message";
+import Message from "@/components/ui/message";
+import FetchMessage from "@/components/ui/fetch-message";
 import useFetchResponse from "@/hooks/use-fetch-response";
 import { useRolessOptions } from "@/hooks/use-roles-options";
 
@@ -22,25 +22,24 @@ type Props = {
   roles: IClientResponse<IRole[]>;
 };
 
-
 export default function UserUpdateForm(props: Props) {
   const [isUpdating, startUpdatingUser] = useTransition();
-  const { responseRef, updateResponse } = useFetchResponse()
+  const { responseRef, updateResponse } = useFetchResponse();
 
   const {
     id: userId,
     fullName,
     userName,
     email,
-    roles
-  } = props?.user.data || {}
+    roles,
+  } = props?.user.data || {};
 
-  const {
-    options,
-    selectNotAllowed,
-    message
-  } = useRolessOptions(props?.roles)
-  const findRoleId = props?.roles?.data?.find((role) => role.name === roles?.[0])?.name ?? -1
+  console.log("sfwn is me", props?.roles.data);
+
+  const { options, selectNotAllowed, message } = useRolessOptions(props?.roles);
+  const findRoleId = props?.roles?.data?.find(
+    (role) => role.name === roles?.[0],
+  )?.name;
 
   const {
     register,
@@ -56,8 +55,8 @@ export default function UserUpdateForm(props: Props) {
     },
   });
 
-  const isUpdatingValid = isValid && !selectNotAllowed
-  const isButtonValid = isUpdating || !isUpdatingValid
+  const isUpdatingValid = isValid && !selectNotAllowed;
+  const isButtonValid = isUpdating || !isUpdatingValid;
   const onSubmit: SubmitHandler<YupUserUpdateInputs> = async (data) => {
     startUpdatingUser(async () => {
       const newUserData = {
@@ -70,7 +69,7 @@ export default function UserUpdateForm(props: Props) {
       if (isUpdatingValid) {
         const res = await updateUser(newUserData);
         if (res) {
-          updateResponse(res)
+          updateResponse(res);
         }
       }
     });
@@ -133,23 +132,27 @@ export default function UserUpdateForm(props: Props) {
           disabled={selectNotAllowed}
           title={
             selectNotAllowed
-              ? message + ' please contact the support'
+              ? message + " please contact the support"
               : "select the role"
           }
         >
+          <option selected={!findRoleId} disabled>
+            select role
+          </option>
           {options}
         </select>
-        <Button
-          variant="info"
-          type="submit"
-          loading={isUpdating}
-          disabled={
-            isButtonValid
-          }
-          loadingText="Updating..."
-        >
-          Update
-        </Button>
+        <div className="col-span-full">
+          <Button
+            variant="info"
+            type="submit"
+            width="full"
+            loading={isUpdating}
+            disabled={isButtonValid}
+            loadingText="Updating..."
+          >
+            Update
+          </Button>
+        </div>
         <FetchMessage
           message={responseRef.current.message}
           isSuccess={responseRef.current.isSuccess}

@@ -1,16 +1,11 @@
 "use client";
-import {
-  IClientResponse,
-  IDepartment,
-  IInstructor,
-  YupInstructorUpdateInputs,
-} from "@/definitions";
+import { IClientResponse, IDepartment, YupInstructorCreateInputs } from "@/definitions";
 import React, { useTransition } from "react";
 import { useDepartmentsOptions } from "../../../../hooks/use-departments-options";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { yupInstructorUpdateSchema } from "@/lib/validation-schema-yup";
+import { yupInstructorCreateSchema } from "@/lib/validation-schema-yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { updateInstructor } from "@/lib/actions";
+import { createInstructor } from "@/lib/actions";
 import Input from "@/components/ui/input";
 import Message from "@/components/ui/message";
 import Button from "@/components/ui/button";
@@ -18,68 +13,57 @@ import FetchMessage from "@/components/ui/fetch-message";
 import useFetchResponse from "@/hooks/use-fetch-response";
 
 type Props = {
-  instructor: IClientResponse<IInstructor>;
   departments: IClientResponse<IDepartment[]>;
 };
 
-export default function InstructorUpdateForm(props: Props) {
-  const [isUpdating, startUpdating] = useTransition();
-  const { responseRef, updateResponse } = useFetchResponse();
+export default function InstructorCreateForm(props: Props) {
+  const [isUpdating, startUpdating] = useTransition()
+  const { responseRef, updateResponse } = useFetchResponse()
+
 
   const {
-    instId: instructorId,
-    name: instructorName,
-    position: instructorPosition,
-    salary: instructorSalary,
-    deptId: instructorDeptId,
-  } = props?.instructor?.data || {};
-
-  const { options, selectNotAllowed, message } = useDepartmentsOptions(
-    props?.departments,
-  );
+    options,
+    selectNotAllowed,
+    message
+  } = useDepartmentsOptions(props?.departments)
 
   const {
     register,
     handleSubmit,
     formState: { errors, isValid },
-  } = useForm<YupInstructorUpdateInputs>({
-    resolver: yupResolver(yupInstructorUpdateSchema),
+    watch
+  } = useForm<YupInstructorCreateInputs>({
+    resolver: yupResolver(yupInstructorCreateSchema),
     mode: "onChange",
-    defaultValues: {
-      nameAr: instructorName,
-      nameEn: instructorName,
-      position: instructorPosition,
-      salary: instructorSalary,
-      departmentId: instructorDeptId,
-    },
   });
-
-  const isUpdatingValid = isValid && !selectNotAllowed;
-  const isButtonValid = isUpdating || !isUpdatingValid;
-  const onSubmit: SubmitHandler<YupInstructorUpdateInputs> = (data) => {
-    const { nameAr, nameEn, position, salary, departmentId } = data;
+  console.log(watch())
+  const isUpdatingValid = isValid && !selectNotAllowed
+  const isButtonValid = isUpdating || !isUpdatingValid
+  const onSubmit: SubmitHandler<YupInstructorCreateInputs> = (data) => {
+    const { nameAr, nameEn, position, salary, departmentId } = data
     startUpdating(async () => {
-      const updateData = {
-        id: instructorId,
+      const createData = {
         nameAr,
         nameEn,
         position,
         salary,
-        departmentId,
+        departmentId
       };
       if (isUpdatingValid) {
-        const res = await updateInstructor(updateData);
+        const res = await createInstructor(createData);
         console.log(res);
         if (res) {
-          updateResponse(res);
+          updateResponse(res)
         }
       }
-    });
+    })
   };
 
   return (
     <div className="w-full md:max-w-[700px] md:w-auto mx-auto rounded border border-gray-300 p-4">
-      <h1 className="mb-4 text-lg font-medium underline">Update users info:</h1>
+      <h1 className="mb-4 text-lg font-medium underline">
+        Update users info:
+      </h1>
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="grid grid-cols-4 gap-2"
@@ -89,7 +73,6 @@ export default function InstructorUpdateForm(props: Props) {
             type="text"
             title="arabic name"
             placeholder="Your full arabic name"
-            defaultValue={instructorName}
             variant={
               errors.nameAr?.message
                 ? "danger"
@@ -123,11 +106,7 @@ export default function InstructorUpdateForm(props: Props) {
             title="position"
             placeholder="Your position"
             variant={
-              errors.position?.message
-                ? "danger"
-                : isValid
-                  ? "success"
-                  : "initial"
+              errors.position?.message ? "danger" : isValid ? "success" : "initial"
             }
             {...register("position")}
           />
@@ -150,10 +129,11 @@ export default function InstructorUpdateForm(props: Props) {
           <Message variant="danger">{errors.salary?.message}</Message>
         </div>
         <div className="col-span-full md:col-span-1">
-          <label className="text-sm mb-1 block">department</label>
+          <label className="text-sm mb-1 block">
+            department
+          </label>
           <select
             {...register("departmentId")}
-            defaultValue={instructorDeptId}
             disabled={selectNotAllowed}
             className={`
               disabled:opacity-50 disabled:cursor-not-allowed
@@ -161,28 +141,23 @@ export default function InstructorUpdateForm(props: Props) {
               `}
             title={
               selectNotAllowed
-                ? message + ", please contact the support"
+                ? message + ', please contact the support'
                 : "select the a department"
             }
           >
-            <option selected={!instructorDeptId} disabled>
-              select instructor
-            </option>
+            <option selected disabled>select instructor</option>
             {options}
           </select>
         </div>
-        <div className="col-span-full">
-          <Button
-            variant="info"
-            type="submit"
-            width="full"
-            loading={isUpdating}
-            disabled={isButtonValid}
-            loadingText="Updating..."
-          >
-            Update
-          </Button>
-        </div>
+        <Button
+          variant="info"
+          type="submit"
+          loading={isUpdating}
+          disabled={isButtonValid}
+          loadingText="Updating..."
+        >
+          Update
+        </Button>
         <FetchMessage
           isSuccess={responseRef.current.isSuccess}
           isError={responseRef.current.isError}

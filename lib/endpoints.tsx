@@ -1,10 +1,9 @@
 import axios from "axios";
-
 export const baseURL = "http://schoolmanagmentsystem.runasp.net/api/v1/";
-
 export const apiClient = axios.create({
   baseURL,
 });
+
 export const endpoints = {
   authentication: {
     signin: "authentication/sign-in",
@@ -17,11 +16,11 @@ export const endpoints = {
   },
   authorization: {
     roles: {
-      create: "authorization/create", // add new role
-      update: "authorization/update", // update current role
-      all: "authorization/list", // available roles
-      id: "authorization/id", // get role by id
-      delete: "authorization/delete", // delete role
+      create: "authorization/roles/create", // add new role
+      update: "authorization/roles/update", // update current role
+      all: "authorization/roles/ list", // available roles
+      id: "authorization/roles/id", // get role by id
+      delete: "authorization/roles/delete", // delete role
       getRolesByUserId: "authorization/manage-user-roles/", // { userId } user roles by id
       updateUserRoles: "authorization/update-user-roles/", //  send plain object
     },
