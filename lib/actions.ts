@@ -32,8 +32,12 @@ export async function handleSignIn(
   FD.append("UserName", username);
   FD.append("Password", password);
 
+  const loginData = {
+    userName: username,
+    password: password,
+  }
   try {
-    const res = await apiClient.post(endpoints.authentication.signin, FD);
+    const res = await apiClient.post(endpoints.authentication.signin, loginData);
     const { statusCode, statusText } = res.data.data;
     const token = await res.data.data.accessToken;
     const refreshToken = await res.data.data.refreshToken;
