@@ -14,7 +14,7 @@
     "@hookform/resolvers": "^3.9.0",
     "@types/js-cookie": "^3.0.6",
     "@typescript-eslint/typescript-estree": "^8.12.2",
-    "axios": "^1.7.4",
+    "axios": "^1.13.5",
     "cookies-next": "^4.2.1",
     "glob": "^11.0.0",
     "js-cookie": "^3.0.5",
